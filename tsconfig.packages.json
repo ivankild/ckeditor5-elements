@@ -1,0 +1,17 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "packages/ckeditor5-elements"
+		},
+		{
+			"path": "packages/ckeditor5-elements-context-menu"
+		},
+		{
+			"path": "packages/ckeditor5-elements-quick-insert"
+		},
+		{
+			"path": "packages/ckeditor5-elements-breadcrumbs"
+		}
+	]
+}

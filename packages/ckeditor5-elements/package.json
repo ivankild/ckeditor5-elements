@@ -1,0 +1,39 @@
+{
+	"name": "ckeditor5-elements",
+	"version": "0.1.0",
+	"description": "Element commands and buttons for CKEditor 5: toggle (wrap/unwrap) commands, an example element, and a toolbar line break.",
+	"keywords": [
+		"ckeditor",
+		"ckeditor5",
+		"ckeditor 5",
+		"ckeditor5-feature",
+		"ckeditor5-plugin"
+	],
+	"license": "MIT",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./index.css": "./theme/endOfLine.css",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist",
+		"theme",
+		"README.md"
+	],
+	"sideEffects": [
+		"*.css"
+	],
+	"peerDependencies": {
+		"ckeditor5": ">=46.0.0"
+	},
+	"scripts": {
+		"build": "tsc --build",
+		"prepublishOnly": "npm run build"
+	}
+}

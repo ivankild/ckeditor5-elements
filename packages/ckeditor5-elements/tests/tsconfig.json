@@ -1,0 +1,19 @@
+{
+	"extends": "../../../tsconfig.base.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"composite": false,
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"types": ["vitest/browser"],
+		"paths": {
+			"ckeditor5-elements": ["../../ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-context-menu": ["../../ckeditor5-elements-context-menu/src/index.ts"],
+			"ckeditor5-elements-quick-insert": ["../../ckeditor5-elements-quick-insert/src/index.ts"],
+			"ckeditor5-elements-breadcrumbs": ["../../ckeditor5-elements-breadcrumbs/src/index.ts"]
+		}
+	},
+	"include": [".", "../src"]
+}

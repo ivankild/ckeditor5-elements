@@ -1,0 +1,107 @@
+import {
+	FocusCycler,
+	FocusTracker,
+	KeystrokeHandler,
+	View,
+	isFocusable,
+	type FocusableView,
+	type Locale,
+	type ViewCollection
+} from 'ckeditor5';
+
+/**
+ * A vertical menu of views. Arrow keys and Tab move the focus between focusable items, Esc fires `cancel`.
+ */
+export default class ElementContextMenuView extends View {
+	/**
+	 * The menu items.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * Tracks the focus within the menu.
+	 */
+	public readonly focusTracker = new FocusTracker();
+
+	/**
+	 * Handles the keystrokes within the menu.
+	 */
+	public readonly keystrokes = new KeystrokeHandler();
+
+	private readonly _focusables: ViewCollection<FocusableView>;
+	private readonly _focusCycler: FocusCycler;
+
+	constructor(locale?: Locale) {
+		super(locale);
+
+		this.items = this.createCollection();
+		this._focusables = this.createCollection();
+
+		this._focusCycler = new FocusCycler({
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				focusPrevious: ['arrowup', 'shift+tab'],
+				focusNext: ['arrowdown', 'tab']
+			}
+		});
+
+		this.keystrokes.set('Esc', (data, cancel) => {
+			this.fire('cancel');
+			cancel();
+		});
+
+		this.setTemplate({
+			tag: 'div',
+			attributes: {
+				class: ['ck', 'ck-elements-context-menu'],
+				role: 'menu',
+				tabindex: '-1'
+			},
+			children: this.items
+		});
+	}
+
+	public override render(): void {
+		super.render();
+
+		for (const item of this.items) {
+			this._registerItem(item);
+		}
+
+		this.items.on('add', (evt, item: View) => {
+			this._registerItem(item);
+		});
+
+		if (this.element) {
+			this.keystrokes.listenTo(this.element);
+		}
+	}
+
+	/**
+	 * Focuses the first focusable item.
+	 */
+	public focus(): void {
+		// Not `focusFirst()`: it does nothing while the focus tracker (which notices blur asynchronously) still considers
+		// the first item focused, e.g. right after the focus moved out of the menu and back.
+		this._focusCycler.first?.focus();
+	}
+
+	public override destroy(): void {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	private _registerItem(item: View): void {
+		if (isFocusable(item)) {
+			this._focusables.add(item);
+		}
+
+		if (item.element) {
+			this.focusTracker.add(item.element);
+		}
+	}
+}

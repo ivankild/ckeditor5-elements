@@ -1,0 +1,19 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"composite": false,
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"types": ["vite/client", "node"],
+		"paths": {
+			"ckeditor5-elements": ["../packages/ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-context-menu": ["../packages/ckeditor5-elements-context-menu/src/index.ts"],
+			"ckeditor5-elements-quick-insert": ["../packages/ckeditor5-elements-quick-insert/src/index.ts"],
+			"ckeditor5-elements-breadcrumbs": ["../packages/ckeditor5-elements-breadcrumbs/src/index.ts"]
+		}
+	},
+	"include": ["src", "vite.config.ts"]
+}

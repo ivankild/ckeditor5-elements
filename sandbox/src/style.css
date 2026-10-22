@@ -1,0 +1,15 @@
+main {
+	max-width: 900px;
+	margin: 2rem auto;
+	padding: 0 16px;
+	font-family: system-ui, sans-serif;
+}
+
+.ck-content .title {
+	margin: 1em 0;
+	padding: 0.5em 1em;
+	border-left: 4px solid #1a73e8;
+	background: #eef4fd;
+	font-size: 1.4em;
+	font-weight: 600;
+}

@@ -1,0 +1,35 @@
+.ck.ck-elements-breadcrumbs {
+	display: flex;
+	align-items: center;
+	font-size: var(--ck-font-size-tiny);
+	color: var(--ck-color-text);
+}
+
+.ck.ck-toolbar .ck.ck-elements-breadcrumbs {
+	min-height: var(--ck-ui-component-min-height);
+}
+
+.ck.ck-elements-breadcrumbs__list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.ck.ck-button.ck-elements-breadcrumbs__item .ck-button__label {
+	font-family: monospace;
+}
+
+/* The separator sits in the gap before the button, so it is not part of the button's hover area. */
+.ck.ck-button.ck-elements-breadcrumbs__item + .ck.ck-button.ck-elements-breadcrumbs__item {
+	position: relative;
+	margin-left: 1.2em;
+	overflow: visible;
+}
+
+.ck.ck-button.ck-elements-breadcrumbs__item + .ck.ck-button.ck-elements-breadcrumbs__item::before {
+	content: '›';
+	position: absolute;
+	left: -0.9em;
+	opacity: 0.6;
+	pointer-events: none;
+}

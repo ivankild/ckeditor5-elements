@@ -1,0 +1,22 @@
+{
+	"name": "sandbox",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"ckeditor5": "^49.0.0",
+		"ckeditor5-elements": "workspace:*",
+		"ckeditor5-elements-context-menu": "workspace:*",
+		"ckeditor5-elements-quick-insert": "workspace:*",
+		"ckeditor5-elements-breadcrumbs": "workspace:*"
+	},
+	"devDependencies": {
+		"@ckeditor/ckeditor5-inspector": "^5.0.4",
+		"@types/node": "^24.19.2",
+		"vite": "^8.3.5"
+	}
+}
