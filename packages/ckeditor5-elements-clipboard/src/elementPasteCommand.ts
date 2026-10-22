@@ -1,4 +1,5 @@
-import { Command, plainTextToHtml, type Editor, type ModelElement } from 'ckeditor5';
+import { plainTextToHtml, type Editor } from 'ckeditor5';
+import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
 import { isInDocument } from './utils.js';
 
 /**
@@ -11,12 +12,15 @@ import { isInDocument } from './utils.js';
 export type ElementPastePlacement = 'replace' | 'before' | 'after';
 
 /**
- * Pastes the system clipboard content relative to the given element. HTML is preferred over plain text.
+ * Pastes the system clipboard content relative to an element. HTML is preferred over plain text.
+ *
+ * The element is the given one, the parent of the given position, or the selected element or the parent of the
+ * selection (see {@link ElementOrPositionCommand}).
  *
  * Requires a secure context (HTTPS or `localhost`), as it uses the asynchronous Clipboard API.
  * The browser may ask the user for permission.
  */
-export default class ElementPasteCommand extends Command {
+export default class ElementPasteCommand extends ElementOrPositionCommand {
 	/**
 	 * Where the pasted content goes, relative to the element.
 	 */
@@ -26,16 +30,31 @@ export default class ElementPasteCommand extends Command {
 		super(editor);
 
 		this.placement = placement;
+		this.title = {
+			replace: editor.t('Paste'),
+			before: editor.t('Paste before'),
+			after: editor.t('Paste after')
+		}[placement];
 
-		// The command acts on a given element, not on the selection.
+		// The command may act on a given element, so it does not depend on whether the selection can be edited.
 		this._isEnabledBasedOnSelection = false;
 	}
 
-	public override refresh(): void {
-		this.isEnabled = window.isSecureContext;
+	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {
+		return window.isSecureContext && !!this._getElement(positionOrElement);
 	}
 
-	public override async execute(element: ModelElement): Promise<void> {
+	/**
+	 * Pastes the clipboard content relative to the element. Resolves when the content has been inserted.
+	 */
+	public override async execute(positionOrElement?: PositionOrElement): Promise<void> {
+		// Resolve the element before reading the clipboard, as the selection may change in the meantime.
+		const element = this._getElement(positionOrElement);
+
+		if (!element) {
+			return;
+		}
+
 		const html = await readClipboardHtml();
 
 		if (!html || !isInDocument(element)) {

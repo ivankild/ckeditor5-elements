@@ -1,26 +1,22 @@
-import { Command, type ModelElement, type ModelPosition, type ModelWriter } from 'ckeditor5';
+import { type ModelElement, type ModelWriter } from 'ckeditor5';
+import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
 
 /**
- * Inserts an element by its model name, at the given position or at the selection.
+ * Inserts an element by its model name, at the given position or at the selection (see
+ * {@link ElementOrPositionCommand}). An element as the target means the position before it.
  *
- * Only elements that the schema allows at exactly that position are inserted (see {@link #getAllowedElements}):
+ * Only elements that the schema allows at exactly that position are inserted (see {@link getAllowedElements}):
  * nothing is split to make room, so e.g. a heading cannot be inserted inside a paragraph.
  *
  * After inserting, objects are selected; other elements get the selection inside them, in a new paragraph when they
  * can hold blocks.
  */
-export default class QuickInsertCommand extends Command {
-	public override refresh(): void {
-		const position = this._getPosition();
-
-		this.isEnabled = !!position && this.editor.model.canEditAt(position);
-	}
-
+export default class QuickInsertCommand extends ElementOrPositionCommand {
 	/**
 	 * Returns the names of the model elements allowed at exactly the position (or the selection), in the order they
 	 * were registered. Generic items (such as `$text` or `$block`) and the excluded names are skipped.
 	 */
-	public getAllowedElements(position?: ModelPosition, exclude: readonly string[] = []): string[] {
+	public getAllowedElements(position?: PositionOrElement, exclude: readonly string[] = []): string[] {
 		const target = this._getPosition(position);
 
 		if (!target) {
@@ -34,7 +30,10 @@ export default class QuickInsertCommand extends Command {
 		);
 	}
 
-	public override execute(name: string, position?: ModelPosition): void {
+	/**
+	 * Inserts the element named `name` at the position (or the selection), when the schema allows it there.
+	 */
+	public override execute(name: string, position?: PositionOrElement): void {
 		const model = this.editor.model;
 		const target = this._getPosition(position);
 
@@ -66,9 +65,5 @@ export default class QuickInsertCommand extends Command {
 			// Only objects can be selected as a whole. The selection post-fixer moves it to the closest valid place.
 			writer.setSelection(element, 'after');
 		}
-	}
-
-	private _getPosition(position?: ModelPosition): ModelPosition | null {
-		return position ?? this.editor.model.document.selection.getFirstPosition();
 	}
 }

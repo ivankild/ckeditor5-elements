@@ -30,6 +30,7 @@
 		"*.css"
 	],
 	"dependencies": {
+		"ckeditor5-elements-ui": "workspace:^",
 		"ckeditor5-elements-context-menu": "workspace:^"
 	},
 	"peerDependencies": {

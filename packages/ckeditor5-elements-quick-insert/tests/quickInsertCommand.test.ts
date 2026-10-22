@@ -113,6 +113,14 @@ describe('QuickInsertCommand', () => {
 			expect(getData()).toBe('<paragraph>foo</paragraph><heading1>[]</heading1><paragraph>bar</paragraph>');
 		});
 
+		it('inserts before the given element', () => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
+
+			command.execute('heading1', root().getChild(1) as ModelElement);
+
+			expect(getData()).toBe('<paragraph>foo</paragraph><heading1>[]</heading1><paragraph>bar</paragraph>');
+		});
+
 		it('inserts before the selected object', () => {
 			_setModelData(editor.model, '<paragraph>foo</paragraph>[<element></element>]');
 

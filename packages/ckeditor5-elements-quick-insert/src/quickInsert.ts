@@ -1,7 +1,7 @@
 import { Plugin, type Editor, type FilteredViewExecuteEvent, type ModelPosition, type RectSource } from 'ckeditor5';
 import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import { createElementInsertItems } from './elementInsertItems.js';
 import QuickInsertCommand from './quickInsertCommand.js';
+import QuickInsertPositionCommand from './quickInsertPositionCommand.js';
 import { type QuickInsertItem } from './quickInsertListView.js';
 import QuickInsertView from './quickInsertView.js';
 
@@ -24,8 +24,9 @@ export interface QuickInsertConfig {
  * Opens a menu with a search field and the elements allowed at the selection, on Alt+Enter (Option+Enter on macOS).
  * Choosing an element inserts it with the `quickInsert` command.
  *
- * The menu is shown by the `ElementContextMenu` plugin. Its default items get "Insert ›", with "Insert before" and
- * "Insert after" for the element (see {@link createElementInsertItems}).
+ * The menu is shown by the `ElementContextMenu` plugin. The `quickInsertBefore` and `quickInsertAfter` commands (see
+ * {@link QuickInsertPositionCommand}) open it for the position before or after an element; list them in the
+ * `elementContextMenu` config, e.g. as an "Insert" submenu.
  */
 export default class QuickInsert extends Plugin {
 	public static get requires(): readonly [typeof ElementContextMenu] {
@@ -46,7 +47,8 @@ export default class QuickInsert extends Plugin {
 		const editor = this.editor;
 
 		editor.commands.add('quickInsert', new QuickInsertCommand(editor));
-		editor.plugins.get(ElementContextMenu).addItems(createElementInsertItems);
+		editor.commands.add('quickInsertBefore', new QuickInsertPositionCommand(editor, 'before'));
+		editor.commands.add('quickInsertAfter', new QuickInsertPositionCommand(editor, 'after'));
 
 		editor.keystrokes.set('Alt+Enter', (data, cancel) => {
 			if (this.open()) {

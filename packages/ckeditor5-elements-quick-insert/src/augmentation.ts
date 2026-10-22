@@ -1,4 +1,4 @@
-import type { QuickInsert, QuickInsertCommand, QuickInsertConfig } from './index.js';
+import type { QuickInsert, QuickInsertCommand, QuickInsertConfig, QuickInsertPositionCommand } from './index.js';
 
 declare module 'ckeditor5' {
 	interface PluginsMap {
@@ -7,6 +7,8 @@ declare module 'ckeditor5' {
 
 	interface CommandsMap {
 		quickInsert: QuickInsertCommand;
+		quickInsertBefore: QuickInsertPositionCommand;
+		quickInsertAfter: QuickInsertPositionCommand;
 	}
 
 	interface EditorConfig {

@@ -1,7 +1,6 @@
 import { Plugin, ButtonView } from 'ckeditor5';
 import ElementsEditing from './elementsEditing.js';
-import ElementButtonView from './elementButtonView.js';
-import ElementCommand from './elementCommand.js';
+import { ElementButtonView, ElementCommand } from 'ckeditor5-elements-ui';
 
 const icon =
 	'<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">' +

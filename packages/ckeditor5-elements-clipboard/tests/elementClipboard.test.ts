@@ -1,9 +1,9 @@
 import { Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
-import ElementClipboard from '../../src/clipboard/elementClipboard.js';
-import ElementCopyCommand from '../../src/clipboard/elementCopyCommand.js';
-import ElementPasteCommand from '../../src/clipboard/elementPasteCommand.js';
-import { Container, createEditor } from '../../../../testUtils/editor.js';
+import ElementClipboard from '../src/elementClipboard.js';
+import ElementCopyCommand from '../src/elementCopyCommand.js';
+import ElementPasteCommand from '../src/elementPasteCommand.js';
+import { Container, createEditor } from '../../../testUtils/editor.js';
 
 function clipboardItem(data: Record<string, string>): ClipboardItem {
 	return new ClipboardItem(
@@ -36,6 +36,16 @@ describe('ElementClipboard', () => {
 		expect(editor.commands.get('pasteElementBefore')).toBeInstanceOf(ElementPasteCommand);
 		expect(editor.commands.get('pasteElementBefore')?.placement).toBe('before');
 		expect(editor.commands.get('pasteElementAfter')?.placement).toBe('after');
+
+		expect(
+			[
+				editor.commands.get('copyElement'),
+				editor.commands.get('cutElement'),
+				editor.commands.get('pasteElement'),
+				editor.commands.get('pasteElementBefore'),
+				editor.commands.get('pasteElementAfter')
+			].map(command => command?.title)
+		).toEqual(['Copy', 'Cut', 'Paste', 'Paste before', 'Paste after']);
 	});
 
 	it('enables the commands in a secure context only', () => {
@@ -135,6 +145,70 @@ describe('ElementClipboard', () => {
 			await editor.execute('cutElement', element);
 
 			expect(getData()).toBe('<paragraph>bar</paragraph>');
+		});
+	});
+
+	describe('targets', () => {
+		let write: MockInstance<Clipboard['write']>;
+
+		beforeEach(() => {
+			write = vi.spyOn(navigator.clipboard, 'write').mockResolvedValue();
+		});
+
+		async function writtenHtml(): Promise<string> {
+			const [item] = write.mock.calls[0][0];
+
+			return (await item.getType('text/html')).text();
+		}
+
+		it('uses the element at the selection when no target is given', async () => {
+			_setModelData(editor.model, '<paragraph>foo</paragraph><paragraph>ba[]r</paragraph>');
+
+			await editor.execute('cutElement');
+
+			expect(await writtenHtml()).toBe('<p>bar</p>');
+			expect(getData()).toBe('<paragraph>foo</paragraph>');
+		});
+
+		it('uses the parent of the given position', async () => {
+			_setModelData(editor.model, '<container><paragraph>foo</paragraph></container>');
+
+			await editor.execute('copyElement', editor.model.createPositionAt(child(0), 0));
+
+			expect(await writtenHtml()).toBe('<section class="container"><p>foo</p></section>');
+		});
+
+		it('is disabled and does nothing for a position directly in the root', async () => {
+			_setModelData(editor.model, '<paragraph>foo</paragraph>');
+
+			const position = editor.model.createPositionAt(editor.model.document.getRoot()!, 0);
+			const command = editor.commands.get('copyElement')!;
+
+			command.refresh(position);
+			expect(command.isEnabled).toBe(false);
+
+			await command.execute(position);
+			expect(write).not.toHaveBeenCalled();
+		});
+
+		it('pastes relative to the element at the selection', async () => {
+			vi.spyOn(navigator.clipboard, 'read').mockResolvedValue([clipboardItem({ 'text/html': '<p>new</p>' })]);
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+
+			await editor.execute('pasteElementBefore');
+
+			expect(getData()).toBe('<paragraph>new</paragraph><paragraph>foo</paragraph>');
+		});
+
+		it('paste does nothing without an element', async () => {
+			const read = vi.spyOn(navigator.clipboard, 'read');
+
+			_setModelData(editor.model, '<paragraph>foo</paragraph>');
+			await editor.commands
+				.get('pasteElement')!
+				.execute(editor.model.createPositionAt(editor.model.document.getRoot()!, 0));
+
+			expect(read).not.toHaveBeenCalled();
 		});
 	});
 

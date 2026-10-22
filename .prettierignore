@@ -3,3 +3,6 @@ node_modules/
 pnpm-lock.yaml
 coverage/
 .vitest/
+docs/api/
+docs/.vitepress/cache/
+docs/.vitepress/dist/

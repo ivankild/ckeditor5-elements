@@ -3,12 +3,14 @@ import ElementCopyCommand from './elementCopyCommand.js';
 import ElementPasteCommand from './elementPasteCommand.js';
 
 /**
- * Registers clipboard commands that act on a given element:
+ * Registers clipboard commands that act on an element:
  * `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore` and `pasteElementAfter`.
  *
  * ```ts
  * await editor.execute('copyElement', element);
  * ```
+ *
+ * The commands have titles, so they can be listed in the `elementContextMenu` config of `ckeditor5-elements-context-menu`.
  */
 export default class ElementClipboard extends Plugin {
 	public static get pluginName(): 'ElementClipboard' {

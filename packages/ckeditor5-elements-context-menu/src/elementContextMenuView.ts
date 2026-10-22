@@ -63,6 +63,9 @@ export default class ElementContextMenuView extends View {
 		});
 	}
 
+	/**
+	 * Renders the menu and registers its items for focus tracking and keyboard navigation.
+	 */
 	public override render(): void {
 		super.render();
 
@@ -88,6 +91,9 @@ export default class ElementContextMenuView extends View {
 		this._focusCycler.first?.focus();
 	}
 
+	/**
+	 * Destroys the menu, its focus tracker and keystroke handler.
+	 */
 	public override destroy(): void {
 		super.destroy();
 

@@ -33,6 +33,9 @@ export default class QuickInsertView extends SearchTextView {
 		listView.delegate('execute').to(this);
 	}
 
+	/**
+	 * Renders the view and sets up Enter (choose the first match) and the down arrow (go to the list) in the search field.
+	 */
 	public override render(): void {
 		super.render();
 

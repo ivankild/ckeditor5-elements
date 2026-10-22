@@ -10,6 +10,9 @@ export default class ContextMenuObserver extends DomEventObserver<'contextmenu'>
 		return 'contextmenu';
 	}
 
+	/**
+	 * Fires `contextmenu` on the view document for the DOM event.
+	 */
 	public onDomEvent(domEvent: MouseEvent): void {
 		this.fire(domEvent.type, domEvent);
 	}

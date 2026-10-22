@@ -1,56 +1,28 @@
 import {
-	Command,
 	type Editor,
 	type ModelDocumentFragment,
 	type ModelElement,
 	type ModelNode,
-	type ModelPosition,
 	type ModelWriter
 } from 'ckeditor5';
+import ElementOrPositionCommand, { type PositionOrElement } from './elementOrPositionCommand.js';
 
 /**
- * A model position or a model element the command operates on.
- */
-export type PositionOrElement = ModelPosition | ModelElement;
-
-/**
- * The base command for elements.
+ * A command that toggles an element.
  *
- * Both {@link #refresh} and {@link #execute} accept an optional position or element. When it is
- * absent, it is taken from the current selection: the selected element if there is one,
- * otherwise the first selection position.
+ * Both {@link refresh} and {@link execute} accept an optional position or element. When it is
+ * absent, it is taken from the current selection (see {@link ElementOrPositionCommand}).
  *
  * The command toggles: it unwraps the closest matching element, or wraps the target with a new one.
  * It is enabled only when the toggle is allowed by the schema and the target is editable.
  */
-export default class ElementCommand extends Command {
+export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Whether the command is "on" (e.g. the element is active at the given position).
 	 *
 	 * @observable
 	 */
 	declare public isOn: boolean;
-
-	/**
-	 * The icon (SVG string) of the command.
-	 *
-	 * @observable
-	 */
-	declare public icon: string | undefined;
-
-	/**
-	 * The title of the command.
-	 *
-	 * @observable
-	 */
-	declare public title: string;
-
-	/**
-	 * The tooltip of the command. `true` uses the {@link #title}.
-	 *
-	 * @observable
-	 */
-	declare public tooltip: string | boolean;
 
 	/**
 	 * The name of the model element this command matches, wraps with and unwraps.
@@ -66,25 +38,16 @@ export default class ElementCommand extends Command {
 		super(editor);
 
 		this.set('isOn', false);
-		this.set('icon', undefined);
-		this.set('title', '');
-		this.set('tooltip', true);
 	}
 
 	public override refresh(positionOrElement?: PositionOrElement): void {
-		const target = this._getPositionOrElement(positionOrElement);
-		const element = target && this._findElement(target);
-
-		this.isOn = !!element;
-		this.isEnabled =
-			!!target &&
-			this.editor.model.canEditAt(target) &&
-			(element ? this._canUnwrap(element) : this._canWrap(target));
+		this.isOn = this._isOnFor(positionOrElement);
+		super.refresh(positionOrElement);
 	}
 
 	/**
-	 * Checks whether the given node is an element handled by this command: it is named {@link #elementName}
-	 * and has all {@link #elementAttributes} with the same values.
+	 * Checks whether the given node is an element handled by this command: it is named {@link elementName}
+	 * and has all {@link elementAttributes} with the same values.
 	 */
 	public isElement(node: ModelNode | ModelDocumentFragment): boolean {
 		if (!node.is('element', this.elementName)) {
@@ -95,7 +58,7 @@ export default class ElementCommand extends Command {
 	}
 
 	/**
-	 * Unwraps the closest element that satisfies {@link #isElement}. If there is none,
+	 * Unwraps the closest element that satisfies {@link isElement}. If there is none,
 	 * wraps the given element (or the position's parent) with a new element.
 	 */
 	public override execute(positionOrElement?: PositionOrElement): void {
@@ -121,23 +84,33 @@ export default class ElementCommand extends Command {
 	}
 
 	/**
-	 * Returns the given position or element, or resolves it from the current selection when absent.
-	 */
-	protected _getPositionOrElement(positionOrElement?: PositionOrElement): PositionOrElement | null {
-		if (positionOrElement) {
-			return positionOrElement;
-		}
-
-		const selection = this.editor.model.document.selection;
-
-		return selection.getSelectedElement() ?? selection.getFirstPosition();
-	}
-
-	/**
 	 * Creates the element used for wrapping.
 	 */
 	protected _createElement(writer: ModelWriter): ModelElement {
 		return writer.createElement(this.elementName, this.elementAttributes);
+	}
+
+	/**
+	 * Enabled when the target can be edited and the toggle is allowed by the schema.
+	 */
+	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {
+		const target = this._getPositionOrElement(positionOrElement);
+		const element = target && this._findElement(target);
+
+		return (
+			!!target &&
+			this.editor.model.canEditAt(target) &&
+			(element ? this._canUnwrap(element) : this._canWrap(target))
+		);
+	}
+
+	/**
+	 * "On" when the target is (in) a matching element.
+	 */
+	protected override _isOnFor(positionOrElement?: PositionOrElement): boolean {
+		const target = this._getPositionOrElement(positionOrElement);
+
+		return !!target && !!this._findElement(target);
 	}
 
 	/**
@@ -184,7 +157,7 @@ export default class ElementCommand extends Command {
 	}
 
 	/**
-	 * Returns the closest element that satisfies {@link #isElement}: the element itself or its ancestor,
+	 * Returns the closest element that satisfies {@link isElement}: the element itself or its ancestor,
 	 * or the position's parent or its ancestor. Root elements are skipped, as they cannot be unwrapped.
 	 */
 	private _findElement(positionOrElement: PositionOrElement): ModelElement | null {

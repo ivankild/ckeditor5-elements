@@ -1,18 +1,11 @@
-import type {
-	ElementCommand,
-	Elements,
-	ElementsEditing,
-	ElementsUI,
-	EndOfLine,
-	InsertElementCommand
-} from './index.js';
+import type { ElementCommand } from 'ckeditor5-elements-ui';
+import type { Elements, ElementsEditing, ElementsUI, InsertElementCommand } from './index.js';
 
 declare module 'ckeditor5' {
 	interface PluginsMap {
 		[Elements.pluginName]: Elements;
 		[ElementsEditing.pluginName]: ElementsEditing;
 		[ElementsUI.pluginName]: ElementsUI;
-		[EndOfLine.pluginName]: EndOfLine;
 	}
 
 	interface CommandsMap {

@@ -1,4 +1,5 @@
 import {
+	ButtonView,
 	ContextualBalloon,
 	Plugin,
 	clickOutsideHandler,
@@ -8,24 +9,48 @@ import {
 	type View,
 	type ViewElement
 } from 'ckeditor5';
+import { ElementOrPositionButtonView, ElementOrPositionCommand } from 'ckeditor5-elements-ui';
 import ContextMenuObserver, { type ViewDocumentContextMenuEvent } from './contextMenuObserver.js';
-import ElementClipboard from './clipboard/elementClipboard.js';
-import { createElementClipboardItems } from './clipboard/elementClipboardItems.js';
 import ElementContextMenuView from './elementContextMenuView.js';
+import MenuSeparatorView from './menuSeparatorView.js';
+import SubmenuView from './submenuView.js';
 
 /**
- * Returns the views shown in the context menu of the given element. An empty array means the native context menu.
+ * A submenu in the element context menu. Missing items are skipped, as in the menu.
  */
-export type ElementContextMenuItems = (element: ModelElement, editor: Editor) => View[];
+export interface ElementContextSubmenu {
+	title: string;
+	items: (ElementContextMenuItem | null | undefined)[];
+}
+
+/**
+ * An item of the element context menu:
+ *
+ * * a command, shown as a button with its `title` and `icon`, enabled and "on" according to its
+ *   {@link ElementOrPositionCommand#getState state} for the element,
+ * * a submenu,
+ * * `'|'`, a separator. Separators at the start or the end of a menu, and repeated ones, are not shown, so a group of
+ *   items can start with one.
+ */
+export type ElementContextMenuItem = ElementOrPositionCommand | ElementContextSubmenu | '|';
+
+/**
+ * The `elementContextMenu` editor config option: returns the items of the context menu of the given element. Missing
+ * items (e.g. commands that are not registered) are skipped. No items means the native context menu.
+ */
+export type ElementContextMenuItems = (
+	element: ModelElement,
+	editor: Editor
+) => (ElementContextMenuItem | null | undefined)[];
 
 /**
  * Shows a context menu for the model element the user right-clicked.
  *
- * By default, the menu shows the items added by other plugins with {@link #addItems} (e.g. "Insert" from quick insert),
- * followed by the clipboard actions. The `elementContextMenu` editor config option replaces them; use
- * {@link #getDefaultItems} in it to extend the defaults instead.
+ * The menu items are commands (see {@link ElementContextMenuItem}): the command knows its title, icon and whether it
+ * is enabled for the element, and executing the item executes the command for the element.
  *
- * Items that fire `execute` (e.g. buttons) close the menu.
+ * The items come from the `elementContextMenu` editor config option only. Without it, or when it returns no items
+ * for an element, the native context menu shows.
  */
 export default class ElementContextMenu extends Plugin {
 	/**
@@ -33,10 +58,8 @@ export default class ElementContextMenu extends Plugin {
 	 */
 	public view: ElementContextMenuView | null = null;
 
-	private readonly _itemProviders: ElementContextMenuItems[] = [];
-
-	public static get requires(): readonly [typeof ContextualBalloon, typeof ElementClipboard] {
-		return [ContextualBalloon, ElementClipboard] as const;
+	public static get requires(): readonly [typeof ContextualBalloon] {
+		return [ContextualBalloon] as const;
 	}
 
 	public static get pluginName(): 'ElementContextMenu' {
@@ -59,38 +82,22 @@ export default class ElementContextMenu extends Plugin {
 	}
 
 	/**
-	 * Adds items to the default menu. The callbacks are called in the order they were added, before the clipboard
-	 * actions.
-	 */
-	public addItems(callback: ElementContextMenuItems): void {
-		this._itemProviders.push(callback);
-	}
-
-	/**
-	 * Returns the default items for the element: the ones added with {@link #addItems}, then the clipboard actions.
-	 */
-	public getDefaultItems(element: ModelElement): View[] {
-		return [
-			...this._itemProviders.flatMap(callback => callback(element, this.editor)),
-			...createElementClipboardItems(element, this.editor)
-		];
-	}
-
-	/**
 	 * Opens the menu of the given element next to the target (e.g. a button, or a `DOMRect` in viewport coordinates),
-	 * with the items from the `elementContextMenu` config option, or the {@link #getDefaultItems default items}.
+	 * with the items from the `elementContextMenu` config option, or from the given callback (e.g. another config
+	 * option, such as `breadcrumbs.menu`).
 	 *
 	 * Returns `false` when there are no items, so the caller can let the native context menu show instead.
 	 */
-	public open(element: ModelElement, target: RectSource): boolean {
-		const config = this.editor.config.get('elementContextMenu');
-		const items = typeof config === 'function' ? config(element, this.editor) : this.getDefaultItems(element);
+	public open(element: ModelElement, target: RectSource, items?: ElementContextMenuItems): boolean {
+		const callback = items ?? this.editor.config.get('elementContextMenu');
+		const views =
+			typeof callback === 'function' ? this._createItemViews(callback(element, this.editor), element) : [];
 
-		if (!items.length) {
+		if (!views.length) {
 			return false;
 		}
 
-		this.show(items, target);
+		this.show(views, target);
 
 		return true;
 	}
@@ -186,7 +193,74 @@ export default class ElementContextMenu extends Plugin {
 		return null;
 	}
 
+	/**
+	 * Creates the views of menu items, without separators at the start or the end, or repeated ones.
+	 */
+	private _createItemViews(
+		items: readonly (ElementContextMenuItem | null | undefined)[],
+		element: ModelElement
+	): View[] {
+		const views: View[] = [];
+
+		for (const item of compact(items)) {
+			const view = this._createItemView(item, element);
+			const previous = views.at(-1);
+
+			if (!view || (view instanceof MenuSeparatorView && (!previous || previous instanceof MenuSeparatorView))) {
+				continue;
+			}
+
+			views.push(view);
+		}
+
+		if (views.at(-1) instanceof MenuSeparatorView) {
+			views.pop();
+		}
+
+		return views;
+	}
+
+	/**
+	 * Creates the view of a menu item: a separator; a button for a command; a submenu (with an enabled button only when
+	 * one of its items is enabled) for a submenu. Returns `null` for a submenu without items.
+	 */
+	private _createItemView(item: ElementContextMenuItem, element: ModelElement): View | null {
+		const locale = this.editor.locale;
+
+		if (item === '|') {
+			return new MenuSeparatorView(locale);
+		}
+
+		if (!(item instanceof ElementOrPositionCommand)) {
+			const views = this._createItemViews(item.items, element);
+
+			if (!views.length) {
+				return null;
+			}
+
+			const submenu = new SubmenuView(locale, item.title, views);
+
+			submenu.buttonView.isEnabled = views.some(
+				view =>
+					(view instanceof SubmenuView && view.buttonView.isEnabled) ||
+					(view instanceof ButtonView && view.isEnabled)
+			);
+
+			return submenu;
+		}
+
+		const button = new ElementOrPositionButtonView(locale, item, { withText: true, target: element });
+
+		button.role = 'menuitem';
+
+		return button;
+	}
+
 	private get _balloon(): ContextualBalloon {
 		return this.editor.plugins.get(ContextualBalloon);
 	}
+}
+
+function compact<T>(items: readonly (T | null | undefined)[]): T[] {
+	return items.filter((item): item is T => item !== null && item !== undefined);
 }

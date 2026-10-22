@@ -5,7 +5,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
-	globalIgnores(['**/dist/', '**/node_modules/']),
+	globalIgnores(['**/dist/', '**/node_modules/', 'docs/api/', 'docs/.vitepress/cache/']),
 	js.configs.recommended,
 	tseslint.configs.strictTypeChecked,
 	tseslint.configs.stylisticTypeChecked,

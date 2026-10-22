@@ -29,6 +29,9 @@
 	"sideEffects": [
 		"*.css"
 	],
+	"dependencies": {
+		"ckeditor5-elements-ui": "workspace:^"
+	},
 	"peerDependencies": {
 		"ckeditor5": ">=46.0.0"
 	},

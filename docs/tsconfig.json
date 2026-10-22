@@ -1,0 +1,7 @@
+{
+	"extends": "./tsconfig.typedoc.json",
+	"compilerOptions": {
+		"types": ["vite/client", "node"]
+	},
+	"include": ["demos", ".vitepress/*.ts", ".vitepress/theme/*.ts"]
+}

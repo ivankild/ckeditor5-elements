@@ -1,0 +1,74 @@
+.editor-demo {
+	margin: 16px 0;
+}
+
+.editor-demo .ck-content {
+	min-height: 120px;
+	line-height: 1.6;
+}
+
+.editor-demo .ck-content aside.note {
+	margin: 0.6em 0;
+	padding: 0.2em 1em;
+	border-left: 4px solid var(--vp-c-brand-1);
+	background: var(--vp-c-brand-soft);
+}
+
+.editor-demo__controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+.editor-demo__controls button {
+	padding: 4px 12px;
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 6px;
+	background: var(--vp-c-bg-soft);
+	font-size: 14px;
+}
+
+.editor-demo__controls button:hover {
+	border-color: var(--vp-c-brand-1);
+}
+
+.editor-demo__status {
+	margin-top: 8px;
+	font-size: 13px;
+	color: var(--vp-c-text-2);
+}
+
+.editor-demo__below {
+	margin-top: 8px;
+	padding: 4px 8px;
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 6px;
+}
+
+.editor-demo__error {
+	color: var(--vp-c-danger-1);
+}
+
+/* Keep the documentation typography out of the editors. */
+.editor-demo .ck-content h1,
+.editor-demo .ck-content h2,
+.editor-demo .ck-content h3 {
+	margin: 0.8em 0 0.4em;
+	padding: 0;
+	border: 0;
+	line-height: 1.3;
+	letter-spacing: normal;
+}
+
+.editor-demo .ck-content h2 {
+	font-size: 1.5em;
+}
+
+.editor-demo .ck-content h3 {
+	font-size: 1.25em;
+}
+
+.editor-demo .ck-content p {
+	margin: 0.6em 0;
+}

@@ -1,0 +1,40 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"entryPoints": [
+		"../packages/ckeditor5-elements-ui/src/index.ts",
+		"../packages/ckeditor5-elements/src/index.ts",
+		"../packages/ckeditor5-elements-breadcrumbs/src/index.ts",
+		"../packages/ckeditor5-elements-clipboard/src/index.ts",
+		"../packages/ckeditor5-elements-context-menu/src/index.ts",
+		"../packages/ckeditor5-elements-quick-insert/src/index.ts"
+	],
+	"tsconfig": "./tsconfig.typedoc.json",
+	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+	"out": "./api",
+	"docsRoot": "./",
+	"readme": "none",
+	"excludePrivate": true,
+	"excludeInternal": true,
+	"excludeExternals": true,
+	"hidePageHeader": true,
+	"useCodeBlocks": true,
+	"parametersFormat": "table",
+	"sort": ["kind", "instance-first", "alphabetical"],
+	"suppressCommentWarningsInDeclarationFiles": true,
+	"disableSources": true,
+	"externalSymbolLinkMappings": {
+		"@ckeditor/ckeditor5-core": {
+			"Command.isEnabled": "https://ckeditor.com/docs/ckeditor5/latest/api/module_core_command-Command.html#member-isEnabled",
+			"*": "https://ckeditor.com/docs/ckeditor5/latest/api/"
+		},
+		"@ckeditor/ckeditor5-engine": {
+			"*": "https://ckeditor.com/docs/ckeditor5/latest/api/"
+		},
+		"@ckeditor/ckeditor5-ui": {
+			"*": "https://ckeditor.com/docs/ckeditor5/latest/api/"
+		},
+		"@ckeditor/ckeditor5-utils": {
+			"*": "https://ckeditor.com/docs/ckeditor5/latest/api/"
+		}
+	}
+}

@@ -1,5 +1,6 @@
 import {
 	Bold,
+	ButtonView,
 	Paragraph,
 	Plugin,
 	_setModelData,
@@ -9,8 +10,10 @@ import {
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BreadcrumbItemView from '../src/breadcrumbItemView.js';
+import BreadcrumbLabelView from '../src/breadcrumbLabelView.js';
 import Breadcrumbs from '../src/breadcrumbs.js';
 import BreadcrumbsView from '../src/breadcrumbsView.js';
+import { ElementClipboard, type ElementCopyCommand } from 'ckeditor5-elements-clipboard';
 import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 
@@ -20,8 +23,11 @@ describe('Breadcrumbs', () => {
 
 	const labels = (): string[] => plugin.items.map(item => item.label);
 
-	async function setUp(plugins: EditorConfig['plugins'] = [Paragraph, Bold, Container, Breadcrumbs]): Promise<void> {
-		editor = await createEditor({ plugins });
+	async function setUp(
+		plugins: EditorConfig['plugins'] = [Paragraph, Bold, Container, Breadcrumbs],
+		config: EditorConfig = {}
+	): Promise<void> {
+		editor = await createEditor({ plugins, ...config });
 		plugin = editor.plugins.get('Breadcrumbs');
 	}
 
@@ -84,7 +90,7 @@ describe('Breadcrumbs', () => {
 		});
 	});
 
-	describe('views', () => {
+	describe('views without the menu config', () => {
 		let view: BreadcrumbsView;
 
 		beforeEach(async () => {
@@ -106,35 +112,31 @@ describe('Breadcrumbs', () => {
 			expect(view.element?.getAttribute('aria-label')).toBe('Element path');
 		});
 
-		it('show a button per item and follow the changes', () => {
+		it('show a label per item, which cannot be clicked, and follow the changes', () => {
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 
-			const buttons = Array.from(view.items);
+			const items = Array.from(view.items);
 
-			expect(buttons.map(button => button.label)).toEqual(['section.container', 'p']);
-			expect(buttons[0]).toBeInstanceOf(BreadcrumbItemView);
-			expect(buttons[0]?.withText).toBe(true);
-			expect(buttons[0]?.element?.classList.contains('ck-elements-breadcrumbs__item')).toBe(true);
+			expect(view.isClickable).toBe(false);
+			expect(items.map(item => item.label)).toEqual(['section.container', 'p']);
+			expect(items.every(item => item instanceof BreadcrumbLabelView)).toBe(true);
+			expect(items[0]?.element?.tagName).toBe('SPAN');
+			expect(items[0]?.element?.classList.contains('ck-elements-breadcrumbs__item')).toBe(true);
+			expect(view.element?.querySelector('button')).toBeNull();
 
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 
-			expect(Array.from(view.items, button => button.label)).toEqual(['p']);
+			expect(Array.from(view.items, item => item.label)).toEqual(['p']);
 		});
 
-		it('focus() focuses the innermost item', () => {
+		it('focus() does nothing', () => {
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
+
+			const active = document.activeElement;
 
 			view.focus();
 
-			expect(document.activeElement).toBe(view.items.last?.element);
-		});
-
-		it('do nothing when clicked without the context menu plugin', () => {
-			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
-
-			expect(() => {
-				view.items.first?.element?.click();
-			}).not.toThrow();
+			expect(document.activeElement).toBe(active);
 		});
 
 		it('createView() uses the editor locale by default', () => {
@@ -143,58 +145,25 @@ describe('Breadcrumbs', () => {
 			expect(another.locale).toBe(editor.locale);
 			another.destroy();
 		});
-	});
 
-	describe('with another plugin named ElementContextMenu', () => {
-		it('opens it when it has an `open()` method, and ignores it otherwise', async () => {
-			const open = vi.fn(() => true);
-
-			class MenuLike extends Plugin {
-				public static get pluginName(): 'ElementContextMenu' {
-					return 'ElementContextMenu' as const;
-				}
-
-				public open = open;
-			}
-
-			class NotAMenu extends Plugin {
-				public static get pluginName(): 'ElementContextMenu' {
-					return 'ElementContextMenu' as const;
-				}
-			}
-
-			for (const [MenuPlugin, calls] of [
-				[MenuLike, 1],
-				[NotAMenu, 0]
-			] as const) {
-				await setUp([Paragraph, Breadcrumbs, MenuPlugin]);
-				open.mockClear();
-				_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
-
-				const view = plugin.createView();
-
-				view.render();
-				view.items.first!.element!.click();
-
-				expect(open).toHaveBeenCalledTimes(calls);
-
-				view.destroy();
-
-				if (MenuPlugin === MenuLike) {
-					await editor.destroy();
-				}
-			}
+		it('do not load the context menu plugin', () => {
+			expect(editor.plugins.has('ElementContextMenu')).toBe(false);
 		});
 	});
 
-	describe('with the context menu', () => {
+	describe('views with the menu config', () => {
 		let view: BreadcrumbsView;
 		let contextMenu: ElementContextMenu;
+		let copy: ElementCopyCommand;
 
 		beforeEach(async () => {
-			await setUp([Paragraph, Container, Breadcrumbs, ElementContextMenu]);
+			await setUp([Paragraph, Container, Breadcrumbs, ElementContextMenu, ElementClipboard], {
+				breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] },
+				elementContextMenu: (element, editor) => [editor.commands.get('cutElement')]
+			});
 
 			contextMenu = editor.plugins.get('ElementContextMenu');
+			copy = editor.commands.get('copyElement')!;
 			view = plugin.createView();
 			view.render();
 			document.body.append(view.element!);
@@ -205,7 +174,25 @@ describe('Breadcrumbs', () => {
 			view.destroy();
 		});
 
-		it('opens the menu of the clicked element below its button', () => {
+		it('show a button per item', () => {
+			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
+
+			const items = Array.from(view.items);
+
+			expect(view.isClickable).toBe(true);
+			expect(items.every(item => item instanceof BreadcrumbItemView && item.withText)).toBe(true);
+			expect(items.map(item => item.label)).toEqual(['section.container', 'p']);
+		});
+
+		it('focus() focuses the innermost item', () => {
+			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
+
+			view.focus();
+
+			expect(document.activeElement).toBe(view.items.last?.element);
+		});
+
+		it('open the configured menu (not the context menu) of the clicked element below its button', () => {
 			const openSpy = vi.spyOn(contextMenu, 'open');
 
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
@@ -215,11 +202,14 @@ describe('Breadcrumbs', () => {
 
 			const container = editor.model.document.getRoot()!.getChild(0) as ModelElement;
 
-			expect(openSpy).toHaveBeenCalledWith(container, button.element);
-			expect(contextMenu.view).not.toBeNull();
+			expect(openSpy).toHaveBeenCalledWith(container, button.element, expect.any(Function));
+
+			const [item] = Array.from(contextMenu.view!.items);
+
+			expect(item instanceof ButtonView && item.label).toBe(copy.title);
 		});
 
-		it('does nothing for an item whose element is gone', () => {
+		it('do nothing for an item whose element is gone', () => {
 			const openSpy = vi.spyOn(contextMenu, 'open');
 
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
@@ -232,6 +222,57 @@ describe('Breadcrumbs', () => {
 			button.element!.click();
 
 			expect(openSpy).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('menu plugin lookup', () => {
+		const menu = vi.fn(() => []);
+
+		it('labels are shown when the menu is configured but no menu plugin is loaded', async () => {
+			await setUp([Paragraph, Breadcrumbs], { breadcrumbs: { menu } });
+
+			expect(plugin.createView().isClickable).toBe(false);
+		});
+
+		it('uses any plugin named ElementContextMenu that has `open()`, passing the configured items', async () => {
+			const open = vi.fn(() => true);
+
+			class MenuLike extends Plugin {
+				public static get pluginName(): 'ElementContextMenu' {
+					return 'ElementContextMenu' as const;
+				}
+
+				public open = open;
+			}
+
+			await setUp([Paragraph, Breadcrumbs, MenuLike], { breadcrumbs: { menu } });
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+
+			const view = plugin.createView();
+
+			view.render();
+			expect(view.isClickable).toBe(true);
+
+			view.items.first!.element!.click();
+
+			expect(open).toHaveBeenCalledWith(
+				editor.model.document.getRoot()!.getChild(0),
+				view.items.first!.element,
+				menu
+			);
+			view.destroy();
+		});
+
+		it('ignores a plugin named ElementContextMenu without `open()`', async () => {
+			class NotAMenu extends Plugin {
+				public static get pluginName(): 'ElementContextMenu' {
+					return 'ElementContextMenu' as const;
+				}
+			}
+
+			await setUp([Paragraph, Breadcrumbs, NotAMenu], { breadcrumbs: { menu } });
+
+			expect(plugin.createView().isClickable).toBe(false);
 		});
 	});
 });

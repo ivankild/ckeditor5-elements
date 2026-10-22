@@ -1,12 +1,18 @@
+/**
+ * Quick insert: search and insert the elements allowed at a position.
+ *
+ * @module ckeditor5-elements-quick-insert
+ */
+
 // Plugins.
 export { default as QuickInsert, type QuickInsertConfig } from './quickInsert.js';
 
 // Commands.
 export { default as QuickInsertCommand } from './quickInsertCommand.js';
+export { default as QuickInsertPositionCommand, type QuickInsertPlacement } from './quickInsertPositionCommand.js';
 
-// Views and items.
+// Views.
 export { default as QuickInsertView } from './quickInsertView.js';
 export { default as QuickInsertListView, type QuickInsertItem } from './quickInsertListView.js';
-export { createElementInsertItems } from './elementInsertItems.js';
 
 import './augmentation.js';

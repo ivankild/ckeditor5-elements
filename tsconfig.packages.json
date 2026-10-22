@@ -2,16 +2,22 @@
 	"files": [],
 	"references": [
 		{
+			"path": "packages/ckeditor5-elements-ui"
+		},
+		{
 			"path": "packages/ckeditor5-elements"
+		},
+		{
+			"path": "packages/ckeditor5-elements-breadcrumbs"
+		},
+		{
+			"path": "packages/ckeditor5-elements-clipboard"
 		},
 		{
 			"path": "packages/ckeditor5-elements-context-menu"
 		},
 		{
 			"path": "packages/ckeditor5-elements-quick-insert"
-		},
-		{
-			"path": "packages/ckeditor5-elements-breadcrumbs"
 		}
 	]
 }

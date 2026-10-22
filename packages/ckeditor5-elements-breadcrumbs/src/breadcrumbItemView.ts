@@ -1,7 +1,7 @@
 import { ButtonView, type Locale, type ViewElement } from 'ckeditor5';
 
 /**
- * A single breadcrumb: a button labelled with one view element, e.g. `section.title`.
+ * A single breadcrumb that can be clicked: a button labelled with one view element, e.g. `section.title`.
  */
 export default class BreadcrumbItemView extends ButtonView {
 	/**

@@ -9,7 +9,10 @@ const resolvePackage = (name: string): string =>
 export default defineConfig({
 	resolve: {
 		alias: [
+			{ find: /^ckeditor5-elements-ui$/, replacement: resolvePackage('ckeditor5-elements-ui') },
 			{ find: /^ckeditor5-elements$/, replacement: resolvePackage('ckeditor5-elements') },
+			{ find: /^ckeditor5-elements-breadcrumbs$/, replacement: resolvePackage('ckeditor5-elements-breadcrumbs') },
+			{ find: /^ckeditor5-elements-clipboard$/, replacement: resolvePackage('ckeditor5-elements-clipboard') },
 			{
 				find: /^ckeditor5-elements-context-menu$/,
 				replacement: resolvePackage('ckeditor5-elements-context-menu')
@@ -17,8 +20,7 @@ export default defineConfig({
 			{
 				find: /^ckeditor5-elements-quick-insert$/,
 				replacement: resolvePackage('ckeditor5-elements-quick-insert')
-			},
-			{ find: /^ckeditor5-elements-breadcrumbs$/, replacement: resolvePackage('ckeditor5-elements-breadcrumbs') }
+			}
 		]
 	}
 });

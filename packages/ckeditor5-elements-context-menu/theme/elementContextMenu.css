@@ -41,3 +41,9 @@
 .ck.ck-elements-submenu > .ck.ck-elements-context-menu.ck-elements-submenu__panel.ck-hidden {
 	display: none;
 }
+
+.ck.ck-elements-context-menu__separator {
+	height: 1px;
+	margin: var(--ck-spacing-small) 0;
+	background: var(--ck-color-base-border);
+}

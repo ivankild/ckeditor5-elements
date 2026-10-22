@@ -1,4 +1,4 @@
-import { Paragraph, _setModelData, type ClassicEditor } from 'ckeditor5';
+import { Paragraph, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ElementButtonView from '../src/elementButtonView.js';
 import ElementCommand from '../src/elementCommand.js';
@@ -42,6 +42,18 @@ describe('ElementButtonView', () => {
 		editor.enableReadOnlyMode('test');
 
 		expect(view.isEnabled).toBe(false);
+	});
+
+	it('shows the "on" state for its target', () => {
+		_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container><paragraph>bar</paragraph>');
+
+		const paragraph = editor.model.document.getRoot()!.getChild(1) as ModelElement;
+		const targeted = new ElementButtonView(editor.locale, command, { target: paragraph });
+
+		expect(command.isOn).toBe(true);
+		expect(targeted.isOn).toBe(false);
+
+		targeted.destroy();
 	});
 
 	it('executes the command and focuses the editor when clicked', () => {

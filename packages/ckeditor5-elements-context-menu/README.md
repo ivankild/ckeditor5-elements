@@ -1,30 +1,42 @@
 # ckeditor5-elements-context-menu
 
-A context menu for CKEditor 5 elements. Right-clicking an element opens a menu with the clipboard actions for it:
-copy, cut, paste (replace), paste before and paste after.
+A context menu for CKEditor 5 elements. Right-clicking an element opens a menu of commands for that element.
+
+Menu items are commands (`ElementOrPositionCommand` from `ckeditor5-elements`), submenus and `'|'` separators. The
+command holds the knowledge about the item: its `title` and `icon` are the label and icon, its `getState(element)`
+decides whether the item is enabled and "on" for the right-clicked element, and choosing the item runs
+`executeFor(element)`.
+
+The menu is configured only by the `elementContextMenu` editor config option. Without it, the native context menu
+shows.
 
 ```ts
 import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
 import 'ckeditor5-elements-context-menu/index.css';
 
 ClassicEditor.create({
-	plugins: [, /* … */ ElementContextMenu],
-	// Optional: replaces the default items. Extend them with `getDefaultItems()`.
+	plugins: [Essentials, Paragraph, ElementContextMenu, QuickInsert, ElementClipboard],
 	elementContextMenu: (element, editor) => [
-		...editor.plugins.get(ElementContextMenu).getDefaultItems(element),
-		myView
+		editor.commands.get('title'),
+		'|',
+		{
+			title: 'Insert',
+			items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
+		},
+		'|',
+		editor.commands.get('copyElement'),
+		editor.commands.get('cutElement'),
+		editor.commands.get('pasteElement')
 	]
 });
 ```
 
-Other plugins add items to the default menu with `addItems()`, e.g. quick insert adds "Insert ›":
+The callback gets the right-clicked model element and the editor, so the items can depend on the element.
 
-```ts
-editor.plugins.get(ElementContextMenu).addItems((element, editor) => [mySubmenu]);
-```
+- Missing items (e.g. commands of plugins that are not loaded) are skipped, and so are submenus without items.
+- Separators at the start or the end of a menu, and repeated ones, are not shown.
+- A submenu is enabled when one of its items is.
+- When the callback returns no items for an element, the native context menu shows.
 
-Also exported: `ElementClipboard` (the `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore` and
-`pasteElementAfter` commands), `SubmenuView` (a menu item with a nested menu), `ElementContextMenuView` and
-`createElementClipboardItems()`.
-
-The clipboard actions use the asynchronous Clipboard API, so they work only in secure contexts (HTTPS or `localhost`).
+Also exported: `SubmenuView`, `MenuSeparatorView`, `ElementContextMenuView`, and `show(views, target)` for menus of
+custom views.

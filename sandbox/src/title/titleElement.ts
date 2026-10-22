@@ -1,5 +1,5 @@
 import { Plugin } from 'ckeditor5';
-import { ElementButtonView } from 'ckeditor5-elements';
+import { ElementButtonView } from 'ckeditor5-elements-ui';
 import TitleCommand from './titleCommand.js';
 
 /**

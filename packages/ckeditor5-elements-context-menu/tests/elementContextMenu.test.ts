@@ -3,28 +3,43 @@ import {
 	ButtonView,
 	ContextualBalloon,
 	Paragraph,
+	_getModelData,
 	_setModelData,
 	type ClassicEditor,
-	type ModelElement
+	type ModelElement,
+	type View
 } from 'ckeditor5';
+import { ElementCommand } from 'ckeditor5-elements-ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementContextMenu, { type ElementContextMenuItems } from '../src/elementContextMenu.js';
 import ElementContextMenuView from '../src/elementContextMenuView.js';
-import { Container, createEditor, createPlainView } from '../../../testUtils/editor.js';
+import MenuSeparatorView from '../src/menuSeparatorView.js';
+import SubmenuView from '../src/submenuView.js';
 
 describe('ElementContextMenu', () => {
 	let editor: ClassicEditor;
 	let plugin: ElementContextMenu;
 	let balloon: ContextualBalloon;
+	let containerCommand: ElementCommand;
 
-	async function setUp(elementContextMenu?: ElementContextMenuItems): Promise<void> {
+	/**
+	 * Creates the editor with a `container` toggle command (titled "Container"). The menu config defaults to just that
+	 * command. The selection is in the paragraph inside the container; the second paragraph has bold text.
+	 */
+	async function setUp(elementContextMenu: ElementContextMenuItems = () => [containerCommand]): Promise<void> {
 		editor = await createEditor({
 			plugins: [Paragraph, Bold, Container, ElementContextMenu],
-			...(elementContextMenu ? { elementContextMenu } : {})
+			elementContextMenu
 		});
 
 		plugin = editor.plugins.get('ElementContextMenu');
 		balloon = editor.plugins.get(ContextualBalloon);
+
+		containerCommand = new ElementCommand(editor);
+		containerCommand.elementName = 'container';
+		containerCommand.set({ title: 'Container', icon: '<svg></svg>' });
+		editor.commands.add('container', containerCommand);
 
 		_setModelData(
 			editor.model,
@@ -45,20 +60,23 @@ describe('ElementContextMenu', () => {
 
 	const editable = (): HTMLElement => editor.ui.getEditableElement()!;
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
+	const menuItems = (): View[] => Array.from(plugin.view?.items ?? []);
+	const buttons = (): ButtonView[] => menuItems().filter(item => item instanceof ButtonView);
+	const labels = (): string[] => buttons().map(button => button.label ?? '');
 
 	afterEach(async () => {
 		await editor.destroy();
 	});
 
-	it('has a plugin name and requires the clipboard commands', async () => {
+	it('has a plugin name and does not load the clipboard commands', async () => {
 		await setUp();
 
 		expect(ElementContextMenu.pluginName).toBe('ElementContextMenu');
-		expect(editor.plugins.has('ElementClipboard')).toBe(true);
+		expect(editor.plugins.has('ElementClipboard')).toBe(false);
 	});
 
 	describe('right-click in the editable', () => {
-		it('opens the menu with the clipboard items by default', async () => {
+		it('opens the menu with the configured items', async () => {
 			await setUp();
 
 			const prevented = rightClick(editable().querySelector('section p')!);
@@ -66,17 +84,20 @@ describe('ElementContextMenu', () => {
 			expect(prevented).toBe(true);
 			expect(plugin.view).toBeInstanceOf(ElementContextMenuView);
 			expect(balloon.visibleView).toBe(plugin.view);
-			expect(Array.from(plugin.view!.items, item => (item as ButtonView).label)).toEqual([
-				'Copy',
-				'Cut',
-				'Paste',
-				'Paste before',
-				'Paste after'
-			]);
+			expect(labels()).toEqual(['Container']);
+			expect(buttons().every(button => button.withText && button.role === 'menuitem')).toBe(true);
+		});
+
+		it('keeps the native menu without the config option', async () => {
+			editor = await createEditor({ plugins: [Paragraph, ElementContextMenu] });
+			plugin = editor.plugins.get('ElementContextMenu');
+
+			expect(rightClick(editable().querySelector('p')!)).toBe(false);
+			expect(plugin.open(child(0), new DOMRect())).toBe(false);
 		});
 
 		it('passes the closest model element and the editor to the config callback', async () => {
-			const items = vi.fn<ElementContextMenuItems>(() => [createPlainView()]);
+			const items = vi.fn<ElementContextMenuItems>(() => [containerCommand]);
 
 			await setUp(items);
 			rightClick(editable().querySelector('section p')!);
@@ -85,7 +106,7 @@ describe('ElementContextMenu', () => {
 		});
 
 		it('skips text attribute elements', async () => {
-			const items = vi.fn<ElementContextMenuItems>(() => [createPlainView()]);
+			const items = vi.fn<ElementContextMenuItems>(() => [containerCommand]);
 
 			await setUp(items);
 			rightClick(editable().querySelector('strong')!);
@@ -94,7 +115,7 @@ describe('ElementContextMenu', () => {
 		});
 
 		it('keeps the native menu when there are no items', async () => {
-			await setUp(() => []);
+			await setUp(() => [undefined, null]);
 
 			expect(rightClick(editable().querySelector('section p')!)).toBe(false);
 			expect(plugin.view).toBeNull();
@@ -108,57 +129,175 @@ describe('ElementContextMenu', () => {
 		});
 	});
 
-	describe('default items', () => {
-		it('are the clipboard actions', async () => {
-			await setUp();
+	describe('command items', () => {
+		it('show the title and icon of the command, and its state for the element', async () => {
+			await setUp(() => [containerCommand]);
 
-			expect(
-				plugin.getDefaultItems(child(0)).map(item => (item instanceof ButtonView ? item.label : null))
-			).toEqual(['Copy', 'Cut', 'Paste', 'Paste before', 'Paste after']);
+			// The selection is in the container, but the menu is for the second paragraph.
+			expect(containerCommand.isOn).toBe(true);
+			plugin.open(child(1), new DOMRect());
+
+			const [button] = buttons();
+
+			expect(button.label).toBe('Container');
+			expect(button.icon).toBe('<svg></svg>');
+			expect(button.isOn).toBe(false);
+			expect(button.isEnabled).toBe(true);
+			expect(containerCommand.isOn).toBe(true);
 		});
 
-		it('start with the items added by other plugins, in the order they were added', async () => {
-			await setUp();
+		it('show the disabled state of the command for the element', async () => {
+			await setUp(() => [containerCommand]);
+			editor.enableReadOnlyMode('test');
 
-			const first = createPlainView();
-			const second = createPlainView();
-			const firstCallback = vi.fn<ElementContextMenuItems>(() => [first]);
+			plugin.open(child(1), new DOMRect());
 
-			plugin.addItems(firstCallback);
-			plugin.addItems(() => [second]);
-
-			const items = plugin.getDefaultItems(child(0));
-
-			expect(items.slice(0, 2)).toEqual([first, second]);
-			expect(items).toHaveLength(7);
-			expect(firstCallback).toHaveBeenCalledWith(child(0), editor);
+			expect(buttons()[0]?.isEnabled).toBe(false);
 		});
 
-		it('are shown when the config option is not set', async () => {
-			await setUp();
+		it('execute the command for the element, close the menu and focus the editor', async () => {
+			await setUp(() => [containerCommand]);
+			const focusSpy = vi.spyOn(editor.editing.view, 'focus');
 
-			const view = createPlainView();
+			plugin.open(child(1), new DOMRect());
+			buttons()[0].fire('execute');
 
-			plugin.addItems(() => [view]);
-			plugin.open(child(0), new DOMRect());
-
-			expect(plugin.view?.items.first).toBe(view);
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<container><paragraph>foo</paragraph></container><container><paragraph><$text bold="true">bar</$text></paragraph></container>'
+			);
+			expect(plugin.view).toBeNull();
+			expect(focusSpy).toHaveBeenCalled();
+			expect(containerCommand.isOn).toBe(true);
 		});
 
-		it('are replaced by the config option', async () => {
-			const configured = createPlainView();
+		it('skip missing items', async () => {
+			await setUp(() => [undefined, null, containerCommand]);
 
-			await setUp(() => [configured]);
-			plugin.addItems(() => [createPlainView()]);
-			plugin.open(child(0), new DOMRect());
+			plugin.open(child(1), new DOMRect());
 
-			expect(Array.from(plugin.view!.items)).toEqual([configured]);
+			expect(labels()).toEqual(['Container']);
+		});
+	});
+
+	describe('submenus', () => {
+		it('are shown as submenus with the views of their items', async () => {
+			await setUp(() => [
+				{ title: 'More', items: [containerCommand, { title: 'Even more', items: [containerCommand] }] }
+			]);
+
+			plugin.open(child(1), new DOMRect());
+
+			const [submenu] = menuItems();
+
+			expect(submenu).toBeInstanceOf(SubmenuView);
+
+			if (!(submenu instanceof SubmenuView)) {
+				return;
+			}
+
+			const [button, nested] = Array.from(submenu.panelView.items);
+
+			expect(submenu.buttonView.label).toBe('More');
+			expect(submenu.buttonView.isEnabled).toBe(true);
+			expect(button instanceof ButtonView && button.label).toBe('Container');
+			expect(nested).toBeInstanceOf(SubmenuView);
+		});
+
+		it('are disabled when none of their items is enabled', async () => {
+			await setUp(() => [{ title: 'More', items: [{ title: 'Even more', items: [containerCommand] }] }]);
+			editor.enableReadOnlyMode('test');
+
+			plugin.open(child(1), new DOMRect());
+
+			const [submenu] = menuItems();
+
+			expect(submenu instanceof SubmenuView && submenu.buttonView.isEnabled).toBe(false);
+		});
+
+		it('are skipped when they have no items', async () => {
+			await setUp(() => [{ title: 'Empty', items: [] }, containerCommand]);
+
+			plugin.open(child(1), new DOMRect());
+
+			expect(menuItems()).toHaveLength(1);
+			expect(menuItems()[0]).toBeInstanceOf(ButtonView);
+		});
+
+		it('close the whole menu when a nested item is executed', async () => {
+			await setUp(() => [{ title: 'More', items: [containerCommand] }]);
+
+			plugin.open(child(1), new DOMRect());
+
+			const [submenu] = menuItems();
+
+			if (submenu instanceof SubmenuView) {
+				submenu.panelView.items.first?.fire('execute');
+			}
+
+			expect(plugin.view).toBeNull();
+		});
+	});
+
+	describe('separators', () => {
+		const isSeparator = (view: View | undefined): boolean => view instanceof MenuSeparatorView;
+
+		it('are shown between items', async () => {
+			await setUp(() => [containerCommand, '|', { title: 'More', items: [containerCommand] }]);
+
+			plugin.open(child(1), new DOMRect());
+
+			expect(menuItems().map(isSeparator)).toEqual([false, true, false]);
+			expect(menuItems()[1]?.element?.getAttribute('role')).toBe('separator');
+		});
+
+		it('are not shown at the start or the end, or repeated', async () => {
+			await setUp(() => ['|', '|', containerCommand, '|', null, '|', containerCommand, '|']);
+
+			plugin.open(child(1), new DOMRect());
+
+			expect(menuItems().map(isSeparator)).toEqual([false, true, false]);
+		});
+
+		it('are not shown next to skipped items', async () => {
+			await setUp(() => [containerCommand, '|', { title: 'Empty', items: ['|'] }, '|']);
+
+			plugin.open(child(1), new DOMRect());
+
+			expect(menuItems().map(isSeparator)).toEqual([false]);
+		});
+
+		it('work in submenus', async () => {
+			await setUp(() => [{ title: 'More', items: ['|', containerCommand, '|', containerCommand] }]);
+
+			plugin.open(child(1), new DOMRect());
+
+			const [submenu] = menuItems();
+			const nested = submenu instanceof SubmenuView ? Array.from(submenu.panelView.items) : [];
+
+			expect(nested.map(isSeparator)).toEqual([false, true, false]);
+		});
+
+		it('do not keep the native menu from showing', async () => {
+			await setUp(() => ['|']);
+
+			expect(plugin.open(child(1), new DOMRect())).toBe(false);
 		});
 	});
 
 	describe('open()', () => {
+		it('uses the given items callback instead of the config option', async () => {
+			await setUp();
+
+			const items = vi.fn<ElementContextMenuItems>(() => [{ title: 'More', items: [containerCommand] }]);
+
+			plugin.open(child(1), new DOMRect(), items);
+
+			expect(items).toHaveBeenCalledWith(child(1), editor);
+			expect(menuItems()[0]).toBeInstanceOf(SubmenuView);
+		});
+
 		it('returns whether the menu was opened', async () => {
-			await setUp(element => (element.is('element', 'container') ? [createPlainView()] : []));
+			await setUp(element => (element.is('element', 'container') ? [containerCommand] : []));
 
 			expect(plugin.open(child(1), new DOMRect())).toBe(false);
 			expect(plugin.open(child(0), new DOMRect())).toBe(true);
@@ -186,12 +325,12 @@ describe('ElementContextMenu', () => {
 			expect(balloon.hasView(first!)).toBe(false);
 		});
 
-		it('closes when an item is executed', async () => {
+		it('closes when a shown view is executed', async () => {
+			await setUp();
+
 			const button = new ButtonView();
 
-			await setUp(() => [button]);
-			plugin.open(child(0), new DOMRect());
-
+			plugin.show([button], new DOMRect());
 			button.fire('execute');
 
 			expect(plugin.view).toBeNull();

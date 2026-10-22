@@ -3,3 +3,11 @@ dist/
 *.tsbuildinfo
 coverage/
 .vitest/
+docs/api/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+.DS_Store
+*.log
+*.tgz
+.env
+.env.*

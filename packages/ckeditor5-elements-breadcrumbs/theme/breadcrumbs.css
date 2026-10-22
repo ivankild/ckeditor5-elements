@@ -15,18 +15,28 @@
 	align-items: center;
 }
 
-.ck.ck-button.ck-elements-breadcrumbs__item .ck-button__label {
+.ck.ck-button.ck-elements-breadcrumbs__item .ck-button__label,
+.ck.ck-elements-breadcrumbs__label {
 	font-family: monospace;
 }
 
-/* The separator sits in the gap before the button, so it is not part of the button's hover area. */
-.ck.ck-button.ck-elements-breadcrumbs__item + .ck.ck-button.ck-elements-breadcrumbs__item {
+/* A label has the same box as a button with text, so both line up. */
+.ck.ck-elements-breadcrumbs__label {
+	display: inline-flex;
+	align-items: center;
+	min-height: var(--ck-ui-component-min-height);
+	padding: 0 var(--ck-spacing-small);
+	cursor: default;
+}
+
+/* The separator sits in the gap before the item, so it is not part of a button's hover area. */
+.ck.ck-elements-breadcrumbs__item + .ck.ck-elements-breadcrumbs__item {
 	position: relative;
 	margin-left: 1.2em;
 	overflow: visible;
 }
 
-.ck.ck-button.ck-elements-breadcrumbs__item + .ck.ck-button.ck-elements-breadcrumbs__item::before {
+.ck.ck-elements-breadcrumbs__item + .ck.ck-elements-breadcrumbs__item::before {
 	content: '›';
 	position: absolute;
 	left: -0.9em;

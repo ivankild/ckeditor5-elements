@@ -9,10 +9,12 @@
 		"noEmit": true,
 		"types": ["vite/client", "node"],
 		"paths": {
+			"ckeditor5-elements-ui": ["../packages/ckeditor5-elements-ui/src/index.ts"],
 			"ckeditor5-elements": ["../packages/ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-breadcrumbs": ["../packages/ckeditor5-elements-breadcrumbs/src/index.ts"],
+			"ckeditor5-elements-clipboard": ["../packages/ckeditor5-elements-clipboard/src/index.ts"],
 			"ckeditor5-elements-context-menu": ["../packages/ckeditor5-elements-context-menu/src/index.ts"],
-			"ckeditor5-elements-quick-insert": ["../packages/ckeditor5-elements-quick-insert/src/index.ts"],
-			"ckeditor5-elements-breadcrumbs": ["../packages/ckeditor5-elements-breadcrumbs/src/index.ts"]
+			"ckeditor5-elements-quick-insert": ["../packages/ckeditor5-elements-quick-insert/src/index.ts"]
 		}
 	},
 	"include": ["src", "vite.config.ts"]

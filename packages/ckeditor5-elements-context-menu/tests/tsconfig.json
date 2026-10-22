@@ -9,10 +9,12 @@
 		"noEmit": true,
 		"types": ["vitest/browser"],
 		"paths": {
+			"ckeditor5-elements-ui": ["../../ckeditor5-elements-ui/src/index.ts"],
 			"ckeditor5-elements": ["../../ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-breadcrumbs": ["../../ckeditor5-elements-breadcrumbs/src/index.ts"],
+			"ckeditor5-elements-clipboard": ["../../ckeditor5-elements-clipboard/src/index.ts"],
 			"ckeditor5-elements-context-menu": ["../../ckeditor5-elements-context-menu/src/index.ts"],
-			"ckeditor5-elements-quick-insert": ["../../ckeditor5-elements-quick-insert/src/index.ts"],
-			"ckeditor5-elements-breadcrumbs": ["../../ckeditor5-elements-breadcrumbs/src/index.ts"]
+			"ckeditor5-elements-quick-insert": ["../../ckeditor5-elements-quick-insert/src/index.ts"]
 		}
 	},
 	"include": [".", "../src"]

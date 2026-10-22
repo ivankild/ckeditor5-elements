@@ -79,6 +79,9 @@ export default class SubmenuView extends View {
 		});
 	}
 
+	/**
+	 * Renders the submenu and sets up the keystrokes that open (right arrow) and close (left arrow) it.
+	 */
 	public override render(): void {
 		super.render();
 
@@ -124,6 +127,9 @@ export default class SubmenuView extends View {
 		this.buttonView.focus();
 	}
 
+	/**
+	 * Destroys the submenu and its keystroke handler.
+	 */
 	public override destroy(): void {
 		super.destroy();
 		this.keystrokes.destroy();

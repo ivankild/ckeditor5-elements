@@ -1,5 +1,5 @@
 import { type Editor } from 'ckeditor5';
-import { ElementCommand } from 'ckeditor5-elements';
+import { ElementCommand } from 'ckeditor5-elements-ui';
 
 const icon =
 	'<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">' +

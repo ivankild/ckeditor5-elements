@@ -1,13 +1,15 @@
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import { Bold, ClassicEditor, Essentials, Heading, Italic, Paragraph } from 'ckeditor5';
-import { Elements, EndOfLine } from 'ckeditor5-elements';
+import { Elements } from 'ckeditor5-elements';
+import { EndOfLine } from 'ckeditor5-elements-ui';
 import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import { ElementClipboard } from 'ckeditor5-elements-clipboard';
+import { ElementContextMenu, type ElementContextMenuItems } from 'ckeditor5-elements-context-menu';
 import { QuickInsert } from 'ckeditor5-elements-quick-insert';
 import TitleElement from './title/titleElement.js';
 
 import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-elements/index.css';
+import 'ckeditor5-elements-ui/index.css';
 import 'ckeditor5-elements-breadcrumbs/index.css';
 import 'ckeditor5-elements-context-menu/index.css';
 import 'ckeditor5-elements-quick-insert/index.css';
@@ -18,6 +20,24 @@ declare global {
 		editor?: ClassicEditor;
 	}
 }
+
+/**
+ * The menu of an element: commands, submenus and separators.
+ */
+const menu: ElementContextMenuItems = (element, editor) => [
+	editor.commands.get('title'),
+	'|',
+	{
+		title: 'Insert',
+		items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
+	},
+	'|',
+	editor.commands.get('copyElement'),
+	editor.commands.get('cutElement'),
+	editor.commands.get('pasteElement'),
+	editor.commands.get('pasteElementBefore'),
+	editor.commands.get('pasteElementAfter')
+];
 
 const element = document.querySelector<HTMLElement>('#editor');
 
@@ -39,7 +59,8 @@ const editor = await ClassicEditor.create({
 		Breadcrumbs,
 		EndOfLine,
 		ElementContextMenu,
-		QuickInsert
+		QuickInsert,
+		ElementClipboard
 	],
 	toolbar: {
 		items: [
@@ -58,8 +79,9 @@ const editor = await ClassicEditor.create({
 		],
 		shouldNotGroupWhenFull: true
 	},
-	// The default items, i.e. "Insert ›" (from quick insert) and the clipboard actions. Add or replace views here.
-	elementContextMenu: (element, editor) => editor.plugins.get(ElementContextMenu).getDefaultItems(element),
+	// Right-clicking an element, and clicking a breadcrumb, open the same menu.
+	elementContextMenu: menu,
+	breadcrumbs: { menu },
 	// Alt+Enter (Option+Enter on macOS) opens the quick insert menu.
 	quickInsert: {
 		labels: {
