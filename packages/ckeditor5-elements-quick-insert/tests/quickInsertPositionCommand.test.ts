@@ -11,6 +11,7 @@ import { type ElementContextMenu, SubmenuView } from 'ckeditor5-elements-context
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import QuickInsert from '../src/quickInsert.js';
+import { insertAfterIcon, insertBeforeIcon, insertIcon } from '../src/icons.js';
 import QuickInsertPositionCommand from '../src/quickInsertPositionCommand.js';
 import QuickInsertView from '../src/quickInsertView.js';
 
@@ -50,6 +51,9 @@ describe('QuickInsertPositionCommand', () => {
 		expect(before?.title).toBe('Insert before');
 		expect(after?.placement).toBe('after');
 		expect(after?.title).toBe('Insert after');
+		expect(before?.icon).toBe(insertBeforeIcon);
+		expect(after?.icon).toBe(insertAfterIcon);
+		expect(editor.commands.get('quickInsert')?.icon).toBe(insertIcon);
 	});
 
 	it('opens quick insert for the position before or after the element, next to it', () => {

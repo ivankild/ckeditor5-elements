@@ -1,5 +1,6 @@
 import { plainTextToHtml, type Editor } from 'ckeditor5';
 import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { pasteAfterIcon, pasteBeforeIcon, pasteIcon } from './icons.js';
 import { isInDocument } from './utils.js';
 
 /**
@@ -35,9 +36,7 @@ export default class ElementPasteCommand extends ElementOrPositionCommand {
 			before: editor.t('Paste before'),
 			after: editor.t('Paste after')
 		}[placement];
-
-		// The command may act on a given element, so it does not depend on whether the selection can be edited.
-		this._isEnabledBasedOnSelection = false;
+		this.icon = { replace: pasteIcon, before: pasteBeforeIcon, after: pasteAfterIcon }[placement];
 	}
 
 	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {

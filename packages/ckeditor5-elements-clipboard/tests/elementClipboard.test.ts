@@ -1,6 +1,7 @@
 import { Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import ElementClipboard from '../src/elementClipboard.js';
+import { copyIcon, cutIcon, pasteAfterIcon, pasteBeforeIcon, pasteIcon } from '../src/icons.js';
 import ElementCopyCommand from '../src/elementCopyCommand.js';
 import ElementPasteCommand from '../src/elementPasteCommand.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';
@@ -46,6 +47,16 @@ describe('ElementClipboard', () => {
 				editor.commands.get('pasteElementAfter')
 			].map(command => command?.title)
 		).toEqual(['Copy', 'Cut', 'Paste', 'Paste before', 'Paste after']);
+
+		expect(
+			[
+				editor.commands.get('copyElement'),
+				editor.commands.get('cutElement'),
+				editor.commands.get('pasteElement'),
+				editor.commands.get('pasteElementBefore'),
+				editor.commands.get('pasteElementAfter')
+			].map(command => command?.icon)
+		).toEqual([copyIcon, cutIcon, pasteIcon, pasteBeforeIcon, pasteAfterIcon]);
 	});
 
 	it('enables the commands in a secure context only', () => {

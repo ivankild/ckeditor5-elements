@@ -203,6 +203,16 @@ describe('ElementContextMenu', () => {
 			expect(nested).toBeInstanceOf(SubmenuView);
 		});
 
+		it('show their icon', async () => {
+			await setUp(() => [{ title: 'More', icon: '<svg id="more"></svg>', items: [containerCommand] }]);
+
+			plugin.open(child(1), new DOMRect());
+
+			const [submenu] = menuItems();
+
+			expect(submenu instanceof SubmenuView && submenu.buttonView.icon).toBe('<svg id="more"></svg>');
+		});
+
 		it('are disabled when none of their items is enabled', async () => {
 			await setUp(() => [{ title: 'More', items: [{ title: 'Even more', items: [containerCommand] }] }]);
 			editor.enableReadOnlyMode('test');

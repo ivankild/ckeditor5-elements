@@ -92,7 +92,7 @@ describe('QuickInsertCommand', () => {
 		it('does not insert a block inside a paragraph', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 
-			editor.execute('quickInsert', 'heading1');
+			editor.execute('quickInsert', undefined, 'heading1');
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});
@@ -100,7 +100,7 @@ describe('QuickInsertCommand', () => {
 		it('inserts an inline element inside a paragraph', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 
-			editor.execute('quickInsert', 'softBreak');
+			editor.execute('quickInsert', undefined, 'softBreak');
 
 			expect(getData()).toBe('<paragraph>fo<softBreak></softBreak>[]o</paragraph>');
 		});
@@ -108,7 +108,7 @@ describe('QuickInsertCommand', () => {
 		it('inserts a block at the given position and puts the selection inside', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 
-			command.execute('heading1', inRoot(1));
+			command.execute(inRoot(1), 'heading1');
 
 			expect(getData()).toBe('<paragraph>foo</paragraph><heading1>[]</heading1><paragraph>bar</paragraph>');
 		});
@@ -116,7 +116,7 @@ describe('QuickInsertCommand', () => {
 		it('inserts before the given element', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 
-			command.execute('heading1', root().getChild(1) as ModelElement);
+			command.execute(root().getChild(1) as ModelElement, 'heading1');
 
 			expect(getData()).toBe('<paragraph>foo</paragraph><heading1>[]</heading1><paragraph>bar</paragraph>');
 		});
@@ -124,7 +124,7 @@ describe('QuickInsertCommand', () => {
 		it('inserts before the selected object', () => {
 			_setModelData(editor.model, '<paragraph>foo</paragraph>[<element></element>]');
 
-			editor.execute('quickInsert', 'heading1');
+			editor.execute('quickInsert', undefined, 'heading1');
 
 			expect(getData()).toBe('<paragraph>foo</paragraph><heading1>[]</heading1><element></element>');
 		});
@@ -132,7 +132,7 @@ describe('QuickInsertCommand', () => {
 		it('selects inserted objects', () => {
 			_setModelData(editor.model, '<paragraph>foo[]</paragraph>');
 
-			command.execute('element', inRoot(1));
+			command.execute(inRoot(1), 'element');
 
 			expect(getData()).toBe('<paragraph>foo</paragraph>[<element></element>]');
 		});
@@ -140,7 +140,7 @@ describe('QuickInsertCommand', () => {
 		it('puts a paragraph into elements that hold blocks', () => {
 			_setModelData(editor.model, '<paragraph>foo[]</paragraph>');
 
-			command.execute('container', inRoot(1));
+			command.execute(inRoot(1), 'container');
 
 			expect(getData()).toBe('<paragraph>foo</paragraph><container><paragraph>[]</paragraph></container>');
 		});
@@ -150,7 +150,7 @@ describe('QuickInsertCommand', () => {
 
 			const container = root().getChild(0) as ModelElement;
 
-			command.execute('containerItem', editor.model.createPositionAt(container, 0));
+			command.execute(editor.model.createPositionAt(container, 0), 'containerItem');
 
 			expect(getData()).toBe(
 				'<container><containerItem>[]</containerItem><paragraph>foo</paragraph></container>'
@@ -162,7 +162,7 @@ describe('QuickInsertCommand', () => {
 			editor.conversion.elementToElement({ model: 'marker', view: 'hr' });
 			_setModelData(editor.model, '<paragraph>foo[]</paragraph>');
 
-			command.execute('marker', inRoot(1));
+			command.execute(inRoot(1), 'marker');
 
 			expect(getData()).toBe('<paragraph>foo[]</paragraph><marker></marker>');
 		});
@@ -179,7 +179,7 @@ describe('QuickInsertCommand', () => {
 				{ priority: 'highest' }
 			);
 
-			command.execute('heading1', inRoot(0));
+			command.execute(inRoot(0), 'heading1');
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});

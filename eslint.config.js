@@ -43,6 +43,12 @@ export default defineConfig(
 		extends: [tseslint.configs.disableTypeChecked]
 	},
 	{
+		// Node.js scripts.
+		files: ['scripts/**/*.js'],
+		languageOptions: { globals: globals.node },
+		rules: { 'no-console': 'off' }
+	},
+	{
 		// Tests may assert that values exist, e.g. elements of rendered views.
 		files: ['**/tests/**/*.ts'],
 		rules: {

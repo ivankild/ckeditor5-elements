@@ -2,7 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 160px;
-	padding: var(--ck-spacing-small) 0;
+	padding: var(--ck-spacing-sm) 0;
 }
 
 .ck.ck-elements-context-menu > .ck.ck-button {
@@ -21,19 +21,32 @@
 	border-radius: 0;
 }
 
+/* A chevron pointing to the nested menu. */
 .ck.ck-elements-submenu > .ck.ck-button.ck-elements-submenu__button::after {
-	content: '›';
+	content: '';
+	flex-shrink: 0;
+	width: 0.4em;
+	height: 0.4em;
 	margin-left: auto;
-	padding-left: var(--ck-spacing-large);
+	padding: 0;
+	border-top: 1.5px solid currentColor;
+	border-right: 1.5px solid currentColor;
+	transform: rotate(45deg);
+	translate: -0.1em 0;
+	opacity: 0.7;
+}
+
+.ck.ck-elements-submenu > .ck.ck-button.ck-elements-submenu__button .ck-button__label {
+	margin-right: var(--ck-spacing-lg);
 }
 
 .ck.ck-elements-submenu > .ck.ck-elements-context-menu.ck-elements-submenu__panel {
 	position: absolute;
-	top: calc(-1 * var(--ck-spacing-small));
+	top: calc(-1 * var(--ck-spacing-sm));
 	left: 100%;
 	z-index: 1;
 	border: 1px solid var(--ck-balloon-panel-border-color, var(--ck-color-base-border));
-	border-radius: var(--ck-border-radius);
+	border-radius: var(--ck-border-radius-control);
 	background: var(--ck-balloon-panel-background-color, var(--ck-color-base-background));
 	box-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
 }
@@ -44,6 +57,11 @@
 
 .ck.ck-elements-context-menu__separator {
 	height: 1px;
-	margin: var(--ck-spacing-small) 0;
+	margin: var(--ck-spacing-sm) 0;
 	background: var(--ck-color-base-border);
+}
+
+/* In a menu with icons, items without an icon get the space of one, so that all labels line up. */
+.ck.ck-elements-context-menu:has(.ck-button__icon) .ck-button:not(:has(> .ck-button__icon)) > .ck-button__label {
+	padding-left: calc(var(--ck-icon-size) + var(--ck-spacing-sm));
 }

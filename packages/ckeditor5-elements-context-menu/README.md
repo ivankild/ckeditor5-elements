@@ -35,7 +35,7 @@ The callback gets the right-clicked model element and the editor, so the items c
 
 - Missing items (e.g. commands of plugins that are not loaded) are skipped, and so are submenus without items.
 - Separators at the start or the end of a menu, and repeated ones, are not shown.
-- A submenu is enabled when one of its items is.
+- A submenu (`{ title, icon?, items }`) is enabled when one of its items is.
 - When the callback returns no items for an element, the native context menu shows.
 
 Also exported: `SubmenuView`, `MenuSeparatorView`, `ElementContextMenuView`, and `show(views, target)` for menus of

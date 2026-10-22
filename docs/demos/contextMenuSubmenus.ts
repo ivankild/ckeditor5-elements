@@ -1,7 +1,7 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { ElementClipboard } from 'ckeditor5-elements-clipboard';
+import { ElementClipboard, pasteIcon } from 'ckeditor5-elements-clipboard';
 import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import { QuickInsert } from 'ckeditor5-elements-quick-insert';
+import { QuickInsert, insertIcon } from 'ckeditor5-elements-quick-insert';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 
@@ -15,6 +15,7 @@ export default {
 			'|',
 			{
 				title: 'Insert',
+				icon: insertIcon,
 				items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
 			},
 			'|',
@@ -22,6 +23,7 @@ export default {
 			editor.commands.get('cutElement'),
 			{
 				title: 'Paste',
+				icon: pasteIcon,
 				items: [
 					editor.commands.get('pasteElement'),
 					'|',

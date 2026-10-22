@@ -45,6 +45,10 @@ export default class ElementOrPositionCommand extends Command {
 		this.set('icon', undefined);
 		this.set('title', '');
 		this.set('tooltip', true);
+
+		// The command checks whether its target can be edited itself (see `_isEnabledFor()`), so it is not disabled just
+		// because the selection cannot be edited. Otherwise, `executeFor()` would fail for an editable target then.
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -70,12 +74,14 @@ export default class ElementOrPositionCommand extends Command {
 	/**
 	 * Executes the command for the target, even when the command is disabled for the selection (`execute()` checks
 	 * {@link isEnabled}, which follows the selection). Does nothing when the command is disabled for the target.
+	 *
+	 * The target is the first argument of `execute()`; the other arguments are passed after it.
 	 */
-	public executeFor(positionOrElement: PositionOrElement): unknown {
+	public executeFor(positionOrElement: PositionOrElement, ...args: unknown[]): unknown {
 		this.refresh(positionOrElement);
 
 		try {
-			return this.execute(positionOrElement);
+			return this.execute(positionOrElement, ...args);
 		} finally {
 			this.refresh();
 		}

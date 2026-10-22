@@ -1,5 +1,4 @@
 import { Essentials, Paragraph } from 'ckeditor5';
-import { EndOfLine } from 'ckeditor5-elements-ui';
 import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
 import { ElementClipboard } from 'ckeditor5-elements-clipboard';
 import { ElementContextMenu, type ElementContextMenuItems } from 'ckeditor5-elements-context-menu';
@@ -17,8 +16,8 @@ const menu: ElementContextMenuItems = (element, editor) => [
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Note, Breadcrumbs, EndOfLine, ElementContextMenu, ElementClipboard],
-		toolbar: { items: ['undo', 'redo', '|', 'note', '#', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		plugins: [Essentials, Paragraph, Note, Breadcrumbs, ElementContextMenu, ElementClipboard],
+		toolbar: { items: ['undo', 'redo', '|', 'note', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementContextMenu: menu,
 		// With a menu (and the `ElementContextMenu` plugin), the breadcrumbs are buttons that open it.
 		breadcrumbs: { menu }

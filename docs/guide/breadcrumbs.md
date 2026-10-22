@@ -5,7 +5,7 @@ the `breadcrumbs` toolbar component. Text attributes such as `<strong>` are not 
 
 ## Labels
 
-By default, the breadcrumbs are labels. The [`#` component](./toolbar) from `ckeditor5-elements-ui` puts them on their own toolbar line.
+By default, the breadcrumbs are labels. CKEditor's `-` toolbar item (a line break, with `shouldNotGroupWhenFull: true`) puts them on their own toolbar line.
 
 <EditorDemo name="breadcrumbsLabels" />
 

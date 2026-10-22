@@ -20,7 +20,8 @@ await editor.execute('pasteElementAfter'); // The element at the selection.
 | `pasteElementAfter`  | Inserts the clipboard after the element.  |
 
 The commands extend `ElementOrPositionCommand` (from `ckeditor5-elements`): the target is an element, the parent of a
-position, or taken from the selection. They have titles, so they can be menu items.
+position, or taken from the selection. They have titles and icons (exported: `copyIcon`, `cutIcon`, `pasteIcon`, `pasteBeforeIcon`,
+`pasteAfterIcon`), so they can be menu items and buttons.
 
 To show them in the element context menu, list them in the `elementContextMenu` config of
 `ckeditor5-elements-context-menu`. This package does not depend on it.

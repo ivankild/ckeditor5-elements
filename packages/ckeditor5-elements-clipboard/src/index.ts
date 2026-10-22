@@ -11,4 +11,7 @@ export { default as ElementClipboard } from './elementClipboard.js';
 export { default as ElementCopyCommand } from './elementCopyCommand.js';
 export { default as ElementPasteCommand, type ElementPastePlacement } from './elementPasteCommand.js';
 
+// Icons.
+export { copyIcon, cutIcon, pasteAfterIcon, pasteBeforeIcon, pasteIcon } from './icons.js';
+
 import './augmentation.js';

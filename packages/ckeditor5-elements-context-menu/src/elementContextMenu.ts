@@ -20,6 +20,12 @@ import SubmenuView from './submenuView.js';
  */
 export interface ElementContextSubmenu {
 	title: string;
+
+	/**
+	 * The icon (SVG string) shown next to the title.
+	 */
+	icon?: string;
+
 	items: (ElementContextMenuItem | null | undefined)[];
 }
 
@@ -238,7 +244,7 @@ export default class ElementContextMenu extends Plugin {
 				return null;
 			}
 
-			const submenu = new SubmenuView(locale, item.title, views);
+			const submenu = new SubmenuView(locale, item.title, views, { icon: item.icon });
 
 			submenu.buttonView.isEnabled = views.some(
 				view =>

@@ -30,13 +30,13 @@ export default class SubmenuView extends View {
 	 */
 	declare public isOpen: boolean;
 
-	constructor(locale: Locale | undefined, label: string, items: View[]) {
+	constructor(locale: Locale | undefined, label: string, items: View[], { icon }: { icon?: string } = {}) {
 		super(locale);
 
 		this.set('isOpen', false);
 
 		this.buttonView = new ButtonView(locale);
-		this.buttonView.set({ label, withText: true, role: 'menuitem' });
+		this.buttonView.set({ label, icon, withText: true, role: 'menuitem' });
 		this.buttonView.bind('isOn').to(this, 'isOpen');
 		this.buttonView.extendTemplate({
 			attributes: {

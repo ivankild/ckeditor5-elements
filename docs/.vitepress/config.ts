@@ -38,8 +38,8 @@ export default defineConfig({
 						{ text: 'Commands', link: '/guide/commands' },
 						{ text: 'Context menu', link: '/guide/context-menu' },
 						{ text: 'Clipboard', link: '/guide/clipboard' },
-						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' },
-						{ text: 'Toolbar line break', link: '/guide/toolbar' }
+						{ text: 'Quick insert', link: '/guide/quick-insert' },
+						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' }
 					]
 				}
 			],

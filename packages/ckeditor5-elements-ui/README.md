@@ -1,7 +1,7 @@
 # ckeditor5-elements-ui
 
-The base of the element commands and their buttons for CKEditor 5, and a toolbar line break. The other
-`ckeditor5-elements-*` packages build on it.
+The base of the element commands and their buttons for CKEditor 5. The other `ckeditor5-elements-*` packages build on
+it.
 
 | Export                        | What it is                                                                                                                                                                                                              |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -9,7 +9,6 @@ The base of the element commands and their buttons for CKEditor 5, and a toolbar
 | `ElementCommand`              | An `ElementOrPositionCommand` that wraps the target with an element, or unwraps it. Configure `elementName` and `elementAttributes`.                                                                                    |
 | `ElementOrPositionButtonView` | A button that reflects an `ElementOrPositionCommand`. Options: `withText` renders the title; `target` makes it reflect and execute the command for that position or element.                                            |
 | `ElementButtonView`           | An `ElementOrPositionButtonView` for an `ElementCommand`, which also reflects `isOn`.                                                                                                                                   |
-| `EndOfLine`                   | A plugin: the `#` toolbar component, after which the toolbar items start on a new line. Needs `shouldNotGroupWhenFull: true`.                                                                                           |
 
 A toggle command and its toolbar button:
 
@@ -32,14 +31,4 @@ editor.commands.add('callout', command);
 editor.ui.componentFactory.add('callout', locale => new ElementButtonView(locale, command));
 ```
 
-The line break, with its styles:
-
-```ts
-import { EndOfLine } from 'ckeditor5-elements-ui';
-import 'ckeditor5-elements-ui/index.css';
-
-ClassicEditor.create({
-	plugins: [Essentials, Paragraph, Bold, Italic, EndOfLine],
-	toolbar: { items: ['bold', 'italic', '#', 'undo', 'redo'], shouldNotGroupWhenFull: true }
-});
-```
+The package has no plugins and no styles.

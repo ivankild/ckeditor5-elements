@@ -23,6 +23,9 @@ features:
     - title: Clipboard
       details: Copy, cut and paste whole elements, before or after another element, from a menu, a button or code.
       link: /guide/clipboard
+    - title: Quick insert
+      details: Alt+Enter, or a menu item, opens a searchable list of the elements allowed at a position.
+      link: /guide/quick-insert
     - title: Breadcrumbs
       details: The element path at the cursor, as labels or as buttons that open a menu of the element.
       link: /guide/breadcrumbs

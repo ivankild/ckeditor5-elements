@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-ui",
 	"version": "0.1.0",
-	"description": "The base of the element commands and buttons for CKEditor 5 (ElementOrPositionCommand, ElementCommand and their button views), and a toolbar line break.",
+	"description": "The base of the element commands and buttons for CKEditor 5: ElementOrPositionCommand, ElementCommand and their button views.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -18,17 +18,13 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
-		"./index.css": "./theme/endOfLine.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
-		"theme",
 		"README.md"
 	],
-	"sideEffects": [
-		"*.css"
-	],
+	"sideEffects": false,
 	"peerDependencies": {
 		"ckeditor5": ">=46.0.0"
 	},

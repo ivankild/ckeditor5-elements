@@ -15,4 +15,7 @@ export { default as QuickInsertPositionCommand, type QuickInsertPlacement } from
 export { default as QuickInsertView } from './quickInsertView.js';
 export { default as QuickInsertListView, type QuickInsertItem } from './quickInsertListView.js';
 
+// Icons.
+export { insertAfterIcon, insertBeforeIcon, insertIcon } from './icons.js';
+
 import './augmentation.js';

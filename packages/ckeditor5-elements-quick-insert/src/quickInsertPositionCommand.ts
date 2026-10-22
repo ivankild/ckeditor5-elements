@@ -1,5 +1,6 @@
 import { type Editor, type ModelPosition } from 'ckeditor5';
 import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { insertAfterIcon, insertBeforeIcon } from './icons.js';
 
 /**
  * Where the quick insert menu inserts, relative to the element.
@@ -25,6 +26,7 @@ export default class QuickInsertPositionCommand extends ElementOrPositionCommand
 
 		this.placement = placement;
 		this.title = placement === 'before' ? editor.t('Insert before') : editor.t('Insert after');
+		this.icon = placement === 'before' ? insertBeforeIcon : insertAfterIcon;
 	}
 
 	/**

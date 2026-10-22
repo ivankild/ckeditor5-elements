@@ -10,10 +10,14 @@ elementContextMenu: (element, editor) => [/* commands, submenus and '|' separato
 
 - A **command** (any [`ElementOrPositionCommand`](./commands)) is shown as a button with its title and icon, enabled
   and "on" according to its state for the element. Choosing it executes it for the element.
-- A **submenu** is `{ title, items }`. It is enabled when one of its items is.
+- A **submenu** is `{ title, icon?, items }`. It is enabled when one of its items is.
 - `'|'` is a **separator**. Separators at the start or the end, and repeated ones, are not shown.
 - Missing items, e.g. `editor.commands.get()` of a plugin that is not loaded, are skipped.
 - No items means the native context menu.
+
+All the commands of these packages have icons. The icons are exported too, e.g. for submenus:
+`insertIcon`, `insertBeforeIcon` and `insertAfterIcon` from `ckeditor5-elements-quick-insert`, and `copyIcon`,
+`cutIcon`, `pasteIcon`, `pasteBeforeIcon` and `pasteAfterIcon` from `ckeditor5-elements-clipboard`.
 
 ## Clipboard commands
 

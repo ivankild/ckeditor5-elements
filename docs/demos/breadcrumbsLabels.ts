@@ -1,14 +1,13 @@
 import { Bold, Essentials, Paragraph } from 'ckeditor5';
-import { EndOfLine } from 'ckeditor5-elements-ui';
 import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Bold, Note, Breadcrumbs, EndOfLine],
-		// `#` starts a new toolbar line (requires `shouldNotGroupWhenFull`).
-		toolbar: { items: ['undo', 'redo', '|', 'bold', 'note', '#', 'breadcrumbs'], shouldNotGroupWhenFull: true }
+		plugins: [Essentials, Paragraph, Bold, Note, Breadcrumbs],
+		// `-` (CKEditor's line break) starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
+		toolbar: { items: ['undo', 'redo', '|', 'bold', 'note', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true }
 		// No `breadcrumbs.menu`: the breadcrumbs are labels.
 	},
 	data:

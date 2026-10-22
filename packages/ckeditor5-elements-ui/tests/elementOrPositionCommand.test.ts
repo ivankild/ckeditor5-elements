@@ -175,6 +175,46 @@ describe('ElementOrPositionCommand', () => {
 			expect(toggle.isEnabled).toBe(false);
 		});
 
+		it('executes for an editable target when the selection cannot be edited', () => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
+
+			const toggle = new ElementCommand(editor);
+
+			toggle.elementName = 'container';
+			editor.commands.add('container', toggle);
+			editor.model.on(
+				'canEditAt',
+				(evt, [selection]) => {
+					// Only the second paragraph (and what is in it) can be edited.
+					evt.return =
+						selection instanceof ModelSelection &&
+						(selection.getSelectedElement() === child(1) ||
+							selection.getFirstPosition()?.parent === child(1));
+					evt.stop();
+				},
+				{ priority: 'highest' }
+			);
+			toggle.refresh();
+
+			expect(toggle.isEnabled).toBe(false);
+
+			toggle.executeFor(child(1));
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<paragraph>foo</paragraph><container><paragraph>bar</paragraph></container>'
+			);
+		});
+
+		it('passes the other arguments to execute()', () => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+
+			const executeSpy = vi.spyOn(command, 'execute');
+
+			command.executeFor(child(0), 'name', 1);
+
+			expect(executeSpy).toHaveBeenCalledWith(child(0), 'name', 1);
+		});
+
 		it('does nothing when the command is disabled for the target', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 

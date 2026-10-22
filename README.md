@@ -1,23 +1,21 @@
 # CKEditor 5 Elements
 
-| Package                                                                       | Description                                                                             | Depends on                                |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------- |
-| [`ckeditor5-elements-ui`](packages/ckeditor5-elements-ui)                     | `ElementOrPositionCommand`, `ElementCommand`, their button views, the `#` toolbar break | –                                         |
-| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | An example element feature                                                              | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element                                 | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators                                    | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus                        | `ckeditor5-elements-ui`, `…-context-menu` |
-| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu                         | – (uses the menu through an interface)    |
-| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference                         |                                           |
-| [`sandbox`](sandbox)                                                          | A `ClassicEditor` with all of them                                                      |                                           |
+| Package                                                                       | Description                                                         | Depends on                                |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------- |
+| [`ckeditor5-elements-ui`](packages/ckeditor5-elements-ui)                     | `ElementOrPositionCommand`, `ElementCommand` and their button views | –                                         |
+| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | An example element feature                                          | `ckeditor5-elements-ui`                   |
+| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element             | `ckeditor5-elements-ui`                   |
+| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators                | `ckeditor5-elements-ui`                   |
+| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus    | `ckeditor5-elements-ui`, `…-context-menu` |
+| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu     | – (uses the menu through an interface)    |
+| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference     |                                           |
 
 ## Development
 
 ```sh
 pnpm install
-pnpm docs:dev        # the documentation, with live examples (VitePress + TypeDoc)
+pnpm dev             # the documentation, with live examples (VitePress + TypeDoc)
 pnpm docs:build      # the static documentation site, in docs/.vitepress/dist
-pnpm dev             # the sandbox, with CKEditor Inspector
 pnpm test            # tests, in headless Chrome
 pnpm test:coverage   # tests with a coverage report in coverage/
 pnpm check           # type check, lint, format check and tests

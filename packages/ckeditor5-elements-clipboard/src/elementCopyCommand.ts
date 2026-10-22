@@ -1,5 +1,6 @@
 import { viewToPlainText, type Editor } from 'ckeditor5';
 import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { copyIcon, cutIcon } from './icons.js';
 import { isInDocument } from './utils.js';
 
 /**
@@ -21,12 +22,10 @@ export default class ElementCopyCommand extends ElementOrPositionCommand {
 
 		this.cut = cut;
 		this.title = cut ? editor.t('Cut') : editor.t('Copy');
+		this.icon = cut ? cutIcon : copyIcon;
 
 		// Copying does not change the data, so it stays enabled in read-only mode.
 		this.affectsData = cut;
-
-		// The command may act on a given element, so it does not depend on whether the selection can be edited.
-		this._isEnabledBasedOnSelection = false;
 	}
 
 	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {

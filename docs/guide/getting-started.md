@@ -8,14 +8,14 @@ npm install ckeditor5 ckeditor5-elements-ui ckeditor5-elements ckeditor5-element
 	ckeditor5-elements-breadcrumbs ckeditor5-elements-quick-insert
 ```
 
-| Package                           | What it adds                                                                                          |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `ckeditor5-elements-ui`           | [Commands](./commands) that act on an element, their buttons, the [`#` toolbar line break](./toolbar) |
-| `ckeditor5-elements`              | An example element feature                                                                            |
-| `ckeditor5-elements-context-menu` | The [element context menu](./context-menu)                                                            |
-| `ckeditor5-elements-clipboard`    | [Clipboard commands](./clipboard) for elements                                                        |
-| `ckeditor5-elements-breadcrumbs`  | [Breadcrumbs](./breadcrumbs): the element path at the cursor                                          |
-| `ckeditor5-elements-quick-insert` | Quick insert: Alt+Enter (Option+Enter on macOS) inserts an element allowed at the cursor              |
+| Package                           | What it adds                                                                       |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| `ckeditor5-elements-ui`           | [Commands](./commands) that act on an element, and their buttons                   |
+| `ckeditor5-elements`              | An example element feature                                                         |
+| `ckeditor5-elements-context-menu` | The [element context menu](./context-menu)                                         |
+| `ckeditor5-elements-clipboard`    | [Clipboard commands](./clipboard) for elements                                     |
+| `ckeditor5-elements-breadcrumbs`  | [Breadcrumbs](./breadcrumbs): the element path at the cursor                       |
+| `ckeditor5-elements-quick-insert` | [Quick insert](./quick-insert): search and insert an element allowed at a position |
 
 Each package with a UI has a stylesheet, `<package>/index.css`:
 

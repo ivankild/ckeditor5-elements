@@ -142,40 +142,6 @@ importers:
         specifier: '>=46.0.0'
         version: 49.0.0
 
-  sandbox:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements
-      ckeditor5-elements-breadcrumbs:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-breadcrumbs
-      ckeditor5-elements-clipboard:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-clipboard
-      ckeditor5-elements-context-menu:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-context-menu
-      ckeditor5-elements-quick-insert:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-quick-insert
-      ckeditor5-elements-ui:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-ui
-    devDependencies:
-      '@ckeditor/ckeditor5-inspector':
-        specifier: ^5.0.4
-        version: 5.0.4
-      '@types/node':
-        specifier: ^24.19.2
-        version: 24.19.2
-      vite:
-        specifier: ^8.3.5
-        version: 8.3.5(@types/node@24.19.2)(yaml@2.9.1)
-
 packages:
 
   '@algolia/abtesting@1.26.0':
@@ -385,19 +351,6 @@ packages:
 
   '@ckeditor/ckeditor5-indent@49.0.0':
     resolution: {integrity: sha512-epGhoMLdSLaOawAZ+xe/mdlGYaHjFR70pcG5EcbiawcfYIj3sJiNbaaCL3eL+WO0R/+FGJHNwcLWnoq2S90TaQ==}
-
-  '@ckeditor/ckeditor5-inspector@5.0.4':
-    resolution: {integrity: sha512-GVGXNQcA9ZJLC1Hv1p2ckHyGC7ttaFUF8k8SxCINhm1/4rlwDm7MDKaW7bFfRlNMhGsYcmtnmiB3LWJ7ryMF7g==}
-    bundledDependencies:
-      - copy-to-clipboard
-      - es-toolkit
-      - javascript-stringify
-      - react
-      - react-dom
-      - react-modal
-      - react-redux
-      - react-rnd
-      - redux
 
   '@ckeditor/ckeditor5-language@49.0.0':
     resolution: {integrity: sha512-8waa2S4ApmXc2WlbdWHeYlpRtTW+PiFpgPvyTT+DgzQjMGy7WV9UIC/QgQ/9UjqX7yqfHflA8oEU9iFlziR2sQ==}
@@ -2801,8 +2754,6 @@ snapshots:
       '@ckeditor/ckeditor5-list': 49.0.0
       '@ckeditor/ckeditor5-ui': 49.0.0
       '@ckeditor/ckeditor5-utils': 49.0.0
-
-  '@ckeditor/ckeditor5-inspector@5.0.4': {}
 
   '@ckeditor/ckeditor5-language@49.0.0':
     dependencies:
