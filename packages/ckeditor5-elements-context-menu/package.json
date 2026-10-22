@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-context-menu",
 	"version": "0.1.0",
-	"description": "A context menu for CKEditor 5 elements, with clipboard actions (copy, cut, paste, paste before/after) and submenus.",
+	"description": "A context menu for CKEditor 5 elements: right-click an element, or press Shift+F10, to open a menu of commands for it.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -18,22 +18,19 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
-		"./index.css": "./theme/elementContextMenu.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
-		"theme",
+		"src",
 		"README.md"
 	],
-	"sideEffects": [
-		"*.css"
-	],
+	"sideEffects": false,
 	"dependencies": {
-		"ckeditor5-elements-ui": "workspace:^"
+		"ckeditor5-elements-core": "workspace:^"
 	},
 	"peerDependencies": {
-		"ckeditor5": ">=46.0.0"
+		"ckeditor5": ">=49.0.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

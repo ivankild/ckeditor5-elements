@@ -9,22 +9,22 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementCommand from '../src/elementCommand.js';
-import ElementOrPositionCommand, { type PositionOrElement } from '../src/elementOrPositionCommand.js';
+import ElementOrPositionCommand, { type ElementOrPosition } from '../src/elementOrPositionCommand.js';
 import { ElementsEditing } from 'ckeditor5-elements';
 
 /**
  * Exposes the protected members.
  */
 class TestCommand extends ElementOrPositionCommand {
-	public getPositionOrElement(target?: PositionOrElement): PositionOrElement | null {
-		return this._getPositionOrElement(target);
+	public getElementOrPosition(target?: ElementOrPosition): ElementOrPosition | null {
+		return this._getElementOrPosition(target);
 	}
 
-	public getPosition(target?: PositionOrElement): ReturnType<ElementOrPositionCommand['_getPosition']> {
+	public getPosition(target?: ElementOrPosition): ReturnType<ElementOrPositionCommand['_getPosition']> {
 		return this._getPosition(target);
 	}
 
-	public getElement(target?: PositionOrElement): ModelElement | null {
+	public getElement(target?: ElementOrPosition): ModelElement | null {
 		return this._getElement(target);
 	}
 
@@ -234,16 +234,16 @@ describe('ElementOrPositionCommand', () => {
 
 			const position = editor.model.createPositionAt(child(1), 1);
 
-			expect(command.getPositionOrElement(position)).toBe(position);
-			expect(command.getPositionOrElement(child(1))).toBe(child(1));
+			expect(command.getElementOrPosition(position)).toBe(position);
+			expect(command.getElementOrPosition(child(1))).toBe(child(1));
 		});
 
 		it('resolve the target from the selection: the selected element, or the first position', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
-			expect(command.getPositionOrElement()).toEqual(editor.model.document.selection.getFirstPosition());
+			expect(command.getElementOrPosition()).toEqual(editor.model.document.selection.getFirstPosition());
 
 			_setModelData(editor.model, '<paragraph>foo</paragraph>[<element></element>]');
-			expect(command.getPositionOrElement()).toBe(child(1));
+			expect(command.getElementOrPosition()).toBe(child(1));
 		});
 
 		it('_getPosition() turns an element into the position before it', () => {
@@ -266,6 +266,113 @@ describe('ElementOrPositionCommand', () => {
 			expect(command.getElement(editor.model.createPositionAt(child(0), 0))).toBe(child(0));
 			expect(command.getElement(editor.model.createPositionAt(root(), 0))).toBeNull();
 			expect(command.getElement(root())).toBeNull();
+		});
+	});
+
+	describe('removed targets', () => {
+		it('are ignored, so the command is disabled for them', () => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
+
+			const removed = child(1);
+
+			editor.model.change(writer => {
+				writer.remove(removed);
+			});
+
+			expect(command.getElementOrPosition(removed)).toBeNull();
+			expect(command.getElement(removed)).toBeNull();
+			expect(command.getState(removed).isEnabled).toBe(false);
+		});
+
+		it('executeFor() does not change the document for them', () => {
+			const toggle = new ElementCommand(editor);
+
+			toggle.elementName = 'container';
+			editor.commands.add('container', toggle);
+			_setModelData(editor.model, '<paragraph>foo</paragraph><paragraph>b[]ar</paragraph>');
+
+			const removed = child(0);
+
+			editor.model.change(writer => {
+				writer.remove(removed);
+			});
+
+			const operations = editor.model.document.history.getOperations().length;
+
+			toggle.executeFor(removed);
+
+			expect(editor.model.document.history.getOperations()).toHaveLength(operations);
+		});
+	});
+
+	describe('forceDisabled()', () => {
+		beforeEach(() => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
+		});
+
+		it('disables the command for every target until it is enabled back for every id', () => {
+			expect(command.isForceDisabled).toBe(false);
+
+			command.forceDisabled('a');
+			command.forceDisabled('b');
+
+			expect(command.isForceDisabled).toBe(true);
+			expect(command.isEnabled).toBe(false);
+			expect(command.getState(child(1)).isEnabled).toBe(false);
+
+			command.clearForceDisabled('a');
+
+			expect(command.isForceDisabled).toBe(true);
+			expect(command.getState(child(1)).isEnabled).toBe(false);
+
+			command.clearForceDisabled('b');
+
+			expect(command.isForceDisabled).toBe(false);
+			expect(command.isEnabled).toBe(true);
+			expect(command.getState(child(1)).isEnabled).toBe(true);
+		});
+
+		it('is observable', () => {
+			const changes: boolean[] = [];
+
+			command.on('change:isForceDisabled', (evt, name, value: boolean) => {
+				changes.push(value);
+			});
+
+			command.forceDisabled('a');
+			command.clearForceDisabled('a');
+
+			expect(changes).toEqual([true, false]);
+		});
+
+		it('keeps the command disabled for the selection after it is enabled back', () => {
+			class NeverEnabledCommand extends ElementOrPositionCommand {
+				protected override _isEnabledFor(): boolean {
+					return false;
+				}
+			}
+
+			const neverEnabled = new NeverEnabledCommand(editor);
+
+			neverEnabled.refresh();
+			neverEnabled.forceDisabled('a');
+			neverEnabled.clearForceDisabled('a');
+
+			expect(neverEnabled.isEnabled).toBe(false);
+		});
+
+		it('makes executeFor() do nothing', () => {
+			const toggle = new ElementCommand(editor);
+
+			toggle.elementName = 'container';
+			editor.commands.add('container', toggle);
+			toggle.forceDisabled('a');
+
+			toggle.executeFor(child(1));
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<paragraph>foo</paragraph><paragraph>bar</paragraph>'
+			);
 		});
 	});
 });

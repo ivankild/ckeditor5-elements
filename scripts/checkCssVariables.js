@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
-const require = createRequire(join(process.cwd(), 'packages/ckeditor5-elements-ui/package.json'));
+const require = createRequire(join(process.cwd(), 'packages/ckeditor5-elements-core/package.json'));
 const ckeditorCss = readFileSync(require.resolve('ckeditor5/ckeditor5.css'), 'utf8');
 const definedBy = css => new Set([...css.matchAll(/(--ck-[\w-]+)\s*:/g)].map(match => match[1]));
 const defined = definedBy(ckeditorCss);

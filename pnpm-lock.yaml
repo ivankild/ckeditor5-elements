@@ -68,12 +68,12 @@ importers:
       ckeditor5-elements-context-menu:
         specifier: workspace:*
         version: link:../packages/ckeditor5-elements-context-menu
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../packages/ckeditor5-elements-core
       ckeditor5-elements-quick-insert:
         specifier: workspace:*
         version: link:../packages/ckeditor5-elements-quick-insert
-      ckeditor5-elements-ui:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-ui
     devDependencies:
       typedoc:
         specifier: ^0.28.20
@@ -94,53 +94,50 @@ importers:
   packages/ckeditor5-elements:
     dependencies:
       ckeditor5:
-        specifier: '>=46.0.0'
+        specifier: '>=49.0.0'
         version: 49.0.0
-      ckeditor5-elements-ui:
+      ckeditor5-elements-core:
         specifier: workspace:^
-        version: link:../ckeditor5-elements-ui
+        version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-breadcrumbs:
     dependencies:
       ckeditor5:
-        specifier: '>=46.0.0'
+        specifier: '>=49.0.0'
         version: 49.0.0
 
   packages/ckeditor5-elements-clipboard:
     dependencies:
       ckeditor5:
-        specifier: '>=46.0.0'
+        specifier: '>=49.0.0'
         version: 49.0.0
-      ckeditor5-elements-ui:
+      ckeditor5-elements-core:
         specifier: workspace:^
-        version: link:../ckeditor5-elements-ui
+        version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-context-menu:
     dependencies:
       ckeditor5:
-        specifier: '>=46.0.0'
+        specifier: '>=49.0.0'
         version: 49.0.0
-      ckeditor5-elements-ui:
+      ckeditor5-elements-core:
         specifier: workspace:^
-        version: link:../ckeditor5-elements-ui
+        version: link:../ckeditor5-elements-core
+
+  packages/ckeditor5-elements-core:
+    dependencies:
+      ckeditor5:
+        specifier: '>=49.0.0'
+        version: 49.0.0
 
   packages/ckeditor5-elements-quick-insert:
     dependencies:
       ckeditor5:
-        specifier: '>=46.0.0'
+        specifier: '>=49.0.0'
         version: 49.0.0
-      ckeditor5-elements-context-menu:
+      ckeditor5-elements-core:
         specifier: workspace:^
-        version: link:../ckeditor5-elements-context-menu
-      ckeditor5-elements-ui:
-        specifier: workspace:^
-        version: link:../ckeditor5-elements-ui
-
-  packages/ckeditor5-elements-ui:
-    dependencies:
-      ckeditor5:
-        specifier: '>=46.0.0'
-        version: 49.0.0
+        version: link:../ckeditor5-elements-core
 
 packages:
 

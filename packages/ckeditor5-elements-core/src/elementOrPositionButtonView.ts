@@ -1,6 +1,6 @@
-import { ButtonView, type Locale } from 'ckeditor5';
+import { ButtonView, Notification, type Locale } from 'ckeditor5';
 import type ElementOrPositionCommand from './elementOrPositionCommand.js';
-import { type PositionOrElement } from './elementOrPositionCommand.js';
+import { type ElementOrPosition } from './elementOrPositionCommand.js';
 
 /**
  * The options of {@link ElementOrPositionButtonView}.
@@ -15,7 +15,7 @@ export interface ElementOrPositionButtonViewOptions {
 	 * The position or element the button acts on. Without it, the button follows the command state for the selection
 	 * and executes the command for the selection.
 	 */
-	target?: PositionOrElement;
+	target?: ElementOrPosition;
 }
 
 /**
@@ -34,7 +34,7 @@ export default class ElementOrPositionButtonView extends ButtonView {
 	/**
 	 * The position or element the button acts on, if any.
 	 */
-	public readonly target: PositionOrElement | undefined;
+	public readonly target: ElementOrPosition | undefined;
 
 	constructor(
 		locale: Locale | undefined,
@@ -64,6 +64,9 @@ export default class ElementOrPositionButtonView extends ButtonView {
 			this.listenTo(command.editor, 'change:isReadOnly', () => {
 				this._updateState(target);
 			});
+			this.listenTo(command, 'change:isForceDisabled', () => {
+				this._updateState(target);
+			});
 		} else {
 			this.bind('isEnabled').to(command, 'isEnabled');
 		}
@@ -72,15 +75,34 @@ export default class ElementOrPositionButtonView extends ButtonView {
 			// Focus first: focusing reads the DOM selection, which would override a selection set by the command.
 			command.editor.editing.view.focus();
 
-			if (target) {
-				void command.executeFor(target);
-			} else {
-				void command.execute();
+			const result = target ? command.executeFor(target) : command.execute();
+
+			if (result instanceof Promise) {
+				result.catch((error: unknown) => {
+					this._reportError(error);
+				});
 			}
 		});
 	}
 
-	private _updateState(target: PositionOrElement): void {
+	/**
+	 * Shows a warning about a failed (asynchronous) command, e.g. a clipboard command without the clipboard permission,
+	 * with the `Notification` plugin. Without that plugin, the error is not handled.
+	 */
+	private _reportError(error: unknown): void {
+		const editor = this.command.editor;
+
+		if (!editor.plugins.has(Notification)) {
+			throw error;
+		}
+
+		editor.plugins.get(Notification).showWarning(error instanceof Error ? error.message : String(error), {
+			title: editor.t('Could not complete "%0".', this.command.title),
+			namespace: 'elementCommand'
+		});
+	}
+
+	private _updateState(target: ElementOrPosition): void {
 		const { isEnabled, isOn } = this.command.getState(target);
 
 		this.isEnabled = isEnabled;

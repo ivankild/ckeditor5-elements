@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig, type DefaultTheme } from 'vitepress';
 
 const PACKAGES = [
-	'ckeditor5-elements-ui',
+	'ckeditor5-elements-core',
 	'ckeditor5-elements',
 	'ckeditor5-elements-breadcrumbs',
 	'ckeditor5-elements-clipboard',

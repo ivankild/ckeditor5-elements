@@ -18,7 +18,11 @@ export {
 	type BreadcrumbsViewExecuteEvent,
 	type BreadcrumbsViewOptions
 } from './breadcrumbsView.js';
-export { default as BreadcrumbItemView, type BreadcrumbItem } from './breadcrumbItemView.js';
+export {
+	default as BreadcrumbItemView,
+	type BreadcrumbItem,
+	type BreadcrumbItemViewOptions
+} from './breadcrumbItemView.js';
 export { default as BreadcrumbLabelView } from './breadcrumbLabelView.js';
 
 import './augmentation.js';

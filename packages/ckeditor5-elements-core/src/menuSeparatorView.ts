@@ -10,7 +10,7 @@ export default class MenuSeparatorView extends View {
 		this.setTemplate({
 			tag: 'div',
 			attributes: {
-				class: ['ck', 'ck-elements-context-menu__separator'],
+				class: ['ck', 'ck-elements-menu__separator'],
 				role: 'separator'
 			}
 		});

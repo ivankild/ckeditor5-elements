@@ -1,5 +1,5 @@
 import { type Editor, type ModelPosition } from 'ckeditor5';
-import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { insertAfterIcon, insertBeforeIcon } from './icons.js';
 
 /**
@@ -32,10 +32,10 @@ export default class QuickInsertPositionCommand extends ElementOrPositionCommand
 	/**
 	 * Opens the quick insert menu for the position before or after the element, next to the element.
 	 */
-	public override execute(positionOrElement?: PositionOrElement): void {
+	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const editor = this.editor;
-		const element = this._getElement(positionOrElement);
-		const position = this._getInsertPosition(positionOrElement);
+		const element = this._getElement(elementOrPosition);
+		const position = this._getInsertPosition(elementOrPosition);
 
 		if (!element || !position) {
 			return;
@@ -47,8 +47,8 @@ export default class QuickInsertPositionCommand extends ElementOrPositionCommand
 		editor.plugins.get('QuickInsert').open(position, domElement ?? undefined);
 	}
 
-	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {
-		const position = this._getInsertPosition(positionOrElement);
+	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+		const position = this._getInsertPosition(elementOrPosition);
 		const plugins = this.editor.plugins;
 
 		return (
@@ -59,8 +59,8 @@ export default class QuickInsertPositionCommand extends ElementOrPositionCommand
 		);
 	}
 
-	private _getInsertPosition(positionOrElement?: PositionOrElement): ModelPosition | null {
-		const element = this._getElement(positionOrElement);
+	private _getInsertPosition(elementOrPosition?: ElementOrPosition): ModelPosition | null {
+		const element = this._getElement(elementOrPosition);
 		const model = this.editor.model;
 
 		if (!element) {

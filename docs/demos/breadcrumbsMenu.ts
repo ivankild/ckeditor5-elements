@@ -1,12 +1,13 @@
 import { Essentials, Paragraph } from 'ckeditor5';
 import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
 import { ElementClipboard } from 'ckeditor5-elements-clipboard';
-import { ElementContextMenu, type ElementContextMenuItems } from 'ckeditor5-elements-context-menu';
+import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import type { ElementMenuConfig } from 'ckeditor5-elements-core';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 
 // One menu for both: right-clicking an element, and clicking its breadcrumb.
-const menu: ElementContextMenuItems = (element, editor) => [
+const menu: ElementMenuConfig = (element, editor) => [
 	editor.commands.get('note'),
 	'|',
 	editor.commands.get('copyElement'),
@@ -19,7 +20,8 @@ export default {
 		plugins: [Essentials, Paragraph, Note, Breadcrumbs, ElementContextMenu, ElementClipboard],
 		toolbar: { items: ['undo', 'redo', '|', 'note', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementContextMenu: menu,
-		// With a menu (and the `ElementContextMenu` plugin), the breadcrumbs are buttons that open it.
+		// With a menu, the breadcrumbs are buttons that open it. The `ElementMenu` plugin (loaded by `ElementContextMenu`)
+		// shows it.
 		breadcrumbs: { menu }
 	},
 	data:

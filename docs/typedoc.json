@@ -1,7 +1,7 @@
 {
 	"$schema": "https://typedoc.org/schema.json",
 	"entryPoints": [
-		"../packages/ckeditor5-elements-ui/src/index.ts",
+		"../packages/ckeditor5-elements-core/src/index.ts",
 		"../packages/ckeditor5-elements/src/index.ts",
 		"../packages/ckeditor5-elements-breadcrumbs/src/index.ts",
 		"../packages/ckeditor5-elements-clipboard/src/index.ts",

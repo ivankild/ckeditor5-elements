@@ -1,11 +1,11 @@
-.ck.ck-elements-context-menu {
+.ck.ck-elements-menu {
 	display: flex;
 	flex-direction: column;
 	min-width: 160px;
 	padding: var(--ck-spacing-sm) 0;
 }
 
-.ck.ck-elements-context-menu > .ck.ck-button {
+.ck.ck-elements-menu > .ck.ck-button {
 	justify-content: flex-start;
 	width: 100%;
 	border-radius: 0;
@@ -40,7 +40,7 @@
 	margin-right: var(--ck-spacing-lg);
 }
 
-.ck.ck-elements-submenu > .ck.ck-elements-context-menu.ck-elements-submenu__panel {
+.ck.ck-elements-submenu > .ck.ck-elements-menu.ck-elements-submenu__panel {
 	position: absolute;
 	top: calc(-1 * var(--ck-spacing-sm));
 	left: 100%;
@@ -51,17 +51,17 @@
 	box-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
 }
 
-.ck.ck-elements-submenu > .ck.ck-elements-context-menu.ck-elements-submenu__panel.ck-hidden {
+.ck.ck-elements-submenu > .ck.ck-elements-menu.ck-elements-submenu__panel.ck-hidden {
 	display: none;
 }
 
-.ck.ck-elements-context-menu__separator {
+.ck.ck-elements-menu__separator {
 	height: 1px;
 	margin: var(--ck-spacing-sm) 0;
 	background: var(--ck-color-base-border);
 }
 
 /* In a menu with icons, items without an icon get the space of one, so that all labels line up. */
-.ck.ck-elements-context-menu:has(.ck-button__icon) .ck-button:not(:has(> .ck-button__icon)) > .ck-button__label {
+.ck.ck-elements-menu:has(.ck-button__icon) .ck-button:not(:has(> .ck-button__icon)) > .ck-button__label {
 	padding-left: calc(var(--ck-icon-size) + var(--ck-spacing-sm));
 }

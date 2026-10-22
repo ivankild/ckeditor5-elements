@@ -1,5 +1,5 @@
 import { ButtonView, KeystrokeHandler, View, type Locale } from 'ckeditor5';
-import ElementContextMenuView from './elementContextMenuView.js';
+import ElementMenuView from './elementMenuView.js';
 
 /**
  * A menu item that opens a nested menu next to it.
@@ -16,7 +16,7 @@ export default class SubmenuView extends View {
 	/**
 	 * The nested menu.
 	 */
-	public readonly panelView: ElementContextMenuView;
+	public readonly panelView: ElementMenuView;
 
 	/**
 	 * Handles the keystrokes within the submenu.
@@ -54,7 +54,7 @@ export default class SubmenuView extends View {
 			}
 		});
 
-		this.panelView = new ElementContextMenuView(locale);
+		this.panelView = new ElementMenuView(locale, { label });
 		this.panelView.items.addMany(items);
 		this.panelView.extendTemplate({
 			attributes: {

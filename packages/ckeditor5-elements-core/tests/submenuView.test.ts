@@ -48,6 +48,7 @@ describe('SubmenuView', () => {
 		expect(button.getAttribute('aria-haspopup')).toBe('true');
 		expect(button.getAttribute('aria-expanded')).toBe('false');
 		expect(view.panelView.element?.classList.contains('ck-hidden')).toBe(true);
+		expect(view.panelView.element?.getAttribute('aria-label')).toBe('More');
 		expect(view.isOpen).toBe(false);
 	});
 

@@ -13,7 +13,7 @@ import {
 } from 'ckeditor5';
 import { ElementsEditing } from 'ckeditor5-elements';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import { ElementMenu } from 'ckeditor5-elements-core';
 import QuickInsert from '../src/quickInsert.js';
 import QuickInsertCommand from '../src/quickInsertCommand.js';
 import QuickInsertView from '../src/quickInsertView.js';
@@ -22,10 +22,10 @@ import { createEditor } from '../../../testUtils/editor.js';
 describe('QuickInsert', () => {
 	let editor: ClassicEditor;
 	let plugin: QuickInsert;
-	let contextMenu: ElementContextMenu;
+	let menu: ElementMenu;
 
 	const getView = (): QuickInsertView | null => {
-		const view = contextMenu.view?.items.first;
+		const view = menu.view?.items.first;
 
 		return view instanceof QuickInsertView ? view : null;
 	};
@@ -54,7 +54,7 @@ describe('QuickInsert', () => {
 		});
 
 		plugin = editor.plugins.get('QuickInsert');
-		contextMenu = editor.plugins.get(ElementContextMenu);
+		menu = editor.plugins.get(ElementMenu);
 		editor.editing.view.focus();
 		// The position before the selected object is between blocks.
 		_setModelData(editor.model, '<paragraph>foo</paragraph>[<element></element>]');
@@ -64,9 +64,10 @@ describe('QuickInsert', () => {
 		await editor.destroy();
 	});
 
-	it('has a plugin name, requires the context menu and registers the command', () => {
+	it('has a plugin name, requires ElementMenu (not the context menu) and registers the command', () => {
 		expect(QuickInsert.pluginName).toBe('QuickInsert');
-		expect(editor.plugins.has('ElementContextMenu')).toBe(true);
+		expect(editor.plugins.has('ElementMenu')).toBe(true);
+		expect(editor.plugins.has('ElementContextMenu')).toBe(false);
 		expect(editor.commands.get('quickInsert')).toBeInstanceOf(QuickInsertCommand);
 	});
 
@@ -105,7 +106,7 @@ describe('QuickInsert', () => {
 
 		expect(pressAltEnter().prevented).toBe(false);
 		expect(plugin.open()).toBe(false);
-		expect(contextMenu.view).toBeNull();
+		expect(menu.view).toBeNull();
 	});
 
 	it('opens for a given position, next to the given target', () => {
@@ -144,7 +145,7 @@ describe('QuickInsert', () => {
 		expect(_getModelData(editor.model)).toBe(
 			'<paragraph>foo</paragraph><heading1>[]</heading1><element></element>'
 		);
-		expect(contextMenu.view).toBeNull();
+		expect(menu.view).toBeNull();
 		expect(focusSpy).toHaveBeenCalled();
 	});
 
@@ -165,7 +166,7 @@ describe('QuickInsert', () => {
 		});
 
 		it('opens next to the element, by default', () => {
-			const showSpy = vi.spyOn(contextMenu, 'show');
+			const showSpy = vi.spyOn(menu, 'show');
 
 			plugin.open(root().getChild(0) as ModelElement);
 
@@ -173,7 +174,7 @@ describe('QuickInsert', () => {
 		});
 
 		it('opens next to a position, by default', () => {
-			const showSpy = vi.spyOn(contextMenu, 'show');
+			const showSpy = vi.spyOn(menu, 'show');
 
 			plugin.open(editor.model.createPositionAt(root(), 1));
 
@@ -214,20 +215,20 @@ describe('QuickInsert', () => {
 				writer.insertText('x', root().getChild(0) as ModelElement, 0);
 			});
 
-			expect(contextMenu.view).toBeNull();
+			expect(menu.view).toBeNull();
 		});
 
 		it('does not close another menu opened later', () => {
 			plugin.open();
-			contextMenu.show([new QuickInsertView(editor.locale, [])], new DOMRect());
+			menu.show([new QuickInsertView(editor.locale, [])], new DOMRect());
 
-			const other = contextMenu.view;
+			const other = menu.view;
 
 			editor.model.change(writer => {
 				writer.insertText('x', root().getChild(0) as ModelElement, 0);
 			});
 
-			expect(contextMenu.view).toBe(other);
+			expect(menu.view).toBe(other);
 		});
 	});
 
@@ -265,6 +266,11 @@ describe('QuickInsert', () => {
 describe('QuickInsert keystroke config', () => {
 	let editor: ClassicEditor;
 
+	const accessibilityKeystrokes = (): unknown[] =>
+		[...editor.accessibility.keystrokeInfos.values()]
+			.flatMap(category => [...category.groups.values()])
+			.flatMap(group => group.keystrokes);
+
 	afterEach(async () => {
 		await editor.destroy();
 	});
@@ -299,5 +305,21 @@ describe('QuickInsert keystroke config', () => {
 		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: false } });
 
 		expect(press({ altKey: true })).toBe(false);
+	});
+
+	it('lists the keystroke in the accessibility help', async () => {
+		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: 'Ctrl+Space' } });
+
+		expect(accessibilityKeystrokes()).toContainEqual(
+			expect.objectContaining({ label: 'Insert an element at the cursor', keystroke: 'Ctrl+Space' })
+		);
+	});
+
+	it('lists no keystroke with `false`', async () => {
+		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: false } });
+
+		expect(accessibilityKeystrokes()).not.toContainEqual(
+			expect.objectContaining({ label: 'Insert an element at the cursor' })
+		);
 	});
 });

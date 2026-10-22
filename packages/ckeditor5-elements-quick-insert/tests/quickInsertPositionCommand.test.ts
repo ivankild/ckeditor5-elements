@@ -7,7 +7,7 @@ import {
 	type ClassicEditor,
 	type ModelElement
 } from 'ckeditor5';
-import { type ElementContextMenu, SubmenuView } from 'ckeditor5-elements-context-menu';
+import { SubmenuView, type ElementMenu, type ElementMenuConfig } from 'ckeditor5-elements-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import QuickInsert from '../src/quickInsert.js';
@@ -18,22 +18,22 @@ import QuickInsertView from '../src/quickInsertView.js';
 describe('QuickInsertPositionCommand', () => {
 	let editor: ClassicEditor;
 	let quickInsert: QuickInsert;
-	let contextMenu: ElementContextMenu;
+	let menu: ElementMenu;
+
+	// The menu of an element, with the insert commands in a submenu.
+	const insertMenu: ElementMenuConfig = (element, editor) => [
+		{
+			title: 'Insert',
+			items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
+		}
+	];
 
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
 
 	beforeEach(async () => {
-		editor = await createEditor({
-			plugins: [Paragraph, Heading, Container, QuickInsert],
-			elementContextMenu: (element, editor) => [
-				{
-					title: 'Insert',
-					items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
-				}
-			]
-		});
+		editor = await createEditor({ plugins: [Paragraph, Heading, Container, QuickInsert] });
 		quickInsert = editor.plugins.get('QuickInsert');
-		contextMenu = editor.plugins.get('ElementContextMenu');
+		menu = editor.plugins.get('ElementMenu');
 		editor.editing.view.focus();
 		_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 	});
@@ -99,11 +99,11 @@ describe('QuickInsertPositionCommand', () => {
 		);
 	});
 
-	describe('in the context menu', () => {
+	describe('in an element menu', () => {
 		it('inserts at the position chosen in the menu', () => {
-			contextMenu.open(child(0), new DOMRect());
+			menu.open(child(0), new DOMRect(), insertMenu);
 
-			const submenu = contextMenu.view!.items.first;
+			const submenu = menu.view!.items.first;
 
 			if (!(submenu instanceof SubmenuView)) {
 				throw new Error('Expected a submenu.');
@@ -116,7 +116,7 @@ describe('QuickInsertPositionCommand', () => {
 			submenu.open();
 			after.fire('execute');
 
-			const view = contextMenu.view?.items.first;
+			const view = menu.view?.items.first;
 
 			expect(view).toBeInstanceOf(QuickInsertView);
 
@@ -125,7 +125,7 @@ describe('QuickInsertPositionCommand', () => {
 			expect(_getModelData(editor.model)).toBe(
 				'<paragraph>foo</paragraph><heading1>[]</heading1><paragraph>bar</paragraph>'
 			);
-			expect(contextMenu.view).toBeNull();
+			expect(menu.view).toBeNull();
 		});
 	});
 });

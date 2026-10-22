@@ -1,7 +1,7 @@
 {
-	"name": "ckeditor5-elements-ui",
+	"name": "ckeditor5-elements-core",
 	"version": "0.1.0",
-	"description": "The base of the element commands and buttons for CKEditor 5: ElementOrPositionCommand, ElementCommand and their button views.",
+	"description": "The base of the element commands, buttons and menus for CKEditor 5: ElementOrPositionCommand, ElementCommand, their button views, and ElementMenu.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -18,15 +18,20 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./index.css": "./theme/elementMenu.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
+		"src",
+		"theme",
 		"README.md"
 	],
-	"sideEffects": false,
+	"sideEffects": [
+		"*.css"
+	],
 	"peerDependencies": {
-		"ckeditor5": ">=46.0.0"
+		"ckeditor5": ">=49.0.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

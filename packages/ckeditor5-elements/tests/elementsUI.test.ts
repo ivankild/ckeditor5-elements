@@ -1,7 +1,7 @@
 import { Paragraph, _getModelData, _setModelData, type ButtonView, type ClassicEditor } from 'ckeditor5';
 import ElementsEditing from '../src/elementsEditing.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ElementButtonView, ElementCommand } from 'ckeditor5-elements-ui';
+import { ElementButtonView, ElementCommand } from 'ckeditor5-elements-core';
 import { Elements, ElementsUI } from '../src/index.js';
 import { createEditor } from '../../../testUtils/editor.js';
 

@@ -4,7 +4,7 @@ The packages are built around one kind of command: a command that acts on a **po
 
 ## `ElementOrPositionCommand`
 
-`ElementOrPositionCommand` (from `ckeditor5-elements-ui`) is the base class. It holds what a button or a menu item needs to
+`ElementOrPositionCommand` (from `ckeditor5-elements-core`) is the base class. It holds what a button or a menu item needs to
 know about the command:
 
 - the observable `title`, `icon` and `tooltip`,
@@ -13,13 +13,14 @@ know about the command:
 - `executeFor(target)`, which executes the command for that target, even when it is disabled at the selection.
 
 The target is optional everywhere. Without it, the command uses the selection: the selected element, or the first
-position of the selection.
+position of the selection. A target that is not in the document (e.g. a removed element) is ignored, so the command is
+disabled for it and does nothing.
 
 A subclass describes when it is enabled and "on" in `_isEnabledFor(target)` and `_isOnFor(target)`, and what it does in
 `execute()`:
 
 ```ts
-import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
 
 class HighlightCommand extends ElementOrPositionCommand {
 	constructor(editor: Editor) {
@@ -28,7 +29,7 @@ class HighlightCommand extends ElementOrPositionCommand {
 		this.title = 'Highlight';
 	}
 
-	public override execute(target?: PositionOrElement): void {
+	public override execute(target?: ElementOrPosition): void {
 		const element = this._getElement(target);
 
 		if (element) {
@@ -36,7 +37,7 @@ class HighlightCommand extends ElementOrPositionCommand {
 		}
 	}
 
-	protected override _isOnFor(target?: PositionOrElement): boolean {
+	protected override _isOnFor(target?: ElementOrPosition): boolean {
 		return !!this._getElement(target)?.getAttribute('highlighted');
 	}
 }
@@ -76,3 +77,9 @@ new ElementOrPositionButtonView(locale, command, { withText: true, target: eleme
 
 `ElementButtonView` is the same for an `ElementCommand`, and also reflects `isOn`. See the
 [clipboard toolbar example](./clipboard#toolbar-buttons).
+
+When a command returns a rejected promise (e.g. the clipboard commands, when the browser does not allow using the
+clipboard), the button shows a warning with the `Notification` plugin, titled `Could not complete "<title>".`
+
+`forceDisabled(id)` disables a command for every target, so its buttons and menu items are disabled too, until
+`clearForceDisabled(id)` is called for every id. The observable `isForceDisabled` tells whether it is.

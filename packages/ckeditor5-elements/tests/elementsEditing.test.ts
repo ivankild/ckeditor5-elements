@@ -1,5 +1,5 @@
 import { ClassicEditor, Paragraph, _getModelData, _setModelData, type ModelElement } from 'ckeditor5';
-import { ElementOrPositionCommand } from 'ckeditor5-elements-ui';
+import { ElementOrPositionCommand } from 'ckeditor5-elements-core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ElementsEditing, InsertElementCommand } from '../src/index.js';
 

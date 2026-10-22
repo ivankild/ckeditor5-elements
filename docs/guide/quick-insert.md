@@ -5,12 +5,12 @@ inserted at a position. Type to filter, press Enter to insert the first match, o
 
 ```ts
 import { QuickInsert } from 'ckeditor5-elements-quick-insert';
-import 'ckeditor5-elements-context-menu/index.css';
+import 'ckeditor5-elements-core/index.css';
 import 'ckeditor5-elements-quick-insert/index.css';
 ```
 
-`QuickInsert` loads `ElementContextMenu`, which shows the menu. Loading it does not add a right-click menu; that needs
-the [`elementContextMenu`](./context-menu) option.
+The menu is shown by the `ElementMenu` plugin from `ckeditor5-elements-core`, which `QuickInsert` loads. It does not add
+a right-click menu; that needs [`ElementContextMenu`](./context-menu).
 
 ## Which elements are listed
 
@@ -22,7 +22,8 @@ Generic schema items (such as `$text`) are never listed. The elements are listed
 
 ## Keyboard
 
-Alt+Enter (Option+Enter on macOS) opens the menu at the cursor:
+Alt+Enter (Option+Enter on macOS) opens the menu at the cursor. The keystroke is listed in the accessibility help
+(Alt+0):
 
 <EditorDemo name="quickInsertKeyboard" />
 

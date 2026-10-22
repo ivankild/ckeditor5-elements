@@ -1,6 +1,5 @@
 import { Plugin, type Editor, type FilteredViewExecuteEvent, type ModelElement, type RectSource } from 'ckeditor5';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import { type PositionOrElement } from 'ckeditor5-elements-ui';
+import { ElementMenu, type ElementOrPosition } from 'ckeditor5-elements-core';
 import QuickInsertCommand from './quickInsertCommand.js';
 import QuickInsertPositionCommand from './quickInsertPositionCommand.js';
 import { type QuickInsertItem } from './quickInsertListView.js';
@@ -31,15 +30,15 @@ export interface QuickInsertConfig {
  * Opens a menu with a search field and the elements allowed at the selection, on Alt+Enter (Option+Enter on macOS; see
  * {@link QuickInsertConfig.keystroke}). Choosing an element inserts it with the `quickInsert` command.
  *
- * The menu is shown by the `ElementContextMenu` plugin. The `quickInsertBefore` and `quickInsertAfter` commands (see
+ * The menu is shown by the `ElementMenu` plugin. The `quickInsertBefore` and `quickInsertAfter` commands (see
  * {@link QuickInsertPositionCommand}) open it for the position before or after an element; list them in the
  * `elementContextMenu` config, e.g. as an "Insert" submenu.
  *
  * The menu closes when the document changes while it is open, so it never inserts at an outdated position.
  */
 export default class QuickInsert extends Plugin {
-	public static get requires(): readonly [typeof ElementContextMenu] {
-		return [ElementContextMenu] as const;
+	public static get requires(): readonly [typeof ElementMenu] {
+		return [ElementMenu] as const;
 	}
 
 	public static get pluginName(): 'QuickInsert' {
@@ -66,6 +65,10 @@ export default class QuickInsert extends Plugin {
 					cancel();
 				}
 			});
+
+			editor.accessibility.addKeystrokeInfos({
+				keystrokes: [{ label: editor.t('Insert an element at the cursor'), keystroke }]
+			});
 		}
 	}
 
@@ -73,12 +76,12 @@ export default class QuickInsert extends Plugin {
 	 * Returns the elements that can be inserted at the target (a position, the position before an element, or the
 	 * selection), with their labels.
 	 */
-	public getItems(positionOrElement?: PositionOrElement): QuickInsertItem[] {
+	public getItems(elementOrPosition?: ElementOrPosition): QuickInsertItem[] {
 		const config = this.editor.config.get('quickInsert');
 		const labels = config?.labels ?? {};
 		const command = this.editor.commands.get('quickInsert');
 
-		return (command?.getAllowedElements(positionOrElement, config?.exclude) ?? []).map(name => ({
+		return (command?.getAllowedElements(elementOrPosition, config?.exclude) ?? []).map(name => ({
 			name,
 			label: labels[name] ?? name
 		}));
@@ -91,38 +94,29 @@ export default class QuickInsert extends Plugin {
 	 * Returns `false` when nothing can be inserted at the target because it cannot be edited, or there is nothing to
 	 * show the menu next to.
 	 */
-	public open(positionOrElement?: PositionOrElement, domTarget?: RectSource): boolean {
+	public open(elementOrPosition?: ElementOrPosition, domTarget?: RectSource): boolean {
 		const editor = this.editor;
 		const command = editor.commands.get('quickInsert');
-		const position = command?.getInsertPosition(positionOrElement);
-		const menuTarget = domTarget ?? this._getDomTarget(positionOrElement);
+		const position = command?.getInsertPosition(elementOrPosition);
+		const menuTarget = domTarget ?? this._getDomTarget(elementOrPosition);
 
 		if (!command || !position || !menuTarget || !command.getState(position).isEnabled) {
 			return false;
 		}
 
-		const contextMenu = editor.plugins.get(ElementContextMenu);
 		const view = new QuickInsertView(editor.locale, this.getItems(position));
-		const closeOnChange = (): void => {
-			this.stopListening(editor.model.document, 'change:data', closeOnChange);
-
-			if (contextMenu.view?.items.has(view)) {
-				contextMenu.hide();
-			}
-		};
 
 		view.on<FilteredViewExecuteEvent>('execute', (evt, { value }) => {
-			this.stopListening(editor.model.document, 'change:data', closeOnChange);
-
 			// Focus first: focusing reads the DOM selection, which would override the selection set by the command.
 			editor.editing.view.focus();
 			command.executeFor(position, value);
 		});
 
-		contextMenu.show([view], menuTarget);
-
-		// The position would be outdated after a change, e.g. by another user.
-		this.listenTo(editor.model.document, 'change:data', closeOnChange);
+		editor.plugins.get(ElementMenu).show([view], menuTarget, {
+			label: editor.t('Insert element'),
+			// The position would be outdated after any change, e.g. by another user.
+			isObsolete: () => true
+		});
 
 		return true;
 	}
@@ -130,15 +124,15 @@ export default class QuickInsert extends Plugin {
 	/**
 	 * Returns the DOM element of the element, or the DOM range of the selection.
 	 */
-	private _getDomTarget(positionOrElement?: PositionOrElement): RectSource | null {
+	private _getDomTarget(elementOrPosition?: ElementOrPosition): RectSource | null {
 		const editing = this.editor.editing;
 
-		if (positionOrElement && !positionOrElement.is('position')) {
-			return this._getDomElement(positionOrElement);
+		if (elementOrPosition && !elementOrPosition.is('position')) {
+			return this._getDomElement(elementOrPosition);
 		}
 
-		const viewRange = positionOrElement
-			? editing.view.createRange(editing.mapper.toViewPosition(positionOrElement))
+		const viewRange = elementOrPosition
+			? editing.view.createRange(editing.mapper.toViewPosition(elementOrPosition))
 			: editing.view.document.selection.getFirstRange();
 
 		return viewRange && editing.view.domConverter.viewRangeToDom(viewRange);

@@ -23,6 +23,7 @@
 	},
 	"files": [
 		"dist",
+		"src",
 		"theme",
 		"README.md"
 	],
@@ -30,11 +31,10 @@
 		"*.css"
 	],
 	"dependencies": {
-		"ckeditor5-elements-ui": "workspace:^",
-		"ckeditor5-elements-context-menu": "workspace:^"
+		"ckeditor5-elements-core": "workspace:^"
 	},
 	"peerDependencies": {
-		"ckeditor5": ">=46.0.0"
+		"ckeditor5": ">=49.0.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

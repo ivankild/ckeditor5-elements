@@ -14,9 +14,22 @@ They are [`ElementOrPositionCommand`s](./commands): the target is an element, th
 element at the selection. They have titles, so they work as buttons and as [context menu](./context-menu#clipboard-commands)
 items. Copying stays enabled in read-only mode.
 
+## The clipboard pipeline
+
+The commands go through CKEditor's clipboard pipeline, like Ctrl+C and Ctrl+V, so other plugins handle the content as
+usual:
+
+- Copied content goes through `outputTransformation` of `ClipboardPipeline`, and `clipboardOutput` of the editing view
+  document.
+- Pasted content goes through `clipboardInput` of the editing view document, then `inputTransformation` and
+  `contentInsertion` of `ClipboardPipeline`. So paste from Office cleans up content from Word, and image upload uploads
+  the images on the clipboard (they are passed as files, as the browser passes them on Ctrl+V).
+- Pasting moves the selection to the pasted content, as Ctrl+V does. It is one undo step.
+
 ::: warning Secure contexts only
 The commands use the asynchronous Clipboard API, so they work only on HTTPS or `localhost`. The browser may ask for
-permission to read the clipboard when pasting.
+permission to read the clipboard when pasting. When it does not allow it, the command fails: buttons and menu items
+show a warning with the `Notification` plugin.
 :::
 
 ## Toolbar buttons

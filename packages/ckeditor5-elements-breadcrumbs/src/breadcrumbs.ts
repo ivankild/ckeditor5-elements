@@ -16,9 +16,10 @@ import BreadcrumbsView, { type BreadcrumbsViewExecuteEvent } from './breadcrumbs
  */
 export interface BreadcrumbsConfig {
 	/**
-	 * Returns the items of the menu that opens when a breadcrumb is clicked, for the element of the breadcrumb. With
-	 * `ElementContextMenu`, these are the same items as in its `elementContextMenu` option: commands, submenus and `'|'`
-	 * separators. Without this option, or without a loaded `ElementContextMenu` plugin, breadcrumbs cannot be clicked.
+	 * Returns the items of the menu that opens when a breadcrumb is clicked, for the element of the breadcrumb: the
+	 * same items as in the `elementContextMenu` option (commands, submenus and `'|'` separators; see `ElementMenuConfig`
+	 * in `ckeditor5-elements-core`), so one callback can serve both. Without this option, or without a loaded
+	 * `ElementMenu` plugin, breadcrumbs cannot be clicked.
 	 */
 	menu?: BreadcrumbsMenuItems;
 }
@@ -32,7 +33,7 @@ export interface BreadcrumbsConfig {
  *
  * Clicking is configured only by the `breadcrumbs.menu` editor config option (see {@link BreadcrumbsConfig}): with it,
  * the items are buttons that open a menu of their element; without it, they are labels. The menu is shown by the
- * `ElementContextMenu` plugin from `ckeditor5-elements-context-menu`, which is used through the
+ * `ElementMenu` plugin from `ckeditor5-elements-core` (also loaded by `ElementContextMenu`), which is used through the
  * {@link BreadcrumbsMenu} interface, without a dependency on that package.
  */
 export default class Breadcrumbs extends Plugin {
@@ -110,11 +111,11 @@ export default class Breadcrumbs extends Plugin {
 	}
 
 	/**
-	 * Returns the plugin that shows menus: `ElementContextMenu`, when it is loaded.
+	 * Returns the plugin that shows menus: `ElementMenu`, when it is loaded.
 	 */
 	private _getMenu(): BreadcrumbsMenu | null {
 		const plugins = this.editor.plugins;
-		const plugin = plugins.has('ElementContextMenu') ? plugins.get('ElementContextMenu') : null;
+		const plugin = plugins.has('ElementMenu') ? plugins.get('ElementMenu') : null;
 
 		return plugin && isBreadcrumbsMenu(plugin) ? plugin : null;
 	}
@@ -138,7 +139,7 @@ export default class Breadcrumbs extends Plugin {
 }
 
 /**
- * The part of the `ElementContextMenu` plugin (from `ckeditor5-elements-context-menu`) the breadcrumbs use.
+ * The part of the `ElementMenu` plugin (from `ckeditor5-elements-core`) the breadcrumbs use.
  * The breadcrumbs do not depend on that package: the plugin is looked up by name and checked against this interface.
  */
 export interface BreadcrumbsMenu {
@@ -147,7 +148,7 @@ export interface BreadcrumbsMenu {
 
 /**
  * Returns the items of the menu of an element. The breadcrumbs pass them to the menu plugin as they are; for
- * `ElementContextMenu`, they are commands, submenus and `'|'` separators.
+ * `ElementMenu`, they are commands, submenus and `'|'` separators.
  */
 export type BreadcrumbsMenuItems = (element: ModelElement, editor: Editor) => readonly unknown[];
 

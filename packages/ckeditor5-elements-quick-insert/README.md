@@ -6,7 +6,7 @@ position before or after an element, e.g. from the element context menu.
 
 ```ts
 import { QuickInsert } from 'ckeditor5-elements-quick-insert';
-import 'ckeditor5-elements-context-menu/index.css';
+import 'ckeditor5-elements-core/index.css';
 import 'ckeditor5-elements-quick-insert/index.css';
 
 ClassicEditor.create({
@@ -21,7 +21,8 @@ ClassicEditor.create({
 });
 ```
 
-`QuickInsert` loads `ElementContextMenu`, which shows the menu. Commands:
+The menu is shown by the `ElementMenu` plugin of `ckeditor5-elements-core`, which `QuickInsert` loads; this package
+depends only on `ckeditor5-elements-core`. The keystroke is listed in the accessibility help (Alt+0). Commands:
 
 - `quickInsert` takes the target first (a position, an element meaning the position before it, or the selection).
   With an element name, it inserts that element: `editor.execute('quickInsert', position, 'heading1')`. Without one,

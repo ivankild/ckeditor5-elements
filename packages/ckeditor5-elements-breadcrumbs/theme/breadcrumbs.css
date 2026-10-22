@@ -23,6 +23,17 @@
 	align-items: center;
 	gap: 2px 0;
 	min-width: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ck.ck-elements-breadcrumbs__list-item {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
 }
 
 /* Both item kinds: buttons and labels. */
@@ -48,7 +59,7 @@
 }
 
 /* The innermost element: where the cursor is. */
-.ck.ck-elements-breadcrumbs__item:last-child {
+.ck.ck-elements-breadcrumbs__item[aria-current] {
 	color: var(--ck-color-text);
 	font-weight: 600;
 }
@@ -66,13 +77,12 @@
 }
 
 /* A chevron between items, in the gap before each item, so it is not part of a button's hover area. */
-.ck.ck-elements-breadcrumbs__item + .ck.ck-elements-breadcrumbs__item {
+.ck.ck-elements-breadcrumbs__list-item + .ck.ck-elements-breadcrumbs__list-item {
 	position: relative;
 	margin-left: calc(var(--ck-spacing-base) + var(--ck-elements-breadcrumbs-separator-size));
-	overflow: visible;
 }
 
-.ck.ck-elements-breadcrumbs__item + .ck.ck-elements-breadcrumbs__item::before {
+.ck.ck-elements-breadcrumbs__list-item + .ck.ck-elements-breadcrumbs__list-item::before {
 	content: '';
 	position: absolute;
 	top: 50%;

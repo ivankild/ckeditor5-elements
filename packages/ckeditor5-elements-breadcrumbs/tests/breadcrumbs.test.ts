@@ -14,7 +14,7 @@ import BreadcrumbLabelView from '../src/breadcrumbLabelView.js';
 import Breadcrumbs from '../src/breadcrumbs.js';
 import BreadcrumbsView from '../src/breadcrumbsView.js';
 import { ElementClipboard, type ElementCopyCommand } from 'ckeditor5-elements-clipboard';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import { ElementMenu } from 'ckeditor5-elements-core';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 
 describe('Breadcrumbs', () => {
@@ -146,23 +146,38 @@ describe('Breadcrumbs', () => {
 			another.destroy();
 		});
 
-		it('do not load the context menu plugin', () => {
-			expect(editor.plugins.has('ElementContextMenu')).toBe(false);
+		it('do not load ElementMenu', () => {
+			expect(editor.plugins.has('ElementMenu')).toBe(false);
+		});
+
+		it('are an ordered list, with the innermost item marked as the current location', () => {
+			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
+
+			const list = view.element!.querySelector('ol')!;
+			const listItems = Array.from(list.children);
+
+			expect(listItems.map(listItem => listItem.tagName)).toEqual(['LI', 'LI']);
+			expect(listItems.map(listItem => listItem.firstElementChild)).toEqual(
+				Array.from(view.items, item => item.element)
+			);
+			expect(Array.from(view.items, item => item.element?.getAttribute('aria-current'))).toEqual([
+				null,
+				'location'
+			]);
 		});
 	});
 
 	describe('views with the menu config', () => {
 		let view: BreadcrumbsView;
-		let contextMenu: ElementContextMenu;
+		let menu: ElementMenu;
 		let copy: ElementCopyCommand;
 
 		beforeEach(async () => {
-			await setUp([Paragraph, Container, Breadcrumbs, ElementContextMenu, ElementClipboard], {
-				breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] },
-				elementContextMenu: (element, editor) => [editor.commands.get('cutElement')]
+			await setUp([Paragraph, Container, Breadcrumbs, ElementMenu, ElementClipboard], {
+				breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
 			});
 
-			contextMenu = editor.plugins.get('ElementContextMenu');
+			menu = editor.plugins.get('ElementMenu');
 			copy = editor.commands.get('copyElement')!;
 			view = plugin.createView();
 			view.render();
@@ -174,7 +189,7 @@ describe('Breadcrumbs', () => {
 			view.destroy();
 		});
 
-		it('show a button per item', () => {
+		it('show a button per item, in a list, with the innermost one marked as the current location', () => {
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 
 			const items = Array.from(view.items);
@@ -182,6 +197,8 @@ describe('Breadcrumbs', () => {
 			expect(view.isClickable).toBe(true);
 			expect(items.every(item => item instanceof BreadcrumbItemView && item.withText)).toBe(true);
 			expect(items.map(item => item.label)).toEqual(['section.container', 'p']);
+			expect(items.map(item => item.element?.parentElement?.tagName)).toEqual(['LI', 'LI']);
+			expect(items.map(item => item.element?.getAttribute('aria-current'))).toEqual([null, 'location']);
 		});
 
 		it('focus() focuses the innermost item', () => {
@@ -192,8 +209,8 @@ describe('Breadcrumbs', () => {
 			expect(document.activeElement).toBe(view.items.last?.element);
 		});
 
-		it('open the configured menu (not the context menu) of the clicked element below its button', () => {
-			const openSpy = vi.spyOn(contextMenu, 'open');
+		it('open the configured menu of the clicked element below its button', () => {
+			const openSpy = vi.spyOn(menu, 'open');
 
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 			const button = view.items.first!;
@@ -204,13 +221,13 @@ describe('Breadcrumbs', () => {
 
 			expect(openSpy).toHaveBeenCalledWith(container, button.element, expect.any(Function));
 
-			const [item] = Array.from(contextMenu.view!.items);
+			const [item] = Array.from(menu.view!.items);
 
 			expect(item instanceof ButtonView && item.label).toBe(copy.title);
 		});
 
 		it('do nothing for an item whose element is gone', () => {
-			const openSpy = vi.spyOn(contextMenu, 'open');
+			const openSpy = vi.spyOn(menu, 'open');
 
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 			const button = view.items.first!;
@@ -234,12 +251,12 @@ describe('Breadcrumbs', () => {
 			expect(plugin.createView().isClickable).toBe(false);
 		});
 
-		it('uses any plugin named ElementContextMenu that has `open()`, passing the configured items', async () => {
+		it('uses any plugin named ElementMenu that has `open()`, passing the configured items', async () => {
 			const open = vi.fn(() => true);
 
 			class MenuLike extends Plugin {
-				public static get pluginName(): 'ElementContextMenu' {
-					return 'ElementContextMenu' as const;
+				public static get pluginName(): 'ElementMenu' {
+					return 'ElementMenu' as const;
 				}
 
 				public open = open;
@@ -263,10 +280,10 @@ describe('Breadcrumbs', () => {
 			view.destroy();
 		});
 
-		it('ignores a plugin named ElementContextMenu without `open()`', async () => {
+		it('ignores a plugin named ElementMenu without `open()`', async () => {
 			class NotAMenu extends Plugin {
-				public static get pluginName(): 'ElementContextMenu' {
-					return 'ElementContextMenu' as const;
+				public static get pluginName(): 'ElementMenu' {
+					return 'ElementMenu' as const;
 				}
 			}
 

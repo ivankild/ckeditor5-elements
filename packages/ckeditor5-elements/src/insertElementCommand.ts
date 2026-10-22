@@ -1,4 +1,4 @@
-import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
 
 /**
  * Inserts an `element` model element and selects it.
@@ -7,9 +7,9 @@ import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elem
  * before that element.
  */
 export default class InsertElementCommand extends ElementOrPositionCommand {
-	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {
+	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
 		const model = this.editor.model;
-		const position = this._getPosition(positionOrElement);
+		const position = this._getPosition(elementOrPosition);
 
 		return !!position && model.canEditAt(position) && model.schema.findAllowedParent(position, 'element') !== null;
 	}
@@ -17,11 +17,11 @@ export default class InsertElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Inserts an `element` model element at the target (or in place of the selected content) and selects it.
 	 */
-	public override execute(positionOrElement?: PositionOrElement): void {
+	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const model = this.editor.model;
-		const position = positionOrElement ? this._getPosition(positionOrElement) : null;
+		const position = elementOrPosition ? this._getPosition(elementOrPosition) : null;
 
-		if (positionOrElement && (!position || !model.canEditAt(position))) {
+		if (elementOrPosition && (!position || !model.canEditAt(position))) {
 			return;
 		}
 

@@ -2,7 +2,7 @@
 	"files": [],
 	"references": [
 		{
-			"path": "packages/ckeditor5-elements-ui"
+			"path": "packages/ckeditor5-elements-core"
 		},
 		{
 			"path": "packages/ckeditor5-elements"

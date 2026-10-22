@@ -1,5 +1,5 @@
 import { type Editor, type ModelElement, type ModelPosition, type ModelWriter } from 'ckeditor5';
-import { ElementOrPositionCommand, type PositionOrElement } from 'ckeditor5-elements-ui';
+import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { insertIcon } from './icons.js';
 
 /**
@@ -31,8 +31,8 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 	 * Returns the names of the model elements allowed at exactly the position (or the selection), in the order they
 	 * were registered. Generic items (such as `$text` or `$block`) and the excluded names are skipped.
 	 */
-	public getAllowedElements(positionOrElement?: PositionOrElement, exclude: readonly string[] = []): string[] {
-		const target = this._getPosition(positionOrElement);
+	public getAllowedElements(elementOrPosition?: ElementOrPosition, exclude: readonly string[] = []): string[] {
+		const target = this._getPosition(elementOrPosition);
 
 		if (!target) {
 			return [];
@@ -49,27 +49,27 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 	 * Returns the position where elements are inserted for the target: the position, the position before the element,
 	 * or the selection.
 	 */
-	public getInsertPosition(positionOrElement?: PositionOrElement): ModelPosition | null {
-		return this._getPosition(positionOrElement);
+	public getInsertPosition(elementOrPosition?: ElementOrPosition): ModelPosition | null {
+		return this._getPosition(elementOrPosition);
 	}
 
 	/**
 	 * Inserts the element named `name` at the target, when the schema allows it there. Without a name, opens the quick
 	 * insert menu for the target (requires the `QuickInsert` plugin).
 	 */
-	public override execute(positionOrElement?: PositionOrElement, name?: string): void {
+	public override execute(elementOrPosition?: ElementOrPosition, name?: string): void {
 		if (name === undefined) {
 			const plugins = this.editor.plugins;
 
 			if (plugins.has('QuickInsert')) {
-				plugins.get('QuickInsert').open(positionOrElement);
+				plugins.get('QuickInsert').open(elementOrPosition);
 			}
 
 			return;
 		}
 
 		const model = this.editor.model;
-		const target = this._getPosition(positionOrElement);
+		const target = this._getPosition(elementOrPosition);
 
 		if (!target || !model.canEditAt(target) || !model.schema.checkChild(target, name)) {
 			return;

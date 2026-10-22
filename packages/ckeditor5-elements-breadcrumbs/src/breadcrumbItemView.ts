@@ -9,7 +9,11 @@ export default class BreadcrumbItemView extends ButtonView {
 	 */
 	public readonly viewElement: ViewElement;
 
-	constructor(locale: Locale | undefined, { label, viewElement }: BreadcrumbItem) {
+	constructor(
+		locale: Locale | undefined,
+		{ label, viewElement }: BreadcrumbItem,
+		{ isCurrent = false }: BreadcrumbItemViewOptions = {}
+	) {
 		super(locale);
 
 		this.viewElement = viewElement;
@@ -18,10 +22,21 @@ export default class BreadcrumbItemView extends ButtonView {
 
 		this.extendTemplate({
 			attributes: {
-				class: 'ck-elements-breadcrumbs__item'
+				class: 'ck-elements-breadcrumbs__item',
+				...(isCurrent ? { 'aria-current': 'location' } : {})
 			}
 		});
 	}
+}
+
+/**
+ * The options of {@link BreadcrumbItemView} and {@link BreadcrumbLabelView}.
+ */
+export interface BreadcrumbItemViewOptions {
+	/**
+	 * Whether the item is the innermost element (where the cursor is). It is marked with `aria-current="location"`.
+	 */
+	isCurrent?: boolean;
 }
 
 /**

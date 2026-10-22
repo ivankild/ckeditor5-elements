@@ -1,9 +1,9 @@
 import { ButtonView, keyCodes, type KeystrokeInfo } from 'ckeditor5';
 import { createPlainView } from '../../../testUtils/editor.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import ElementContextMenuView from '../src/elementContextMenuView.js';
+import ElementMenuView from '../src/elementMenuView.js';
 
-function press(view: ElementContextMenuView, keyCode: number, shiftKey = false): void {
+function press(view: ElementMenuView, keyCode: number, shiftKey = false): void {
 	const data: KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } = {
 		keyCode,
 		shiftKey,
@@ -25,13 +25,13 @@ function createButton(label: string): ButtonView {
 	return button;
 }
 
-describe('ElementContextMenuView', () => {
-	let view: ElementContextMenuView;
+describe('ElementMenuView', () => {
+	let view: ElementMenuView;
 	let first: ButtonView;
 	let second: ButtonView;
 
 	beforeEach(() => {
-		view = new ElementContextMenuView();
+		view = new ElementMenuView();
 		first = createButton('First');
 		second = createButton('Second');
 
@@ -48,7 +48,7 @@ describe('ElementContextMenuView', () => {
 
 	it('renders a menu', () => {
 		expect(view.element?.getAttribute('role')).toBe('menu');
-		expect(view.element?.classList.contains('ck-elements-context-menu')).toBe(true);
+		expect(view.element?.classList.contains('ck-elements-menu')).toBe(true);
 		expect(view.element?.children).toHaveLength(3);
 	});
 
@@ -91,5 +91,23 @@ describe('ElementContextMenuView', () => {
 		press(view, keyCodes.esc);
 
 		expect(cancelSpy).toHaveBeenCalled();
+	});
+
+	it('has no accessible name unless given', () => {
+		expect(view.element?.hasAttribute('aria-label')).toBe(false);
+
+		const named = new ElementMenuView(undefined, { label: 'Element menu' });
+
+		named.render();
+		expect(named.element?.getAttribute('aria-label')).toBe('Element menu');
+		named.destroy();
+	});
+
+	it('prevents the native context menu in it', () => {
+		const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+
+		first.element!.dispatchEvent(event);
+
+		expect(event.defaultPrevented).toBe(true);
 	});
 });

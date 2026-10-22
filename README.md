@@ -1,14 +1,16 @@
 # CKEditor 5 Elements
 
-| Package                                                                       | Description                                                         | Depends on                                |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------- |
-| [`ckeditor5-elements-ui`](packages/ckeditor5-elements-ui)                     | `ElementOrPositionCommand`, `ElementCommand` and their button views | –                                         |
-| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | An example element feature                                          | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element             | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators                | `ckeditor5-elements-ui`                   |
-| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus    | `ckeditor5-elements-ui`, `…-context-menu` |
-| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu     | – (uses the menu through an interface)    |
-| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference     |                                           |
+Element-level features for CKEditor 5 v49 or later.
+
+| Package                                                                       | Description                                                        | Depends on                             |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------- |
+| [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)                 | Element commands, their button views, and the `ElementMenu` plugin | –                                      |
+| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | An example element feature                                         | `ckeditor5-elements-core`              |
+| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element            | `ckeditor5-elements-core`              |
+| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators               | `ckeditor5-elements-core`              |
+| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus   | `ckeditor5-elements-core`              |
+| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu    | – (uses `ElementMenu` by an interface) |
+| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference    |                                        |
 
 ## Development
 

@@ -1,4 +1,4 @@
-import type { ElementCommand } from 'ckeditor5-elements-ui';
+import type { ElementCommand } from 'ckeditor5-elements-core';
 import type { Elements, ElementsEditing, ElementsUI, InsertElementCommand } from './index.js';
 
 declare module 'ckeditor5' {

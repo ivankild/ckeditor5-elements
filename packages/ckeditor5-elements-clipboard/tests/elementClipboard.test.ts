@@ -1,4 +1,14 @@
-import { Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
+import {
+	ClipboardPipeline,
+	Paragraph,
+	_getModelData,
+	_setModelData,
+	type ClassicEditor,
+	type ClipboardContentInsertionEvent,
+	type ClipboardInputTransformationEvent,
+	type ClipboardOutputTransformationEvent,
+	type ModelElement
+} from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import ElementClipboard from '../src/elementClipboard.js';
 import { copyIcon, cutIcon, pasteAfterIcon, pasteBeforeIcon, pasteIcon } from '../src/icons.js';
@@ -324,6 +334,122 @@ describe('ElementClipboard', () => {
 			await editor.execute('pasteElement', child(0));
 
 			expect(getData()).toBe('<paragraph>foo</paragraph><paragraph>bar</paragraph>');
+		});
+	});
+
+	describe('clipboard pipeline', () => {
+		let pipeline: ClipboardPipeline;
+
+		beforeEach(() => {
+			pipeline = editor.plugins.get(ClipboardPipeline);
+			_setModelData(editor.model, '<paragraph>foo</paragraph><paragraph>b[]ar</paragraph>');
+		});
+
+		it('lets other plugins change the copied content', async () => {
+			const write = vi.spyOn(navigator.clipboard, 'write').mockResolvedValue();
+			const methods: string[] = [];
+
+			pipeline.on<ClipboardOutputTransformationEvent>('outputTransformation', (evt, data) => {
+				methods.push(data.method);
+				editor.model.change(writer => {
+					writer.insertText('!', writer.createPositionAt(data.content.getChild(0)!, 'end'));
+				});
+			});
+
+			await editor.execute('cutElement', child(0));
+
+			const [item] = write.mock.calls[0][0];
+
+			expect(methods).toEqual(['copy']);
+			expect(await (await item.getType('text/html')).text()).toBe('<p>foo!</p>');
+			expect(await (await item.getType('text/plain')).text()).toBe('foo!');
+			expect(getData()).toBe('<paragraph>bar</paragraph>');
+		});
+
+		it('pastes like Ctrl+V does, so other plugins can process the pasted content', async () => {
+			vi.spyOn(navigator.clipboard, 'read').mockResolvedValue([
+				clipboardItem({ 'text/html': '<p>new</p>', 'text/plain': 'new' })
+			]);
+
+			const transformations: ClipboardInputTransformationEvent['args'][0][] = [];
+
+			pipeline.on<ClipboardInputTransformationEvent>(
+				'inputTransformation',
+				(evt, data) => {
+					transformations.push(data);
+					data.content = editor.data.htmlProcessor.toView('<p>changed</p>');
+				},
+				{ priority: 'high' }
+			);
+
+			await editor.execute('pasteElementAfter', child(0));
+
+			expect(transformations).toHaveLength(1);
+			expect(transformations[0]).toMatchObject({ method: 'paste' });
+			expect(transformations[0]?.dataTransfer.getData('text/plain')).toBe('new');
+			expect(transformations[0]?.targetRanges).toHaveLength(1);
+			expect(getData()).toBe(
+				'<paragraph>foo</paragraph><paragraph>changed</paragraph><paragraph>bar</paragraph>'
+			);
+		});
+
+		it('inserts the content at the target, then moves the selection to the pasted content', async () => {
+			vi.spyOn(navigator.clipboard, 'read').mockResolvedValue([clipboardItem({ 'text/html': '<p>new</p>' })]);
+
+			let insertionSelection = '';
+
+			pipeline.on<ClipboardContentInsertionEvent>(
+				'contentInsertion',
+				() => {
+					insertionSelection = _getModelData(editor.model);
+				},
+				{ priority: 'high' }
+			);
+
+			await editor.execute('pasteElementAfter', child(0));
+
+			expect(insertionSelection).toBe('<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>');
+			expect(_getModelData(editor.model)).toBe(
+				'<paragraph>foo</paragraph><paragraph>new[]</paragraph><paragraph>bar</paragraph>'
+			);
+		});
+
+		it('passes the images on the clipboard as files', async () => {
+			vi.spyOn(navigator.clipboard, 'read').mockResolvedValue([
+				clipboardItem({ 'text/html': '<p>new</p>', 'image/png': 'png' })
+			]);
+
+			const files: File[] = [];
+
+			pipeline.on<ClipboardInputTransformationEvent>(
+				'inputTransformation',
+				(evt, data) => {
+					files.push(...data.dataTransfer.files);
+				},
+				{ priority: 'high' }
+			);
+
+			await editor.execute('pasteElement', child(0));
+
+			expect(files).toHaveLength(1);
+			expect(files[0]).toMatchObject({ name: 'image.png', type: 'image/png' });
+		});
+
+		it('pastes in one undo step', async () => {
+			vi.spyOn(navigator.clipboard, 'read').mockResolvedValue([
+				clipboardItem({ 'text/html': '<p>one</p><p>two</p>' })
+			]);
+
+			const batches = new Set<unknown>();
+
+			editor.model.document.on('change:data', (evt, batch) => {
+				batches.add(batch);
+			});
+
+			await editor.execute('pasteElement', child(0));
+
+			expect(getData()).toBe('<paragraph>one</paragraph><paragraph>two</paragraph><paragraph>bar</paragraph>');
+			expect(batches.size).toBe(1);
 		});
 	});
 });

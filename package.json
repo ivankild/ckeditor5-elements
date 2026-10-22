@@ -16,7 +16,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"typecheck": "pnpm build && tsc -p packages/ckeditor5-elements-ui/tests && tsc -p packages/ckeditor5-elements/tests && tsc -p packages/ckeditor5-elements-breadcrumbs/tests && tsc -p packages/ckeditor5-elements-clipboard/tests && tsc -p packages/ckeditor5-elements-context-menu/tests && tsc -p packages/ckeditor5-elements-quick-insert/tests && tsc -p docs && tsc -p .",
+		"typecheck": "pnpm build && tsc -p packages/ckeditor5-elements-core/tests && tsc -p packages/ckeditor5-elements/tests && tsc -p packages/ckeditor5-elements-breadcrumbs/tests && tsc -p packages/ckeditor5-elements-clipboard/tests && tsc -p packages/ckeditor5-elements-context-menu/tests && tsc -p packages/ckeditor5-elements-quick-insert/tests && tsc -p docs && tsc -p .",
 		"docs:dev": "pnpm --filter docs dev",
 		"docs:build": "pnpm --filter docs build",
 		"lint:css": "node scripts/checkCssVariables.js"

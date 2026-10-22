@@ -1,6 +1,6 @@
 # ckeditor5-elements
 
-An example element feature for CKEditor 5, built on `ckeditor5-elements-ui`.
+An example element feature for CKEditor 5, built on `ckeditor5-elements-core`.
 
 `Elements` loads `ElementsEditing` (the `element` model element, converted to `<div class="ck-element">`, and the
 `insertElement` command) and `ElementsUI` (the `element` toggle button and the `insertElement` button).

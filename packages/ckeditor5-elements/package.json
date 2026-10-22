@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements",
 	"version": "0.1.0",
-	"description": "An example element feature for CKEditor 5, built on ckeditor5-elements-ui.",
+	"description": "An example element feature for CKEditor 5, built on ckeditor5-elements-core.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -22,14 +22,15 @@
 	},
 	"files": [
 		"dist",
+		"src",
 		"README.md"
 	],
 	"sideEffects": false,
 	"dependencies": {
-		"ckeditor5-elements-ui": "workspace:^"
+		"ckeditor5-elements-core": "workspace:^"
 	},
 	"peerDependencies": {
-		"ckeditor5": ">=46.0.0"
+		"ckeditor5": ">=49.0.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

@@ -10,9 +10,21 @@ import {
 } from 'ckeditor5';
 
 /**
- * A vertical menu of views. Arrow keys and Tab move the focus between focusable items, Esc fires `cancel`.
+ * The options of {@link ElementMenuView}.
  */
-export default class ElementContextMenuView extends View {
+export interface ElementMenuViewOptions {
+	/**
+	 * The accessible name of the menu (`aria-label`).
+	 */
+	label?: string;
+}
+
+/**
+ * A vertical menu of views. Arrow keys and Tab move the focus between focusable items, Esc fires `cancel`.
+ *
+ * Right-clicking the menu does not open the native context menu.
+ */
+export default class ElementMenuView extends View {
 	/**
 	 * The menu items.
 	 */
@@ -31,7 +43,7 @@ export default class ElementContextMenuView extends View {
 	private readonly _focusables: ViewCollection<FocusableView>;
 	private readonly _focusCycler: FocusCycler;
 
-	constructor(locale?: Locale) {
+	constructor(locale?: Locale, { label }: ElementMenuViewOptions = {}) {
 		super(locale);
 
 		this.items = this.createCollection();
@@ -55,11 +67,19 @@ export default class ElementContextMenuView extends View {
 		this.setTemplate({
 			tag: 'div',
 			attributes: {
-				class: ['ck', 'ck-elements-context-menu'],
+				class: ['ck', 'ck-elements-menu'],
 				role: 'menu',
-				tabindex: '-1'
+				tabindex: '-1',
+				...(label ? { 'aria-label': label } : {})
 			},
-			children: this.items
+			children: this.items,
+			on: {
+				// A menu inside a menu would be confusing. This also covers the keyboard (the menu key, Shift+F10), which
+				// fires `contextmenu` on the focused menu item.
+				contextmenu: this.bindTemplate.to(domEvent => {
+					domEvent.preventDefault();
+				})
+			}
 		});
 	}
 

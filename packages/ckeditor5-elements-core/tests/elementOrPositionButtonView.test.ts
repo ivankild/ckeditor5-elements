@@ -1,4 +1,11 @@
-import { Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
+import {
+	Notification,
+	Paragraph,
+	_getModelData,
+	_setModelData,
+	type ClassicEditor,
+	type ModelElement
+} from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementButtonView from '../src/elementButtonView.js';
@@ -108,6 +115,16 @@ describe('ElementOrPositionButtonView', () => {
 			expect(view!.isEnabled).toBe(false);
 		});
 
+		it('is disabled while the command is force-disabled', () => {
+			command.forceDisabled('test');
+
+			expect(view!.isEnabled).toBe(false);
+
+			command.clearForceDisabled('test');
+
+			expect(view!.isEnabled).toBe(true);
+		});
+
 		it('executes the command for the target', () => {
 			const paragraph = child(1);
 
@@ -139,5 +156,60 @@ describe('ElementOrPositionButtonView', () => {
 
 		expect(view.label).toBe('Generic');
 		expect(view.isEnabled).toBe(true);
+	});
+
+	describe('failed commands', () => {
+		class FailingCommand extends ElementOrPositionCommand {
+			public override execute(): Promise<void> {
+				return Promise.reject(new Error('Write permission denied.'));
+			}
+		}
+
+		it('are reported with a warning of the Notification plugin', async () => {
+			const otherEditor = await createEditor({ plugins: [Paragraph, Notification] });
+			const failing = new FailingCommand(otherEditor);
+			const warnings: unknown[] = [];
+
+			failing.title = 'Copy';
+			failing.refresh();
+			otherEditor.plugins.get(Notification).on(
+				'show:warning',
+				(evt, data) => {
+					warnings.push(data);
+					evt.stop();
+				},
+				{ priority: 'high' }
+			);
+
+			view = new ElementOrPositionButtonView(otherEditor.locale, failing);
+			view.fire('execute');
+			await new Promise(resolve => setTimeout(resolve, 0));
+
+			expect(warnings).toEqual([
+				expect.objectContaining({ message: 'Write permission denied.', title: 'Could not complete "Copy".' })
+			]);
+
+			view.destroy();
+			view = undefined;
+			await otherEditor.destroy();
+		});
+
+		it('are not handled without the Notification plugin', async () => {
+			const failing = new FailingCommand(editor);
+			const unhandled: unknown[] = [];
+			const onUnhandledRejection = (event: PromiseRejectionEvent): void => {
+				unhandled.push(event.reason);
+				event.preventDefault();
+			};
+
+			window.addEventListener('unhandledrejection', onUnhandledRejection);
+			failing.refresh();
+			view = new ElementOrPositionButtonView(editor.locale, failing);
+			view.fire('execute');
+			await new Promise(resolve => setTimeout(resolve, 50));
+			window.removeEventListener('unhandledrejection', onUnhandledRejection);
+
+			expect(unhandled).toEqual([new Error('Write permission denied.')]);
+		});
 	});
 });

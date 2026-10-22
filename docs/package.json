@@ -15,7 +15,7 @@
 		"ckeditor5-elements-clipboard": "workspace:*",
 		"ckeditor5-elements-context-menu": "workspace:*",
 		"ckeditor5-elements-quick-insert": "workspace:*",
-		"ckeditor5-elements-ui": "workspace:*"
+		"ckeditor5-elements-core": "workspace:*"
 	},
 	"devDependencies": {
 		"typedoc": "^0.28.20",

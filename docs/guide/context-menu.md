@@ -1,12 +1,20 @@
 # Context menu
 
-`ElementContextMenu` (from `ckeditor5-elements-context-menu`) shows a menu when an element is right-clicked. It is
-configured only by the `elementContextMenu` editor option: a callback that gets the right-clicked model element and the
-editor, and returns the items.
+`ElementContextMenu` (from `ckeditor5-elements-context-menu`) shows a menu when an element is right-clicked, or when
+the context menu is opened with the keyboard. It is configured only by the `elementContextMenu` editor option: a
+callback that gets the model element and the editor, and returns the items.
 
 ```ts
+import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import 'ckeditor5-elements-core/index.css';
+
+// In the editor config:
 elementContextMenu: (element, editor) => [/* commands, submenus and '|' separators */];
 ```
+
+The menu is shown by the `ElementMenu` plugin from `ckeditor5-elements-core` (loaded by `ElementContextMenu`), which
+also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. Its styles are in
+`ckeditor5-elements-core/index.css`.
 
 - A **command** (any [`ElementOrPositionCommand`](./commands)) is shown as a button with its title and icon, enabled
   and "on" according to its state for the element. Choosing it executes it for the element.
@@ -14,6 +22,11 @@ elementContextMenu: (element, editor) => [/* commands, submenus and '|' separato
 - `'|'` is a **separator**. Separators at the start or the end, and repeated ones, are not shown.
 - Missing items, e.g. `editor.commands.get()` of a plugin that is not loaded, are skipped.
 - No items means the native context menu.
+
+The menu closes when its element is removed, e.g. by another user. A command that fails (e.g. a clipboard command when
+the browser does not allow reading the clipboard) is reported with a warning of the `Notification` plugin, titled
+`Could not complete "<command title>".` By default, CKEditor shows only the message, with `window.alert()`; a custom
+notification UI gets the title too.
 
 All the commands of these packages have icons. The icons are exported too, e.g. for submenus:
 `insertIcon`, `insertBeforeIcon` and `insertAfterIcon` from `ckeditor5-elements-quick-insert`, and `copyIcon`,
@@ -53,5 +66,8 @@ paragraph can be pasted over, and other elements get the native menu.
 
 ## Keyboard
 
-Arrow keys and Tab move between the items, the right arrow opens a submenu and the left arrow closes it. Esc closes the
-menu and returns the focus to the editor.
+The context menu key, or Shift+F10, opens the menu of the element at the cursor (or of the selected element, e.g. an
+image), next to it. Shift+F10 is listed in the accessibility help (Alt+0).
+
+In the menu, arrow keys and Tab move between the items, the right arrow opens a submenu and the left arrow closes it.
+Esc closes the menu and returns the focus to the editor.

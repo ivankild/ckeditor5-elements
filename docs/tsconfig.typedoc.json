@@ -8,7 +8,7 @@
 		"declarationMap": false,
 		"noEmit": true,
 		"paths": {
-			"ckeditor5-elements-ui": ["../packages/ckeditor5-elements-ui/src/index.ts"],
+			"ckeditor5-elements-core": ["../packages/ckeditor5-elements-core/src/index.ts"],
 			"ckeditor5-elements": ["../packages/ckeditor5-elements/src/index.ts"],
 			"ckeditor5-elements-breadcrumbs": ["../packages/ckeditor5-elements-breadcrumbs/src/index.ts"],
 			"ckeditor5-elements-clipboard": ["../packages/ckeditor5-elements-clipboard/src/index.ts"],

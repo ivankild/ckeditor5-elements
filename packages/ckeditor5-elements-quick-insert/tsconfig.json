@@ -7,10 +7,7 @@
 	"include": ["src"],
 	"references": [
 		{
-			"path": "../ckeditor5-elements-ui"
-		},
-		{
-			"path": "../ckeditor5-elements-context-menu"
+			"path": "../ckeditor5-elements-core"
 		}
 	]
 }

@@ -5,7 +5,7 @@ import {
 	type ModelNode,
 	type ModelWriter
 } from 'ckeditor5';
-import ElementOrPositionCommand, { type PositionOrElement } from './elementOrPositionCommand.js';
+import ElementOrPositionCommand, { type ElementOrPosition } from './elementOrPositionCommand.js';
 
 /**
  * A command that toggles an element.
@@ -40,9 +40,9 @@ export default class ElementCommand extends ElementOrPositionCommand {
 		this.set('isOn', false);
 	}
 
-	public override refresh(positionOrElement?: PositionOrElement): void {
-		this.isOn = this._isOnFor(positionOrElement);
-		super.refresh(positionOrElement);
+	public override refresh(elementOrPosition?: ElementOrPosition): void {
+		this.isOn = this._isOnFor(elementOrPosition);
+		super.refresh(elementOrPosition);
 	}
 
 	/**
@@ -61,9 +61,9 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	 * Unwraps the closest element that satisfies {@link isElement}. If there is none,
 	 * wraps the given element (or the position's parent) with a new element.
 	 */
-	public override execute(positionOrElement?: PositionOrElement): void {
+	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const model = this.editor.model;
-		const target = this._getPositionOrElement(positionOrElement);
+		const target = this._getElementOrPosition(elementOrPosition);
 
 		if (!target || !model.canEditAt(target)) {
 			return;
@@ -93,8 +93,8 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Enabled when the target can be edited and the toggle is allowed by the schema.
 	 */
-	protected override _isEnabledFor(positionOrElement?: PositionOrElement): boolean {
-		const target = this._getPositionOrElement(positionOrElement);
+	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+		const target = this._getElementOrPosition(elementOrPosition);
 		const element = target && this._findElement(target);
 
 		return (
@@ -107,8 +107,8 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * "On" when the target is (in) a matching element.
 	 */
-	protected override _isOnFor(positionOrElement?: PositionOrElement): boolean {
-		const target = this._getPositionOrElement(positionOrElement);
+	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
+		const target = this._getElementOrPosition(elementOrPosition);
 
 		return !!target && !!this._findElement(target);
 	}
@@ -116,8 +116,8 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Returns the element that would be wrapped: the given element, or the position's parent. Never a root.
 	 */
-	private _getNodeToWrap(positionOrElement: PositionOrElement): ModelElement | null {
-		const node = positionOrElement.is('position') ? positionOrElement.parent : positionOrElement;
+	private _getNodeToWrap(elementOrPosition: ElementOrPosition): ModelElement | null {
+		const node = elementOrPosition.is('position') ? elementOrPosition.parent : elementOrPosition;
 
 		return node.is('element') && !node.is('rootElement') ? node : null;
 	}
@@ -125,8 +125,8 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Whether the schema allows the new element in place of the node to wrap, and the node inside the new element.
 	 */
-	private _canWrap(positionOrElement: PositionOrElement): boolean {
-		const node = this._getNodeToWrap(positionOrElement);
+	private _canWrap(elementOrPosition: ElementOrPosition): boolean {
+		const node = this._getNodeToWrap(elementOrPosition);
 
 		if (!node) {
 			return false;
@@ -160,10 +160,10 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	 * Returns the closest element that satisfies {@link isElement}: the element itself or its ancestor,
 	 * or the position's parent or its ancestor. Root elements are skipped, as they cannot be unwrapped.
 	 */
-	private _findElement(positionOrElement: PositionOrElement): ModelElement | null {
-		const ancestors = positionOrElement.is('position')
-			? positionOrElement.getAncestors()
-			: positionOrElement.getAncestors({ includeSelf: true });
+	private _findElement(elementOrPosition: ElementOrPosition): ModelElement | null {
+		const ancestors = elementOrPosition.is('position')
+			? elementOrPosition.getAncestors()
+			: elementOrPosition.getAncestors({ includeSelf: true });
 
 		for (const node of ancestors.reverse()) {
 			if (node.is('element') && !node.is('rootElement') && this.isElement(node)) {

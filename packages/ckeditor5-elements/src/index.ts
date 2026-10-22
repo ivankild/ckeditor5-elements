@@ -1,6 +1,6 @@
 /**
  * An example element feature (`Elements`: the `element` model element, the `insertElement` and `element` commands
- * and buttons). The commands and button views it uses are in `ckeditor5-elements-ui`.
+ * and buttons). The commands and button views it uses are in `ckeditor5-elements-core`.
  *
  * @module ckeditor5-elements
  */
