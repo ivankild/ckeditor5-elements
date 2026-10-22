@@ -38,6 +38,7 @@ export default class ElementCommand extends ElementOrPositionCommand {
 		super(editor);
 
 		this.set('isOn', false);
+		this.isToggleable = true;
 	}
 
 	public override refresh(elementOrPosition?: ElementOrPosition): void {

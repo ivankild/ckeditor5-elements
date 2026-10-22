@@ -52,6 +52,13 @@ export default class ElementOrPositionCommand extends Command {
 	declare public isForceDisabled: boolean;
 
 	/**
+	 * Whether the command can be "on" (see {@link _isOnFor}), e.g. because it toggles something. Its buttons then tell
+	 * assistive technology whether it is on: toolbar buttons with `aria-pressed`, menu items with `aria-checked`.
+	 * Defaults to `false`; `ElementCommand` sets it.
+	 */
+	public isToggleable = false;
+
+	/**
 	 * The ids the command is disabled with by `forceDisabled()`.
 	 */
 	private readonly _forceDisabledIds = new Set<string>();
@@ -141,7 +148,8 @@ export default class ElementOrPositionCommand extends Command {
 	}
 
 	/**
-	 * Whether the command is "on" for the target. By default: never.
+	 * Whether the command is "on" for the target. By default: never. Commands that override it should set
+	 * {@link isToggleable}.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Subclasses use the target.
 	protected _isOnFor(elementOrPosition?: ElementOrPosition): boolean {

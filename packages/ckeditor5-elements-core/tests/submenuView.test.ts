@@ -1,5 +1,6 @@
 import { ButtonView, keyCodes, type KeystrokeInfo } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import ElementMenuView from '../src/elementMenuView.js';
 import SubmenuView from '../src/submenuView.js';
 
 function keystroke(keyCode: number): KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } {
@@ -115,5 +116,25 @@ describe('SubmenuView', () => {
 
 		second.fire('execute');
 		expect(executeSpy).toHaveBeenCalledTimes(1);
+	});
+
+	it('closes when another submenu of the same menu opens', () => {
+		const menu = new ElementMenuView();
+		const one = new SubmenuView(undefined, 'One', [createButton('First')]);
+		const other = new SubmenuView(undefined, 'Other', [createButton('Second')]);
+
+		menu.items.addMany([one, other]);
+		menu.render();
+		document.body.append(menu.element!);
+
+		one.open();
+		other.open();
+
+		expect(one.isOpen).toBe(false);
+		expect(other.isOpen).toBe(true);
+		expect(document.activeElement).toBe(other.panelView.items.first?.element);
+
+		menu.element!.remove();
+		menu.destroy();
 	});
 });

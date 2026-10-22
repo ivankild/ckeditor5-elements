@@ -66,4 +66,15 @@ describe('ElementButtonView', () => {
 		expect(command.isOn).toBe(true);
 		expect(focusSpy).toHaveBeenCalled();
 	});
+
+	it('tells assistive technology whether it is on', () => {
+		_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+
+		expect(view.isToggleable).toBe(true);
+		expect(view.element?.getAttribute('aria-pressed')).toBe('false');
+
+		_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
+
+		expect(view.element?.getAttribute('aria-pressed')).toBe('true');
+	});
 });

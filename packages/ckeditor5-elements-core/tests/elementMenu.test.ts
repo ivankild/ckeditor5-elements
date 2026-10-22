@@ -169,6 +169,29 @@ describe('ElementMenu', () => {
 			expect(buttons()[0]?.isEnabled).toBe(false);
 		});
 
+		it('are checkable menu items for toggleable commands, so assistive technology knows they are on', async () => {
+			await setUp(() => [containerCommand]);
+
+			open(child(0));
+			expect(buttons()[0]?.element?.getAttribute('role')).toBe('menuitemcheckbox');
+			expect(buttons()[0]?.element?.getAttribute('aria-checked')).toBe('true');
+
+			open(child(1));
+			expect(buttons()[0]?.element?.getAttribute('aria-checked')).toBe('false');
+		});
+
+		it('are plain menu items for other commands', async () => {
+			await setUp();
+
+			const plain = new ElementCommand(editor);
+
+			plain.isToggleable = false;
+			menu.open(child(0), new DOMRect(), () => [plain]);
+
+			expect(buttons()[0]?.element?.getAttribute('role')).toBe('menuitem');
+			expect(buttons()[0]?.element?.hasAttribute('aria-checked')).toBe(false);
+		});
+
 		it('execute the command for the element, close the menu and focus the editor', async () => {
 			await setUp(() => [containerCommand]);
 			const focusSpy = vi.spyOn(editor.editing.view, 'focus');
@@ -359,6 +382,41 @@ describe('ElementMenu', () => {
 
 			expect(menu.view).toBeNull();
 			expect(focusSpy).toHaveBeenCalled();
+		});
+
+		it('closes on Esc and focuses `returnFocusTo`', async () => {
+			await setUp();
+			const opener = { focus: vi.fn() };
+			const focusSpy = vi.spyOn(editor.editing.view, 'focus');
+
+			menu.open(child(0), new DOMRect(), config, { returnFocusTo: opener });
+			menu.view!.fire('cancel');
+
+			expect(opener.focus).toHaveBeenCalled();
+			expect(focusSpy).not.toHaveBeenCalled();
+		});
+
+		it('calls `onHide` once when the menu closes, for any reason', async () => {
+			await setUp();
+			const onHide = vi.fn();
+
+			menu.open(child(0), new DOMRect(), config, { onHide });
+			expect(onHide).not.toHaveBeenCalled();
+
+			// Another menu replaces it.
+			open(child(1));
+			expect(onHide).toHaveBeenCalledTimes(1);
+
+			menu.open(child(0), new DOMRect(), config, { onHide });
+			menu.view!.fire('cancel');
+			expect(onHide).toHaveBeenCalledTimes(2);
+
+			menu.open(child(0), new DOMRect(), config, { onHide });
+			document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+			expect(onHide).toHaveBeenCalledTimes(3);
+
+			menu.hide();
+			expect(onHide).toHaveBeenCalledTimes(3);
 		});
 
 		it('closes when clicking outside', async () => {

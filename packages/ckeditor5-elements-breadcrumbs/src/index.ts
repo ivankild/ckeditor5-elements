@@ -9,7 +9,8 @@ export {
 	default as Breadcrumbs,
 	type BreadcrumbsConfig,
 	type BreadcrumbsMenu,
-	type BreadcrumbsMenuItems
+	type BreadcrumbsMenuItems,
+	type BreadcrumbsMenuOptions
 } from './breadcrumbs.js';
 
 // Views.

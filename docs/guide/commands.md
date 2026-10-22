@@ -27,6 +27,8 @@ class HighlightCommand extends ElementOrPositionCommand {
 		super(editor);
 
 		this.title = 'Highlight';
+		// It can be "on", so its buttons tell screen readers whether it is.
+		this.isToggleable = true;
 	}
 
 	public override execute(target?: ElementOrPosition): void {
@@ -75,7 +77,9 @@ new ElementOrPositionButtonView(locale, command, { withText: true });
 new ElementOrPositionButtonView(locale, command, { withText: true, target: element });
 ```
 
-`ElementButtonView` is the same for an `ElementCommand`, and also reflects `isOn`. See the
+`ElementButtonView` is the same for an `ElementCommand`, and also reflects `isOn`. For a command with `isToggleable`
+(`ElementCommand` has it), the buttons tell screen readers whether the command is "on": toolbar buttons with
+`aria-pressed`, menu items with `aria-checked`. See the
 [clipboard toolbar example](./clipboard#toolbar-buttons).
 
 When a command returns a rejected promise (e.g. the clipboard commands, when the browser does not allow using the

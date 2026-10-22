@@ -17,8 +17,10 @@ also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) m
 `ckeditor5-elements-core/index.css`.
 
 - A **command** (any [`ElementOrPositionCommand`](./commands)) is shown as a button with its title and icon, enabled
-  and "on" according to its state for the element. Choosing it executes it for the element.
-- A **submenu** is `{ title, icon?, items }`. It is enabled when one of its items is.
+  and "on" according to its state for the element. Choosing it executes it for the element. A toggle (a command with
+  `isToggleable`) is a checkable menu item, so screen readers announce whether it is on.
+- A **submenu** is `{ title, icon?, items }`. It is enabled when one of its items is. Only one submenu is open at a
+  time.
 - `'|'` is a **separator**. Separators at the start or the end, and repeated ones, are not shown.
 - Missing items, e.g. `editor.commands.get()` of a plugin that is not loaded, are skipped.
 - No items means the native context menu.

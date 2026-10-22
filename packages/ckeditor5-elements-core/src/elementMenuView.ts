@@ -22,7 +22,8 @@ export interface ElementMenuViewOptions {
 /**
  * A vertical menu of views. Arrow keys and Tab move the focus between focusable items, Esc fires `cancel`.
  *
- * Right-clicking the menu does not open the native context menu.
+ * Only one submenu (an item with an observable `isOpen`, such as {@link SubmenuView}) is open at a time: opening one
+ * closes the others. Right-clicking the menu does not open the native context menu.
  */
 export default class ElementMenuView extends View {
 	/**
@@ -129,5 +130,31 @@ export default class ElementMenuView extends View {
 		if (item.element) {
 			this.focusTracker.add(item.element);
 		}
+
+		if (isSubmenu(item)) {
+			this.listenTo(item, 'change:isOpen', (evt, name, isOpen: boolean) => {
+				if (isOpen) {
+					this._closeSubmenus(item);
+				}
+			});
+		}
 	}
+
+	/**
+	 * Closes the open submenus, except the given one.
+	 */
+	private _closeSubmenus(except: View): void {
+		for (const item of this.items) {
+			if (item !== except && isSubmenu(item)) {
+				item.isOpen = false;
+			}
+		}
+	}
+}
+
+/**
+ * Whether the item opens a nested menu, like {@link SubmenuView} (not imported here, as it uses this view).
+ */
+function isSubmenu(item: View): item is View & { isOpen: boolean } {
+	return 'isOpen' in item && typeof item.isOpen === 'boolean';
 }

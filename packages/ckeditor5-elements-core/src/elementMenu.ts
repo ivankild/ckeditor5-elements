@@ -61,6 +61,16 @@ export interface ElementMenuShowOptions {
 	 * because the element it is for was removed.
 	 */
 	isObsolete?: () => boolean;
+
+	/**
+	 * What gets the focus when the menu is closed with Esc, e.g. the button that opened the menu. Defaults to the editor.
+	 */
+	returnFocusTo?: { focus(): void };
+
+	/**
+	 * Called when the menu closes, for any reason: Esc, a click outside, an executed item, or another menu replacing it.
+	 */
+	onHide?: () => void;
 }
 
 /**
@@ -69,7 +79,8 @@ export interface ElementMenuShowOptions {
  *
  * The element context menu, the breadcrumbs and quick insert show their menus with it.
  *
- * Items that fire `execute` (e.g. buttons) close the menu. Esc and clicking outside close it too.
+ * Items that fire `execute` (e.g. buttons) close the menu. Esc and clicking outside close it too; Esc returns the focus to
+ * the editor, or to {@link ElementMenuShowOptions.returnFocusTo}.
  */
 export default class ElementMenu extends Plugin {
 	/**
@@ -78,6 +89,7 @@ export default class ElementMenu extends Plugin {
 	public view: ElementMenuView | null = null;
 
 	private _isObsolete: (() => boolean) | null = null;
+	private _onHide: (() => void) | null = null;
 
 	public static get requires(): readonly [typeof ContextualBalloon, typeof Notification] {
 		// The buttons of the menu report failed commands with notifications.
@@ -106,7 +118,7 @@ export default class ElementMenu extends Plugin {
 		element: ModelElement,
 		target: RectSource,
 		config: ElementMenuConfig,
-		{ label = this.editor.t('Element menu'), isObsolete }: ElementMenuShowOptions = {}
+		{ label = this.editor.t('Element menu'), isObsolete, ...options }: ElementMenuShowOptions = {}
 	): boolean {
 		const views = this._createItemViews(config(element, this.editor), element);
 
@@ -114,7 +126,11 @@ export default class ElementMenu extends Plugin {
 			return false;
 		}
 
-		this.show(views, target, { label, isObsolete: () => !isInDocument(element) || !!isObsolete?.() });
+		this.show(views, target, {
+			...options,
+			label,
+			isObsolete: () => !isInDocument(element) || !!isObsolete?.()
+		});
 
 		return true;
 	}
@@ -122,7 +138,11 @@ export default class ElementMenu extends Plugin {
 	/**
 	 * Shows a menu with the given views next to the target (e.g. a button, or a `DOMRect` in viewport coordinates).
 	 */
-	public show(items: View[], target: RectSource, { label, isObsolete }: ElementMenuShowOptions = {}): void {
+	public show(
+		items: View[],
+		target: RectSource,
+		{ label, isObsolete, returnFocusTo, onHide }: ElementMenuShowOptions = {}
+	): void {
 		this.hide();
 
 		const view = new ElementMenuView(this.editor.locale, { label });
@@ -140,7 +160,7 @@ export default class ElementMenu extends Plugin {
 
 		this.listenTo(view, 'cancel', () => {
 			this.hide();
-			this.editor.editing.view.focus();
+			(returnFocusTo ?? this.editor.editing.view).focus();
 		});
 
 		clickOutsideHandler({
@@ -161,6 +181,7 @@ export default class ElementMenu extends Plugin {
 
 		this.view = view;
 		this._isObsolete = isObsolete ?? null;
+		this._onHide = onHide ?? null;
 		view.focus();
 	}
 
@@ -169,6 +190,7 @@ export default class ElementMenu extends Plugin {
 	 */
 	public hide(): void {
 		const view = this.view;
+		const onHide = this._onHide;
 
 		if (!view) {
 			return;
@@ -176,6 +198,7 @@ export default class ElementMenu extends Plugin {
 
 		this.view = null;
 		this._isObsolete = null;
+		this._onHide = null;
 
 		for (const item of view.items) {
 			this.stopListening(item);
@@ -188,6 +211,7 @@ export default class ElementMenu extends Plugin {
 		}
 
 		view.destroy();
+		onHide?.();
 	}
 
 	public override destroy(): void {
@@ -250,7 +274,8 @@ export default class ElementMenu extends Plugin {
 
 		const button = new ElementOrPositionButtonView(locale, item, { withText: true, target: element });
 
-		button.role = 'menuitem';
+		// A toggleable button with a checkable role tells assistive technology whether it is "on" with `aria-checked`.
+		button.role = item.isToggleable ? 'menuitemcheckbox' : 'menuitem';
 
 		return button;
 	}

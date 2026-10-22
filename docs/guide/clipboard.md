@@ -14,6 +14,9 @@ They are [`ElementOrPositionCommand`s](./commands): the target is an element, th
 element at the selection. They have titles, so they work as buttons and as [context menu](./context-menu#clipboard-commands)
 items. Copying stays enabled in read-only mode.
 
+The parts of a structure, such as table cells, table rows and captions, cannot stand alone, so the commands are
+disabled for them: copy a whole table, or the paragraphs in its cells.
+
 ## The clipboard pipeline
 
 The commands go through CKEditor's clipboard pipeline, like Ctrl+C and Ctrl+V, so other plugins handle the content as

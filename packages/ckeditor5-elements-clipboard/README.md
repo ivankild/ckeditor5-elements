@@ -21,7 +21,8 @@ await editor.execute('pasteElementAfter'); // The element at the selection.
 
 The commands extend `ElementOrPositionCommand` (from `ckeditor5-elements-core`): the target is an element, the parent of a
 position, or taken from the selection. They have titles and icons (exported: `copyIcon`, `cutIcon`, `pasteIcon`, `pasteBeforeIcon`,
-`pasteAfterIcon`), so they can be menu items and buttons.
+`pasteAfterIcon`), so they can be menu items and buttons. They are disabled for the parts of a structure that cannot
+stand alone, such as table cells, table rows and captions.
 
 To show them in the element context menu, list them in the `elementContextMenu` config of
 `ckeditor5-elements-context-menu`. This package does not depend on it.

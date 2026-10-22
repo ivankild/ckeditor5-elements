@@ -1,4 +1,4 @@
-import { View, ViewCollection, type Locale } from 'ckeditor5';
+import { KeystrokeHandler, View, ViewCollection, type Locale } from 'ckeditor5';
 import BreadcrumbItemView, { type BreadcrumbItem } from './breadcrumbItemView.js';
 import BreadcrumbLabelView from './breadcrumbLabelView.js';
 
@@ -14,9 +14,11 @@ export interface BreadcrumbsViewOptions {
 
 /**
  * Shows a path of elements, from the outermost to the innermost one, as a list (`<ol>`) in a `<nav>` landmark: buttons
- * when the items can be clicked, labels otherwise. The innermost item is marked with `aria-current="location"`.
+ * when the items can be clicked, labels otherwise. Items without a model element (list items) are labels too. The
+ * innermost item is marked with `aria-current="location"`.
  *
- * Fires `execute` with the item when one of the buttons is clicked.
+ * The left and right arrows move the focus between the items; past the first or the last one, they are left to the
+ * toolbar the view is in. Fires `execute` with the item when one of the buttons is clicked.
  */
 export default class BreadcrumbsView extends View {
 	/**
@@ -30,6 +32,11 @@ export default class BreadcrumbsView extends View {
 	public readonly isClickable: boolean;
 
 	/**
+	 * Handles the keystrokes within the breadcrumbs.
+	 */
+	public readonly keystrokes = new KeystrokeHandler();
+
+	/**
 	 * The list items (`<li>`) that hold the {@link items}.
 	 */
 	private readonly _listItems: ViewCollection<BreadcrumbsListItemView>;
@@ -39,6 +46,20 @@ export default class BreadcrumbsView extends View {
 
 		this._listItems = this.createCollection();
 		this.isClickable = isClickable;
+
+		const isRtl = locale?.uiLanguageDirection === 'rtl';
+
+		this.keystrokes.set(isRtl ? 'arrowright' : 'arrowleft', (data, cancel) => {
+			if (this._focusSibling(-1)) {
+				cancel();
+			}
+		});
+
+		this.keystrokes.set(isRtl ? 'arrowleft' : 'arrowright', (data, cancel) => {
+			if (this._focusSibling(1)) {
+				cancel();
+			}
+		});
 
 		this.setTemplate({
 			tag: 'nav',
@@ -71,9 +92,10 @@ export default class BreadcrumbsView extends View {
 
 		items.forEach((item, index) => {
 			const isCurrent = index === items.length - 1;
-			const view = this.isClickable
-				? new BreadcrumbItemView(this.locale, item, { isCurrent })
-				: new BreadcrumbLabelView(this.locale, item, { isCurrent });
+			const view =
+				this.isClickable && item.modelElement
+					? new BreadcrumbItemView(this.locale, item, { isCurrent })
+					: new BreadcrumbLabelView(this.locale, item, { isCurrent });
 
 			if (view instanceof BreadcrumbItemView) {
 				view.on('execute', () => {
@@ -87,14 +109,43 @@ export default class BreadcrumbsView extends View {
 	}
 
 	/**
-	 * Focuses the innermost item, when the items can be clicked.
+	 * Renders the view and starts handling the keystrokes.
 	 */
-	public focus(): void {
-		const last = this.items.last;
+	public override render(): void {
+		super.render();
 
-		if (last instanceof BreadcrumbItemView) {
-			last.focus();
+		if (this.element) {
+			this.keystrokes.listenTo(this.element);
 		}
+	}
+
+	/**
+	 * Focuses an item: the first one when the focus moves forward (`1`, e.g. from the previous toolbar item), the
+	 * innermost one otherwise.
+	 */
+	public focus(direction?: 1 | -1): void {
+		(direction === 1 ? this.items.first : this.items.last)?.focus();
+	}
+
+	/**
+	 * Destroys the view and its keystroke handler.
+	 */
+	public override destroy(): void {
+		super.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
+	 * Focuses the item before (`-1`) or after (`1`) the focused one. Returns `false` when there is none.
+	 */
+	private _focusSibling(step: 1 | -1): boolean {
+		const items = Array.from(this.items);
+		const index = items.findIndex(item => item.element === document.activeElement);
+		const sibling = index === -1 ? undefined : items[index + step];
+
+		sibling?.focus();
+
+		return !!sibling;
 	}
 }
 

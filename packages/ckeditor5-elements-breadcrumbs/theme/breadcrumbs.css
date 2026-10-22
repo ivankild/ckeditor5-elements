@@ -64,9 +64,16 @@
 	font-weight: 600;
 }
 
-/* Labels cannot be clicked. */
+/* Labels cannot be clicked, but can be focused with the keyboard. */
 .ck.ck-elements-breadcrumbs__label {
 	cursor: default;
+}
+
+.ck.ck-elements-breadcrumbs__label:focus {
+	outline: none;
+	box-shadow:
+		0 0 0 1px var(--ck-color-focus-border),
+		var(--ck-focus-shadow);
 }
 
 /* Buttons show they can be clicked. */

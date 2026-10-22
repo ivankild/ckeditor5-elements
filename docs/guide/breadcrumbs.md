@@ -1,7 +1,19 @@
 # Breadcrumbs
 
 `Breadcrumbs` (from `ckeditor5-elements-breadcrumbs`) shows the element path at the cursor, e.g. `aside.note › p`, as
-the `breadcrumbs` toolbar component. Text attributes such as `<strong>` are not part of the path.
+the `breadcrumbs` toolbar component.
+
+The path is made of the elements of the editor **data** (as `editor.getData()` outputs it), not of the editing view, so
+it has no editing-only classes or wrappers:
+
+| Cursor                                | Path                                     |
+| ------------------------------------- | ---------------------------------------- |
+| In a list item                        | `ul › li`                                |
+| In a table cell                       | `figure.table › table › tbody › tr › td` |
+| In an image caption                   | `figure.image › figcaption`              |
+| On a selected image (or other object) | `figure.image`                           |
+
+Text attributes such as `<strong>` or `<a>` are not part of the path.
 
 ```ts
 import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
@@ -10,6 +22,10 @@ import 'ckeditor5-elements-breadcrumbs/index.css';
 
 The path is a list in a `nav` landmark ("Element path"), and the element with the cursor is marked with
 `aria-current="location"`, so screen readers announce where the cursor is.
+
+To build the path, the plugin converts the document to the data view. It does that again only when elements change,
+not when typing or moving the cursor. When converting takes long (in a large document), it happens at most every
+250 ms, so the path can lag behind briefly. `editor.plugins.get('Breadcrumbs').refresh()` updates it right away.
 
 ## Labels
 
@@ -24,7 +40,9 @@ By default, the breadcrumbs are labels. CKEditor's `-` toolbar item (a line brea
 ## With a menu
 
 The `breadcrumbs.menu` option makes the breadcrumbs buttons that open a menu of their element. It takes the same items as
-[`elementContextMenu`](./context-menu), so one callback can serve both. The menu is shown by the `ElementMenu` plugin
+[`elementContextMenu`](./context-menu), so one callback can serve both. The parts of a structure open the menu of the
+structure (`tbody` opens the menu of the table). List items (`ul`, `li`) stay labels: lists are attributes of the
+blocks in them, not elements. The menu is shown by the `ElementMenu` plugin
 of `ckeditor5-elements-core`, so load it too (`ElementContextMenu` and `QuickInsert` load it); without it, the
 breadcrumbs stay labels. Its styles are in `ckeditor5-elements-core/index.css`.
 
@@ -34,10 +52,19 @@ breadcrumbs stay labels. Its styles are in `ckeditor5-elements-core/index.css`.
 <<< @/demos/breadcrumbsMenu.ts
 :::
 
+The buttons tell screen readers that they open a menu (`aria-haspopup`, `aria-expanded`), and Esc in the menu returns
+the focus to the button.
+
 ::: tip No dependency
 `ckeditor5-elements-breadcrumbs` does not depend on the other packages. It looks up the `ElementMenu` plugin by name and
 uses it through the `BreadcrumbsMenu` interface.
 :::
+
+## Keyboard
+
+In the toolbar (Alt+F10), the arrow keys move through the breadcrumbs like through the other toolbar items, so every
+breadcrumb can be reached: labels too, so their text can be read. Coming from the previous toolbar item, the focus
+goes to the outermost breadcrumb; from the next one, to the innermost.
 
 ## Anywhere on the page
 

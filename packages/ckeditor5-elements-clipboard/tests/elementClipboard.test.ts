@@ -1,6 +1,7 @@
 import {
 	ClipboardPipeline,
 	Paragraph,
+	Table,
 	_getModelData,
 	_setModelData,
 	type ClassicEditor,
@@ -450,6 +451,73 @@ describe('ElementClipboard', () => {
 
 			expect(getData()).toBe('<paragraph>one</paragraph><paragraph>two</paragraph><paragraph>bar</paragraph>');
 			expect(batches.size).toBe(1);
+		});
+	});
+
+	describe('parts of a structure', () => {
+		const table =
+			'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>b</paragraph></tableCell></tableRow></table>';
+		const names = ['copyElement', 'cutElement', 'pasteElement', 'pasteElementBefore', 'pasteElementAfter'] as const;
+
+		let tableEditor: ClassicEditor;
+
+		const tableChild = (...path: number[]): ModelElement =>
+			path.reduce<ModelElement>(
+				(element, index) => element.getChild(index) as ModelElement,
+				tableEditor.model.document.getRoot()!
+			);
+
+		beforeEach(async () => {
+			tableEditor = await createEditor({ plugins: [Paragraph, Table, ElementClipboard] });
+			_setModelData(tableEditor.model, `<paragraph>[]x</paragraph>${table}`);
+		});
+
+		afterEach(async () => {
+			await tableEditor.destroy();
+		});
+
+		it('disable the commands for table cells and rows', () => {
+			for (const name of names) {
+				const command = tableEditor.commands.get(name)!;
+
+				expect([name, command.getState(tableChild(1, 0, 0)).isEnabled]).toEqual([name, false]);
+				expect([name, command.getState(tableChild(1, 0)).isEnabled]).toEqual([name, false]);
+			}
+		});
+
+		it('keep the commands enabled for the table and the paragraphs in its cells', () => {
+			for (const name of names) {
+				const command = tableEditor.commands.get(name)!;
+
+				expect([name, command.getState(tableChild(1)).isEnabled]).toEqual([name, true]);
+				expect([name, command.getState(tableChild(1, 0, 0, 0)).isEnabled]).toEqual([name, true]);
+			}
+		});
+
+		it('do nothing when executed for a table cell', async () => {
+			const write = vi.spyOn(navigator.clipboard, 'write').mockResolvedValue();
+			const read = vi
+				.spyOn(navigator.clipboard, 'read')
+				.mockResolvedValue([clipboardItem({ 'text/html': '<p>new</p>' })]);
+			const data = _getModelData(tableEditor.model, { withoutSelection: true });
+
+			for (const name of names) {
+				await tableEditor.execute(name, tableChild(1, 0, 0));
+			}
+
+			expect(write).not.toHaveBeenCalled();
+			expect(read).not.toHaveBeenCalled();
+			expect(_getModelData(tableEditor.model, { withoutSelection: true })).toBe(data);
+		});
+
+		it('copy a table', async () => {
+			const write = vi.spyOn(navigator.clipboard, 'write').mockResolvedValue();
+
+			await tableEditor.execute('copyElement', tableChild(1));
+
+			const [item] = write.mock.calls[0][0];
+
+			expect(await (await item.getType('text/html')).text()).toContain('<td>a</td><td>b</td>');
 		});
 	});
 });

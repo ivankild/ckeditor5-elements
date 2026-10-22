@@ -1,6 +1,7 @@
 import { ViewDataTransfer, plainTextToHtml, type ClipboardInputEventData, type Editor } from 'ckeditor5';
 import { ElementOrPositionCommand, isInDocument, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { pasteAfterIcon, pasteBeforeIcon, pasteIcon } from './icons.js';
+import { isStandalone } from './utils.js';
 
 /**
  * Where the pasted content goes, relative to the element:
@@ -15,7 +16,8 @@ export type ElementPastePlacement = 'replace' | 'before' | 'after';
  * Pastes the system clipboard content relative to an element.
  *
  * The element is the given one, the parent of the given position, or the selected element or the parent of the
- * selection (see {@link ElementOrPositionCommand}).
+ * selection (see {@link ElementOrPositionCommand}). Parts of a structure, such as table cells, rows and captions, cannot
+ * be replaced, nor have content pasted next to them, so the command is disabled for them.
  *
  * The content is pasted as with Ctrl+V: it goes through the clipboard pipeline (the `clipboardInput` event of the
  * editing view document), so other plugins process it, e.g. paste from Office cleans up content from Word, and image
@@ -43,7 +45,9 @@ export default class ElementPasteCommand extends ElementOrPositionCommand {
 	}
 
 	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
-		return window.isSecureContext && !!this._getElement(elementOrPosition);
+		const element = this._getElement(elementOrPosition);
+
+		return window.isSecureContext && !!element && isStandalone(this.editor.model.schema, element);
 	}
 
 	/**
@@ -54,7 +58,7 @@ export default class ElementPasteCommand extends ElementOrPositionCommand {
 		// Resolve the element before reading the clipboard, as the selection may change in the meantime.
 		const element = this._getElement(elementOrPosition);
 
-		if (!element) {
+		if (!element || !isStandalone(this.editor.model.schema, element)) {
 			return;
 		}
 

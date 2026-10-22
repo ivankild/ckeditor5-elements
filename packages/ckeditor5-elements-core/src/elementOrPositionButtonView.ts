@@ -21,8 +21,9 @@ export interface ElementOrPositionButtonViewOptions {
 /**
  * A button that reflects an {@link ElementOrPositionCommand} and executes it when clicked.
  *
- * The label, icon and tooltip are the command `title`, `icon` and `tooltip`. Without a target, the button is enabled
- * when the command is. With a target (e.g. in a context menu of an element), it is enabled and "on" according to the
+ * The label, icon and tooltip are the command `title`, `icon` and `tooltip`. For a
+ * {@link ElementOrPositionCommand#isToggleable toggleable} command, the button is toggleable, so assistive technology
+ * is told whether it is "on". Without a target, the button is enabled when the command is. With a target (e.g. in a context menu of an element), it is enabled and "on" according to the
  * command {@link ElementOrPositionCommand#getState state} for that target, kept up to date as the document changes.
  */
 export default class ElementOrPositionButtonView extends ButtonView {
@@ -46,7 +47,7 @@ export default class ElementOrPositionButtonView extends ButtonView {
 		this.command = command;
 		this.target = target;
 
-		this.set('withText', withText);
+		this.set({ withText, isToggleable: command.isToggleable });
 		this.bind('label', 'icon').to(command, 'title', 'icon');
 
 		if (withText) {

@@ -148,6 +148,22 @@ describe('ElementOrPositionButtonView', () => {
 		});
 	});
 
+	it('is toggleable only for a toggleable command', () => {
+		const plain = new ElementOrPositionCommand(editor);
+
+		view = new ElementOrPositionButtonView(editor.locale, plain);
+		view.render();
+
+		expect(view.isToggleable).toBe(false);
+		expect(view.element?.hasAttribute('aria-pressed')).toBe(false);
+
+		view.destroy();
+		view = new ElementOrPositionButtonView(editor.locale, command);
+		view.render();
+
+		expect(view.isToggleable).toBe(true);
+	});
+
 	it('works with any element or position command', () => {
 		const generic = new ElementOrPositionCommand(editor);
 

@@ -375,4 +375,11 @@ describe('ElementOrPositionCommand', () => {
 			);
 		});
 	});
+
+	describe('isToggleable', () => {
+		it('is false by default, and true for ElementCommand', () => {
+			expect(command.isToggleable).toBe(false);
+			expect(new ElementCommand(editor).isToggleable).toBe(true);
+		});
+	});
 });
