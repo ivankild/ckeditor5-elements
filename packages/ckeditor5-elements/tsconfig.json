@@ -16,6 +16,9 @@
 			"path": "../ckeditor5-elements-actions"
 		},
 		{
+			"path": "../ckeditor5-elements-schema"
+		},
+		{
 			"path": "../ckeditor5-elements-attributes"
 		},
 		{
@@ -32,6 +35,9 @@
 		},
 		{
 			"path": "../ckeditor5-elements-breadcrumbs"
+		},
+		{
+			"path": "../ckeditor5-elements-selectable"
 		}
 	]
 }

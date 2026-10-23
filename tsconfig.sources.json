@@ -10,6 +10,7 @@
 		"declaration": false,
 		"declarationMap": false,
 		"noEmit": true,
+		"resolveJsonModule": true,
 		"paths": {
 			"ckeditor5-elements": ["./packages/ckeditor5-elements/src/index.ts"],
 			"ckeditor5-elements-*": ["./packages/ckeditor5-elements-*/src/index.ts"]

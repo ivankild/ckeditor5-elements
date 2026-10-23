@@ -26,6 +26,8 @@ import {
 	ElementClickable,
 	ElementClipboard,
 	ElementContextMenu,
+	ElementSchema,
+	ElementSelectable,
 	ElementToolbar,
 	QuickInsert,
 	insertIcon,
@@ -34,6 +36,7 @@ import {
 	type ElementMenuConfig
 } from 'ckeditor5-elements';
 import { Note } from './note.js';
+import schema from './schema.json';
 
 /**
  * The menu of an element, for the context menu and the breadcrumbs: toggles, inserting, the element actions, the
@@ -80,8 +83,8 @@ const showAttributes: ElementClickableDefinition['callback'] = (element, editor)
 const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'];
 
 /**
- * The editor config of the full example: CKEditor's common features, the `Note` element, and all the features of
- * `ckeditor5-elements`. Without `attachTo`, `licenseKey` and the data.
+ * The editor config of the full example: CKEditor's common features, the `Note` element, the elements of `schema.json`,
+ * and all the features of `ckeditor5-elements`. Without `attachTo`, `licenseKey` and the data.
  */
 export const exampleConfig: EditorConfig = {
 	plugins: [
@@ -104,6 +107,8 @@ export const exampleConfig: EditorConfig = {
 		LinkImage,
 		MediaEmbed,
 		Note,
+		ElementSchema,
+		ElementSelectable,
 		ElementContextMenu,
 		ElementClipboard,
 		ElementActions,
@@ -152,6 +157,11 @@ export const exampleConfig: EditorConfig = {
 			}
 		]
 	},
+	// The elements of the JSON file, with their converters: `div` and `span`, the name as the class.
+	elementSchema: schema,
+	elementSchemaConverters: true,
+	// Its containers and empty elements are selectable; the notes too.
+	selectableElements: ['note'],
 	elementContextMenu: elementMenu,
 	breadcrumbs: { menu: elementMenu },
 	elementClickables: [
@@ -167,6 +177,7 @@ export const exampleConfig: EditorConfig = {
 	elementToolbars: [
 		// "Note" unwraps the note; the actions act on the whole note.
 		{ element: 'note', items: ['note', '|', ...ACTIONS], ariaLabel: 'Note toolbar' },
+		{ element: 'tip', items: ACTIONS, ariaLabel: 'Tip toolbar' },
 		{
 			element: element => element.name.startsWith('heading'),
 			items: ['heading', '|', ...ACTIONS],
@@ -183,7 +194,12 @@ export const exampleConfig: EditorConfig = {
 			blockQuote: 'Block quote',
 			media: 'Media',
 			horizontalLine: 'Horizontal line',
-			softBreak: 'Line break'
+			softBreak: 'Line break',
+			tip: 'Tip',
+			tipTitle: 'Tip title',
+			steps: 'Steps',
+			step: 'Step',
+			status: 'Status'
 		},
 		// These need rows and cells, or an address: insert them with their toolbar buttons.
 		exclude: ['table', 'imageBlock', 'imageInline', 'media']

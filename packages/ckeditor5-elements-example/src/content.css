@@ -27,3 +27,51 @@
 	background: #f3f4f6;
 	text-align: center;
 }
+
+/* The elements of `schema.json`: the converters make them `div` and `span`, with the name as the class. */
+.ck-content .tip {
+	margin: 0.6em 0;
+	padding: 0.2em 1em;
+	border: 1px solid #a7f3d0;
+	border-radius: 6px;
+	background: #ecfdf5;
+}
+
+.ck-content .tipTitle {
+	display: block;
+	margin: 0.4em 0;
+	font-weight: 700;
+}
+
+.ck-content .steps {
+	display: flex;
+	gap: 0.6em;
+	margin: 0.6em 0;
+}
+
+/* An inline container: laid out in a line with the other steps of its block. */
+.ck-content .step {
+	flex: 1;
+	padding: 0 0.8em;
+	border: 1px solid #c7d2fe;
+	border-radius: 6px;
+	background: #eef2ff;
+}
+
+.ck-content .status {
+	display: inline-block;
+	padding: 0 0.6em;
+	border-radius: 1em;
+	background: #4f46e5;
+	color: #fff;
+	font-size: 0.8em;
+	line-height: 1.6;
+}
+
+.ck-content .status::before {
+	content: attr(data-state);
+}
+
+.ck-content .status:not([data-state])::before {
+	content: 'status';
+}

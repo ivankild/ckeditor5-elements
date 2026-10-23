@@ -24,9 +24,24 @@ export const exampleData =
 	'<ul><li>In a list item, the path is <code>ul › li</code>.</li><li>Duplicating a list item gives a new one.</li></ul>' +
 	'<h3>Quick insert</h3>' +
 	'<p>Press <strong>Alt+Enter</strong> (Option+Enter on macOS) to insert an element at the cursor: in a paragraph, ' +
-	'only a line break fits. To insert blocks, use <strong>Insert › Insert after</strong> in the menu of a block.</p>' +
+	'only inline elements fit, a line break and a status. To insert blocks, use <strong>Insert › Insert after</strong> in ' +
+	'the menu of a block.</p>' +
 	'<figure class="table"><table><tbody><tr><td>Copy or cut a whole table from its menu,</td>' +
 	'<td>or the paragraph in a cell.</td></tr></tbody></table></figure>' +
+	'<h3>Element schema</h3>' +
+	'<p>The tip, the steps and the status <span class="status" data-state="new"></span> are declared in ' +
+	'<code>schema.json</code>, validated when the editor starts, and converted one to one, as <code>div</code> and ' +
+	'<code>span</code>. Their menus, toolbars and quick insert work as for any element.</p>' +
+	'<div class="tip" data-tone="success"><div class="tipTitle">A tip</div><p>A tip is a container with a title. ' +
+	'<strong>Insert › Insert after</strong> in this paragraph offers a tip title: the schema allows it only in a tip.' +
+	'</p></div>' +
+	'<div class="steps"><div class="step"><p>Steps are inline containers in a block,</p></div>' +
+	'<div class="step"><p>so they are laid out in a line.</p></div>' +
+	'<div class="step"><p>The menu of a step (its breadcrumb) inserts another.</p></div></div>' +
+	'<h3>Selectable elements</h3>' +
+	'<p><strong>Click the frame</strong> of the tip, of a note or of a step, or click the status, to select it as a ' +
+	'whole. At the end of a block, the arrow keys select the next element; <strong>Esc</strong> in a note selects the ' +
+	'note. A selected element is deleted, copied or replaced as any selection.</p>' +
 	'<h3>Clickable elements</h3>' +
 	'<p><strong>Click an image</strong>, the medium, or the linked image to see their attributes in a modal. ' +
 	'<strong>Double-click a note</strong> for the attributes of the note.</p>' +

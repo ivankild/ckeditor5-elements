@@ -7,6 +7,8 @@ import * as clipboard from 'ckeditor5-elements-clipboard';
 import * as contextMenu from 'ckeditor5-elements-context-menu';
 import * as core from 'ckeditor5-elements-core';
 import * as quickInsert from 'ckeditor5-elements-quick-insert';
+import * as schema from 'ckeditor5-elements-schema';
+import * as selectable from 'ckeditor5-elements-selectable';
 import * as toolbar from 'ckeditor5-elements-toolbar';
 import { describe, expect, it } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
@@ -21,6 +23,8 @@ describe('ckeditor5-elements', () => {
 			clipboard,
 			actions,
 			attributes,
+			schema,
+			selectable,
 			toolbar,
 			clickable,
 			contextMenu,
@@ -39,6 +43,8 @@ describe('ckeditor5-elements', () => {
 			clipboard,
 			actions,
 			attributes,
+			schema,
+			selectable,
 			toolbar,
 			clickable,
 			contextMenu,
@@ -57,6 +63,8 @@ describe('ckeditor5-elements', () => {
 				elements.ElementClipboard,
 				elements.ElementActions,
 				elements.ElementAttributes,
+				elements.ElementSchema,
+				elements.ElementSelectable,
 				elements.ElementToolbar,
 				elements.ElementClickable,
 				elements.QuickInsert,

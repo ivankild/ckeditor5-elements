@@ -55,8 +55,8 @@ The buttons tell screen readers that they open a menu (`aria-haspopup`, `aria-ex
 the focus to the button.
 
 ::: tip Independent of the other features
-The breadcrumbs do not depend on the other features. They look up the `ElementMenu` plugin by name, and use it through
-the `BreadcrumbsMenu` interface, so without it they work as labels.
+The breadcrumbs depend only on the core, not on the other features. They look up the `ElementMenu` plugin by name, and
+use it through the `BreadcrumbsMenu` interface, so without it they work as labels.
 :::
 
 ## Keyboard

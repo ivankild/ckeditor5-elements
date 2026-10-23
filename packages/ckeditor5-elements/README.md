@@ -2,18 +2,19 @@
 
 Element-level features for CKEditor 5 v49, in one package:
 
-| Feature              | Exports                                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand`, `ElementOrPositionButtonView`, `ElementButtonView`           |
-| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                   |
-| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                      |
-| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter` |
-| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                  |
-| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                 |
-| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                         |
-| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked         |
-| Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                     |
-| Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu             |
+| Feature              | Exports                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand`, `ElementOrPositionButtonView`, `ElementButtonView`                             |
+| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                                     |
+| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                                        |
+| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter`                   |
+| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                                    |
+| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                                   |
+| Element schema       | `ElementSchema`: declare elements from a JSON file, with three types of elements and a validation; `validateElementSchema()` |
+| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                                           |
+| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked                           |
+| Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                                       |
+| Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu                               |
 
 ## Installation
 
@@ -55,7 +56,7 @@ await ClassicEditor.create({
 
 Load only the plugins you use: the others are not part of your build.
 
-The features come in packages of their own (`ckeditor5-elements-core`, `-clipboard`, `-actions`, `-attributes`, `-toolbar`, `-clickable`, `-context-menu`,
+The features come in packages of their own (`ckeditor5-elements-core`, `-clipboard`, `-actions`, `-attributes`, `-schema`, `-selectable`, `-toolbar`, `-clickable`, `-context-menu`,
 `-quick-insert`, `-breadcrumbs`), in the same version as this package, which installs them. Do not install or import them yourself: two
 versions of them would be loaded, which fails.
 

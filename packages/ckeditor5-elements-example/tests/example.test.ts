@@ -1,4 +1,4 @@
-import { _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
+import { _getModelData, _setModelData, type ClassicEditor, type ModelElement, type ModelPosition } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
 import { elementMenu, exampleConfig, exampleData } from '../src/index.js';
@@ -21,6 +21,8 @@ describe('the full example', () => {
 			'ElementClipboard',
 			'ElementActions',
 			'ElementAttributes',
+			'ElementSchema',
+			'ElementSelectable',
 			'ElementToolbar',
 			'QuickInsert',
 			'Breadcrumbs'
@@ -37,6 +39,68 @@ describe('the full example', () => {
 		expect(editor.getData()).toBe(data);
 		expect(data).toContain('<aside class="note warning">');
 		expect(data).toContain('<figure class="media"><oembed url="https://example.com/video/1">');
+		expect(data).toContain('<div class="tip" data-tone="success"><div class="tipTitle">A tip</div>');
+		expect(data).toContain('<span class="status" data-state="new"></span>');
+	});
+
+	describe('the element schema', () => {
+		it('declares the elements of schema.json, which hold what their types hold', () => {
+			const schema = editor.model.schema;
+
+			expect(schema.checkChild('tip', 'tipTitle')).toBe(true);
+			expect(schema.checkChild('$root', 'tipTitle')).toBe(false);
+			expect(schema.checkChild('steps', 'step')).toBe(true);
+			expect(schema.checkChild('step', 'paragraph')).toBe(true);
+			expect(schema.checkChild('paragraph', 'status')).toBe(true);
+			expect(schema.checkChild('$root', 'status')).toBe(false);
+		});
+
+		it('shows the title of a tip as a `header` in the editor, and a `div` in the data', () => {
+			expect(editor.ui.getEditableElement()!.querySelector('header.tipTitle')?.textContent).toBe('A tip');
+			expect(editor.getData()).toContain('<div class="tipTitle">A tip</div>');
+		});
+
+		it('offers a tip title in quick insert only in a tip', () => {
+			const root = editor.model.document.getRoot()!;
+			const tip = [...root.getChildren()].find(node => node.is('element', 'tip')) as ModelElement;
+			const labels = (position: ModelPosition): string[] =>
+				editor.plugins
+					.get('QuickInsert')
+					.getItems(position)
+					.map(item => item.label);
+
+			expect(labels(editor.model.createPositionAt(tip, 'end'))).toContain('Tip title');
+			expect(labels(editor.model.createPositionAt(root, 0))).not.toContain('Tip title');
+			expect(labels(editor.model.createPositionAt(root, 0))).toContain('Tip');
+		});
+	});
+
+	describe('selectable elements', () => {
+		const mouseDown = (element: Element): void => {
+			element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+		};
+		const selected = (): string | undefined => editor.model.document.selection.getSelectedElement()?.name;
+
+		it('selects the containers and empty elements of the schema, and the notes, by a click on their frame', () => {
+			const editable = editor.ui.getEditableElement()!;
+
+			for (const [selector, name] of [
+				['div.tip', 'tip'],
+				['div.step', 'step'],
+				['span.status', 'status'],
+				['aside.note', 'note']
+			]) {
+				mouseDown(editable.querySelector(selector)!);
+				expect([selector, selected()]).toEqual([selector, name]);
+			}
+		});
+
+		it('does not select a note for a click in its text', () => {
+			_setModelData(editor.model, '<paragraph>a[]</paragraph><note><paragraph>b</paragraph></note>');
+			mouseDown(editor.ui.getEditableElement()!.querySelector('aside.note p')!);
+
+			expect(selected()).toBeUndefined();
+		});
 	});
 
 	describe('Note', () => {

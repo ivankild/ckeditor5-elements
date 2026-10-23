@@ -1,0 +1,7 @@
+{
+	"tip": { "type": "container", "allowAttributes": ["tone"] },
+	"tipTitle": { "type": "block", "allowIn": ["tip"], "editingTag": "header" },
+	"steps": { "type": "block" },
+	"step": { "type": "container", "isInline": true, "allowIn": ["steps"] },
+	"status": { "type": "empty", "isInline": true, "allowAttributes": ["state"] }
+}

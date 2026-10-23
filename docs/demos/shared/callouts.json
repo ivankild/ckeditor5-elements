@@ -1,0 +1,34 @@
+{
+	"callout": {
+		"type": "container",
+		"allowAttributes": ["tone"]
+	},
+	"calloutTitle": {
+		"type": "block",
+		"allowIn": ["callout"]
+	},
+	"pullQuote": {
+		"type": "block"
+	},
+	"divider": {
+		"type": "empty"
+	},
+	"badge": {
+		"type": "empty",
+		"isInline": true,
+		"allowAttributes": ["color"]
+	},
+	"term": {
+		"type": "block",
+		"isInline": true,
+		"allowAttributes": ["id"]
+	},
+	"cards": {
+		"type": "block"
+	},
+	"card": {
+		"type": "container",
+		"isInline": true,
+		"allowIn": ["cards"]
+	}
+}

@@ -71,3 +71,131 @@
 .editor-demo .ck-content p {
 	margin: 0.6em 0;
 }
+
+/* The elements of the element schema demo. */
+.editor-demo .ck-content .callout {
+	margin: 0.6em 0;
+	padding: 0.2em 1em;
+	border-left: 4px solid var(--vp-c-brand-1);
+	background: var(--vp-c-brand-soft);
+}
+
+.editor-demo .ck-content .calloutTitle {
+	margin: 0.4em 0;
+	font-weight: 700;
+}
+
+.editor-demo .ck-content .pullQuote {
+	margin: 0.6em 0;
+	font-size: 1.2em;
+	font-style: italic;
+}
+
+.editor-demo .ck-content .divider {
+	height: 0;
+	margin: 1em 0;
+	border-top: 2px solid var(--vp-c-divider);
+}
+
+.editor-demo .ck-content .badge {
+	display: inline-block;
+	padding: 0 0.6em;
+	border-radius: 1em;
+	background: var(--vp-c-brand-1);
+	color: #fff;
+	font-size: 0.8em;
+}
+
+.editor-demo .ck-content .badge::before {
+	content: 'badge';
+}
+
+.editor-demo .ck-content .term {
+	border-bottom: 2px dotted var(--vp-c-brand-1);
+	font-weight: 600;
+}
+
+.editor-demo .ck-content .cards {
+	margin: 0.6em 0;
+	font-size: 0;
+}
+
+/* An inline container: a box that is laid out in a line with the others in its block, not on a line of its own. */
+.editor-demo .ck-content .card {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 32%;
+	margin: 0 1% 0 0;
+	padding: 0 0.8em;
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 6px;
+	background: var(--vp-c-bg-soft);
+	font-size: 14px;
+	vertical-align: top;
+}
+
+/* The elements of the element schema examples. */
+.editor-demo .ck-content .dataTable {
+	margin: 0.6em 0;
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 6px;
+}
+
+.editor-demo .ck-content .dataRow {
+	display: flex;
+}
+
+.editor-demo .ck-content .dataRow + .dataRow {
+	border-top: 1px solid var(--vp-c-divider);
+}
+
+.editor-demo .ck-content .dataCell,
+.editor-demo .ck-content .dataHeader {
+	flex: 1;
+	padding: 0.3em 0.8em;
+}
+
+.editor-demo .ck-content .dataHeader {
+	background: var(--vp-c-bg-soft);
+	font-weight: 700;
+}
+
+.editor-demo .ck-content .gallery {
+	margin: 0.6em 0;
+	font-size: 0;
+}
+
+.editor-demo .ck-content .figure {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 32%;
+	margin: 0 1% 0 0;
+	vertical-align: top;
+}
+
+.editor-demo .ck-content .photo {
+	height: 70px;
+	border-radius: 6px;
+	background: linear-gradient(135deg, var(--vp-c-brand-soft), var(--vp-c-brand-1));
+}
+
+.editor-demo .ck-content .caption {
+	font-size: 14px;
+	text-align: center;
+}
+
+.editor-demo .ck-content .mention {
+	padding: 0 0.3em;
+	border-radius: 4px;
+	background: var(--vp-c-brand-soft);
+	color: var(--vp-c-brand-1);
+}
+
+.editor-demo .ck-content .mention::before {
+	content: '@' attr(data-user);
+}
+
+.editor-demo .ck-content .abbr {
+	border-bottom: 1px dotted currentColor;
+	cursor: help;
+}

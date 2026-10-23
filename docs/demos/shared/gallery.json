@@ -1,0 +1,6 @@
+{
+	"gallery": { "type": "block" },
+	"figure": { "type": "container", "isInline": true, "allowIn": ["gallery"], "editingTag": "figure" },
+	"photo": { "type": "empty", "allowIn": ["figure"] },
+	"caption": { "type": "block", "allowIn": ["figure"], "editingTag": "figcaption" }
+}

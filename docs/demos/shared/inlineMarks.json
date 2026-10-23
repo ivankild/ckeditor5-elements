@@ -1,0 +1,12 @@
+{
+	"mention": {
+		"type": "empty",
+		"isInline": true,
+		"allowAttributes": ["user"]
+	},
+	"abbr": {
+		"type": "block",
+		"isInline": true,
+		"allowAttributes": ["title"]
+	}
+}

@@ -40,6 +40,9 @@
 	"sideEffects": [
 		"*.css"
 	],
+	"dependencies": {
+		"ckeditor5-elements-core": "workspace:*"
+	},
 	"peerDependencies": {
 		"ckeditor5": "^49.0.0"
 	},

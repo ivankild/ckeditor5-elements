@@ -33,5 +33,6 @@ export { default as ElementMenuView } from './elementMenuView.js';
 
 // Utils.
 export { getElementAtSelection, isInDocument, isStandalone, selectNewElement } from './utils.js';
+export { findPlugin, getElementsAround, matchesElement, type ElementMatcher } from './matching.js';
 
 import './augmentation.js';

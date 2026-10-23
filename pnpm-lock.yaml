@@ -266,6 +266,12 @@ importers:
       ckeditor5-elements-quick-insert:
         specifier: workspace:*
         version: link:../ckeditor5-elements-quick-insert
+      ckeditor5-elements-schema:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-schema
+      ckeditor5-elements-selectable:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-selectable
       ckeditor5-elements-toolbar:
         specifier: workspace:*
         version: link:../ckeditor5-elements-toolbar
@@ -293,6 +299,9 @@ importers:
       ckeditor5:
         specifier: ^49.0.0
         version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-clickable:
     dependencies:
@@ -341,6 +350,24 @@ importers:
         version: 8.3.5(@types/node@24.19.2)(yaml@2.9.1)
 
   packages/ckeditor5-elements-quick-insert:
+    dependencies:
+      ckeditor5:
+        specifier: ^49.0.0
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
+  packages/ckeditor5-elements-schema:
+    dependencies:
+      ckeditor5:
+        specifier: ^49.0.0
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
+  packages/ckeditor5-elements-selectable:
     dependencies:
       ckeditor5:
         specifier: ^49.0.0

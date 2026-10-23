@@ -32,6 +32,12 @@ features:
     - title: Attributes
       details: Show the attributes of an element, as key-value pairs, in a modal, from a menu, a toolbar, a click or code.
       link: /guide/attributes
+    - title: Element schema
+      details: Declare the elements of the model schema from a JSON file, with three types of elements and a validation that rejects contradictions.
+      link: /guide/schema
+    - title: Selectable elements
+      details: Select an element as a whole, by a click on its frame or by the arrow keys, without widgets.
+      link: /guide/selectable
     - title: Element toolbar
       details: A floating toolbar for the elements you choose, by name or filter, with buttons that act on the element.
       link: /guide/toolbar

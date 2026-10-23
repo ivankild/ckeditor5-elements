@@ -138,6 +138,19 @@ Object.assign(window, { editor });
 	run('pnpm', ['exec', 'tsc', '-p', '.'], app);
 	run('pnpm', ['exec', 'vite', 'build'], app);
 
+	// The validation of the schema works in Node.js, without a DOM.
+	run(
+		'node',
+		[
+			'--input-type=module',
+			'-e',
+			`import { validateElementSchema } from 'ckeditor5-elements/validate-schema';
+const issues = validateElementSchema({ a: { type: 'blok' } });
+if (issues.length !== 1 || issues[0].path !== 'a.type') throw new Error('Unexpected issues: ' + JSON.stringify(issues));`
+		],
+		app
+	);
+
 	await runInBrowser(join(app, 'dist'));
 	console.log('The smoke test passed.');
 } finally {

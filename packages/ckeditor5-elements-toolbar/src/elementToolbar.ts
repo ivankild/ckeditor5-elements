@@ -5,7 +5,13 @@ import {
 	type ModelElement,
 	type ToolbarConfigItem
 } from 'ckeditor5';
-import { ElementOrPositionButtonView, ElementOrPositionCommand, getElementAtSelection } from 'ckeditor5-elements-core';
+import {
+	ElementOrPositionButtonView,
+	ElementOrPositionCommand,
+	getElementAtSelection,
+	matchesElement,
+	type ElementMatcher
+} from 'ckeditor5-elements-core';
 
 /**
  * A floating toolbar of the elements that match `element`.
@@ -15,7 +21,7 @@ export interface ElementToolbarDefinition {
 	 * The elements the toolbar is for: the name of a model element (e.g. `'note'`), or a function that returns whether it
 	 * is for the given element (e.g. `element => element.name.startsWith('heading')`).
 	 */
-	element: string | ((element: ModelElement) => boolean);
+	element: ElementMatcher;
 
 	/**
 	 * The toolbar items, as in CKEditor's toolbar config:
@@ -80,8 +86,6 @@ export default class ElementToolbar extends Plugin {
 	 * selection, or one of their ancestors. Never a root.
 	 */
 	public getElement(element: ElementToolbarDefinition['element']): ModelElement | null {
-		const matches = typeof element === 'string' ? (node: ModelElement) => node.name === element : element;
-
 		for (
 			let node: ModelElement | ModelDocumentFragment | null = getElementAtSelection(
 				this.editor.model.document.selection
@@ -89,7 +93,7 @@ export default class ElementToolbar extends Plugin {
 			node?.is('element') && !node.is('rootElement');
 			node = node.parent
 		) {
-			if (matches(node)) {
+			if (matchesElement(element, node)) {
 				return node;
 			}
 		}

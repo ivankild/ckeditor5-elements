@@ -15,7 +15,7 @@ const apiSidebar: DefaultTheme.SidebarItem[] = existsSync(apiSidebarFile)
 export default defineConfig({
 	title: 'CKEditor 5 Elements',
 	description:
-		'Element commands, context menu, clipboard, actions, toolbars, clicks, quick insert and breadcrumbs for CKEditor 5.',
+		'Element commands, context menu, clipboard, actions, attributes, a JSON schema, selection, toolbars, clicks, quick insert and breadcrumbs for CKEditor 5.',
 	base: BASE,
 	// From `public/`. Links in `head` do not get the base.
 	head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }]],
@@ -37,7 +37,9 @@ export default defineConfig({
 						{ text: 'Clipboard', link: '/guide/clipboard' },
 						{ text: 'Actions', link: '/guide/actions' },
 						{ text: 'Attributes', link: '/guide/attributes' },
+						{ text: 'Element schema', link: '/guide/schema' },
 						{ text: 'Element toolbar', link: '/guide/toolbar' },
+						{ text: 'Selectable elements', link: '/guide/selectable' },
 						{ text: 'Clickable elements', link: '/guide/clickable' },
 						{ text: 'Quick insert', link: '/guide/quick-insert' },
 						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' }

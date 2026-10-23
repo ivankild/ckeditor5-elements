@@ -1,0 +1,17 @@
+{
+	"dataTable": {
+		"type": "container"
+	},
+	"dataRow": {
+		"type": "container",
+		"allowIn": ["dataTable"]
+	},
+	"dataCell": {
+		"type": "block",
+		"allowIn": ["dataRow"]
+	},
+	"dataHeader": {
+		"type": "block",
+		"allowIn": ["dataRow"]
+	}
+}

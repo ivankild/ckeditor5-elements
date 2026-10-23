@@ -12,6 +12,7 @@ import {
 	type ViewElement,
 	type ViewNode
 } from 'ckeditor5';
+import { findPlugin } from 'ckeditor5-elements-core';
 import { type BreadcrumbItem, type default as BreadcrumbItemView } from './breadcrumbItemView.js';
 import BreadcrumbsView, { type BreadcrumbsViewExecuteEvent } from './breadcrumbsView.js';
 
@@ -260,10 +261,7 @@ export default class Breadcrumbs extends Plugin {
 	 * Returns the plugin that shows menus: `ElementMenu`, when it is loaded.
 	 */
 	private _getMenu(): BreadcrumbsMenu | null {
-		const plugins = this.editor.plugins;
-		const plugin = plugins.has('ElementMenu') ? plugins.get('ElementMenu') : null;
-
-		return plugin && isBreadcrumbsMenu(plugin) ? plugin : null;
+		return findPlugin(this.editor, 'ElementMenu', isBreadcrumbsMenu);
 	}
 }
 

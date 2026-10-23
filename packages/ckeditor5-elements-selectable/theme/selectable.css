@@ -1,0 +1,8 @@
+/*
+ * A selected element: the editing view marks it with this class, and the selection is a fake one, so the browser draws
+ * nothing on the element itself.
+ */
+.ck-content .ck-elements-selected {
+	outline: 2px solid var(--ck-color-focus-border);
+	outline-offset: 1px;
+}

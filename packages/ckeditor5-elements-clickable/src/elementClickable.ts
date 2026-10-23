@@ -6,6 +6,7 @@ import {
 	type ViewDocumentClickEvent,
 	type ViewElement
 } from 'ckeditor5';
+import { getElementsAround, matchesElement, type ElementMatcher } from 'ckeditor5-elements-core';
 import DoubleClickObserver, { type ViewDocumentDoubleClickEvent } from './doubleClickObserver.js';
 
 /**
@@ -21,7 +22,7 @@ export interface ElementClickableDefinition {
 	 * The elements the definition is for: the name of a model element (e.g. `'imageBlock'`), or a function that returns
 	 * whether it is for the given element (e.g. `element => element.hasAttribute('linkHref')`).
 	 */
-	element: string | ((element: ModelElement) => boolean);
+	element: ElementMatcher;
 
 	/**
 	 * The mouse event: `'click'` (the default) or `'dblclick'`.
@@ -97,17 +98,11 @@ export default class ElementClickable extends Plugin {
 			definition => (definition.event ?? 'click') === event
 		);
 
-		for (let node: ViewElement | null = viewElement; node; node = node.parent?.is('element') ? node.parent : null) {
-			const element = mapper.toModelElement(node);
+		for (const { element } of getElementsAround(mapper, viewElement)) {
+			const definition = definitions.find(({ element: matcher }) => matchesElement(matcher, element));
 
-			if (element && !element.is('rootElement')) {
-				const definition = definitions.find(({ element: matcher }) =>
-					typeof matcher === 'string' ? element.name === matcher : matcher(element)
-				);
-
-				if (definition) {
-					return { element, definition };
-				}
+			if (definition) {
+				return { element, definition };
 			}
 		}
 
