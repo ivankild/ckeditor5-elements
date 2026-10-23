@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-clickable",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "Clickable elements for CKEditor 5: call a function, with the model element, when an element that matches a name or a filter is clicked or double-clicked.",
 	"keywords": [
 		"ckeditor",

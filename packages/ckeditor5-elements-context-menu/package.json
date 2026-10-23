@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-context-menu",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "A context menu for CKEditor 5 elements: right-click an element, or press Shift+F10, to open a menu of commands for it.",
 	"keywords": [
 		"ckeditor",

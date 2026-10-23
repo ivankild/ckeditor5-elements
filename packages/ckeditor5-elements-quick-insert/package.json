@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-quick-insert",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "Quick insert for CKEditor 5: search and insert the elements allowed at a position (Alt+Enter, or the context menu).",
 	"keywords": [
 		"ckeditor",

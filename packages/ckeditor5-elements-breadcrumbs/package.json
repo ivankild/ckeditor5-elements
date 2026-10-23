@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-breadcrumbs",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "Breadcrumbs for CKEditor 5: the element path at the selection, as a toolbar component.",
 	"keywords": [
 		"ckeditor",

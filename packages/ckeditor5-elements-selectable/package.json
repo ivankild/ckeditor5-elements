@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-selectable",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "Selectable elements for CKEditor 5: select an element as a whole by a click or by the arrow keys, without CKEditor's widgets.",
 	"keywords": [
 		"ckeditor",

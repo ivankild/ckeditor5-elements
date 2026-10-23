@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements",
-	"version": "49.0.0-alpha.1",
+	"version": "49.0.0-alpha.2",
 	"description": "Element commands, an element context menu, clipboard commands, element actions, element attributes, an element schema, selectable elements, element toolbars, clickable elements, quick insert and breadcrumbs for CKEditor 5.",
 	"keywords": [
 		"ckeditor",
