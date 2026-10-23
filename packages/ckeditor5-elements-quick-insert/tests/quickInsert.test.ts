@@ -25,7 +25,7 @@ describe('QuickInsert', () => {
 	let menu: ElementMenu;
 
 	const getView = (): QuickInsertView | null => {
-		const view = menu.view?.items.first;
+		const view = menu.view;
 
 		return view instanceof QuickInsertView ? view : null;
 	};
@@ -220,7 +220,7 @@ describe('QuickInsert', () => {
 
 		it('does not close another menu opened later', () => {
 			plugin.open();
-			menu.show([new QuickInsertView(editor.locale, [])], new DOMRect());
+			menu.show(new QuickInsertView(editor.locale, []), new DOMRect());
 
 			const other = menu.view;
 

@@ -1,6 +1,5 @@
 import {
 	Bold,
-	ButtonView,
 	ImageBlock,
 	ImageInline,
 	Italic,
@@ -22,7 +21,8 @@ import BreadcrumbLabelView from '../src/breadcrumbLabelView.js';
 import Breadcrumbs from '../src/breadcrumbs.js';
 import BreadcrumbsView from '../src/breadcrumbsView.js';
 import { ElementClipboard, type ElementCopyCommand } from 'ckeditor5-elements-clipboard';
-import { ElementMenu } from 'ckeditor5-elements-core';
+import { ElementMenu, type ElementMenuView } from 'ckeditor5-elements-core';
+import { describeItems } from '../../../testUtils/menu.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 
 describe('Breadcrumbs', () => {
@@ -48,6 +48,16 @@ describe('Breadcrumbs', () => {
 	}
 
 	const focusedText = (): string => document.activeElement?.textContent.trim() ?? '';
+
+	/**
+	 * Presses Esc in the open menu.
+	 */
+	function pressEsc(): void {
+		const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+
+		Object.defineProperty(event, 'keyCode', { value: 27 });
+		document.activeElement!.dispatchEvent(event);
+	}
 
 	/**
 	 * Sets the data while converting the data view seems slow (every `performance.now()` call is 20 ms later), so the
@@ -463,7 +473,7 @@ describe('Breadcrumbs', () => {
 			button.element!.click();
 			expect(document.activeElement).not.toBe(button.element);
 
-			menu.view!.fire('cancel');
+			pressEsc();
 			expect(document.activeElement).toBe(button.element);
 		});
 
@@ -483,7 +493,7 @@ describe('Breadcrumbs', () => {
 			});
 			expect(button.element?.isConnected).toBe(false);
 
-			menu.view!.fire('cancel');
+			pressEsc();
 
 			expect(focusSpy).toHaveBeenCalled();
 		});
@@ -502,9 +512,7 @@ describe('Breadcrumbs', () => {
 			expect(typeof openSpy.mock.calls[0]?.[3]?.returnFocusTo?.focus).toBe('function');
 			expect(typeof openSpy.mock.calls[0]?.[3]?.onHide).toBe('function');
 
-			const [item] = Array.from(menu.view!.items);
-
-			expect(item instanceof ButtonView && item.label).toBe(copy.title);
+			expect(describeItems(menu.view as ElementMenuView)).toEqual([copy.title]);
 		});
 
 		it('do nothing for an item whose element is gone', () => {

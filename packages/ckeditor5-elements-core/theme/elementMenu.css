@@ -1,67 +1,14 @@
-.ck.ck-elements-menu {
-	display: flex;
-	flex-direction: column;
-	min-width: 160px;
-	padding: var(--ck-spacing-sm) 0;
-}
+/*
+ * The menu of an element is CKEditor's dropdown menu, so CKEditor styles it. Only the alignment of labels is added.
+ */
 
-.ck.ck-elements-menu > .ck.ck-button {
-	justify-content: flex-start;
-	width: 100%;
-	border-radius: 0;
-}
-
-.ck.ck-elements-submenu {
-	position: relative;
-}
-
-.ck.ck-elements-submenu > .ck.ck-button.ck-elements-submenu__button {
-	justify-content: flex-start;
-	width: 100%;
-	border-radius: 0;
-}
-
-/* A chevron pointing to the nested menu. */
-.ck.ck-elements-submenu > .ck.ck-button.ck-elements-submenu__button::after {
-	content: '';
-	flex-shrink: 0;
-	width: 0.4em;
-	height: 0.4em;
-	margin-left: auto;
-	padding: 0;
-	border-top: 1.5px solid currentColor;
-	border-right: 1.5px solid currentColor;
-	transform: rotate(45deg);
-	translate: -0.1em 0;
-	opacity: 0.7;
-}
-
-.ck.ck-elements-submenu > .ck.ck-button.ck-elements-submenu__button .ck-button__label {
-	margin-right: var(--ck-spacing-lg);
-}
-
-.ck.ck-elements-submenu > .ck.ck-elements-menu.ck-elements-submenu__panel {
-	position: absolute;
-	top: calc(-1 * var(--ck-spacing-sm));
-	left: 100%;
-	z-index: 1;
-	border: 1px solid var(--ck-balloon-panel-border-color, var(--ck-color-base-border));
-	border-radius: var(--ck-border-radius-control);
-	background: var(--ck-balloon-panel-background-color, var(--ck-color-base-background));
-	box-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
-}
-
-.ck.ck-elements-submenu > .ck.ck-elements-menu.ck-elements-submenu__panel.ck-hidden {
-	display: none;
-}
-
-.ck.ck-elements-menu__separator {
-	height: 1px;
-	margin: var(--ck-spacing-sm) 0;
-	background: var(--ck-color-base-border);
-}
-
-/* In a menu with icons, items without an icon get the space of one, so that all labels line up. */
-.ck.ck-elements-menu:has(.ck-button__icon) .ck-button:not(:has(> .ck-button__icon)) > .ck-button__label {
-	padding-left: calc(var(--ck-icon-size) + var(--ck-spacing-sm));
+/* In a menu with icons (or a nested menu of it), items without an icon get the space of one, so that all labels line up. */
+:is(.ck.ck-elements-menu, .ck.ck-elements-menu__panel > .ck-dropdown-menu-list):has(
+		> .ck-list__item > :is(.ck-button, .ck-dropdown-menu-list__nested-menu > .ck-button) > .ck-button__icon
+	)
+	> .ck-list__item
+	> :is(.ck-button, .ck-dropdown-menu-list__nested-menu > .ck-button):not(:has(> .ck-button__icon))
+	> .ck-button__label {
+	/* The width of an icon, and the gap after it. */
+	margin-inline-start: calc(var(--ck-icon-size) + var(--ck-button-icon-gap));
 }

@@ -26,9 +26,7 @@ export {
 	type ElementOrPositionButtonViewOptions
 } from './elementOrPositionButtonView.js';
 export { default as ElementButtonView } from './elementButtonView.js';
-export { default as ElementMenuView, type ElementMenuViewOptions } from './elementMenuView.js';
-export { default as SubmenuView } from './submenuView.js';
-export { default as MenuSeparatorView } from './menuSeparatorView.js';
+export { default as ElementMenuView } from './elementMenuView.js';
 
 // Utils.
 export { isInDocument } from './utils.js';

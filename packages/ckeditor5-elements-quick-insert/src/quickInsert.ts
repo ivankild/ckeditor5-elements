@@ -112,8 +112,8 @@ export default class QuickInsert extends Plugin {
 			command.executeFor(position, value);
 		});
 
-		editor.plugins.get(ElementMenu).show([view], menuTarget, {
-			label: editor.t('Insert element'),
+		// The search field is labelled "Insert element".
+		editor.plugins.get(ElementMenu).show(view, menuTarget, {
 			// The position would be outdated after any change, e.g. by another user.
 			isObsolete: () => true
 		});

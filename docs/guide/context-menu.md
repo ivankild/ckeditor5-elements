@@ -13,14 +13,16 @@ elementContextMenu: (element, editor) => [/* commands, submenus and '|' separato
 ```
 
 The menu is shown by the `ElementMenu` plugin from `ckeditor5-elements-core` (loaded by `ElementContextMenu`), which
-also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. Its styles are in
-`ckeditor5-elements-core/index.css`.
+also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. The menu is CKEditor's dropdown
+menu (`DropdownMenuRootListView`): CKEditor builds it and handles the nested menus, the keyboard and right-to-left
+languages; the plugin connects its buttons to the commands. A toggle that is on is shown as CKEditor shows an "on"
+button. Its few extra styles are in `ckeditor5-elements-core/index.css`.
 
 - A **command** (any [`ElementOrPositionCommand`](./commands)) is shown as a button with its title and icon, enabled
   and "on" according to its state for the element. Choosing it executes it for the element. A toggle (a command with
   `isToggleable`) is a checkable menu item, so screen readers announce whether it is on.
-- A **submenu** is `{ title, icon?, items }`. It is enabled when one of its items is. Only one submenu is open at a
-  time.
+- A **submenu** is `{ title, icon?, items }`. It is enabled when one of its items is. It opens on click or hover,
+  next to its item, on the side where it fits. Only one submenu is open at a time.
 - `'|'` is a **separator**. Separators at the start or the end, and repeated ones, are not shown.
 - Missing items, e.g. `editor.commands.get()` of a plugin that is not loaded, are skipped.
 - No items means the native context menu.
@@ -71,5 +73,6 @@ paragraph can be pasted over, and other elements get the native menu.
 The context menu key, or Shift+F10, opens the menu of the element at the cursor (or of the selected element, e.g. an
 image), next to it. Shift+F10 is listed in the accessibility help (Alt+0).
 
-In the menu, arrow keys and Tab move between the items, the right arrow opens a submenu and the left arrow closes it.
+In the menu, arrow keys and Tab move between the items, the right arrow opens a submenu and the left arrow closes it
+(the other way round in right-to-left languages).
 Esc closes the menu and returns the focus to the editor.

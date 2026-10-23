@@ -1,6 +1,6 @@
 import {
 	Bold,
-	ButtonView,
+	DropdownMenuRootListView,
 	Paragraph,
 	_setModelData,
 	keyCodes,
@@ -81,9 +81,7 @@ describe('ElementContextMenu', () => {
 	const editable = (): HTMLElement => editor.ui.getEditableElement()!;
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
 	const labels = (): string[] =>
-		Array.from(menu.view?.items ?? [])
-			.filter(item => item instanceof ButtonView)
-			.map(button => button.label ?? '');
+		menu.view instanceof DropdownMenuRootListView ? menu.view.buttons.map(button => button.label ?? '') : [];
 
 	afterEach(async () => {
 		await editor.destroy();
@@ -166,7 +164,7 @@ describe('ElementContextMenu', () => {
 
 			expect(pressShiftF10()).toBe(true);
 			expect(items).toHaveBeenCalledWith(child(0).getChild(0), editor);
-			expect(document.activeElement).toBe(menu.view?.items.first?.element);
+			expect(document.activeElement).toBe((menu.view as DropdownMenuRootListView).buttons[0]?.element);
 		});
 
 		it('Shift+F10 opens the menu of the selected element, next to it', async () => {

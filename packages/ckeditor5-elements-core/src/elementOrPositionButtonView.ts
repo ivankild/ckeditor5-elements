@@ -23,8 +23,11 @@ export interface ElementOrPositionButtonViewOptions {
  *
  * The label, icon and tooltip are the command `title`, `icon` and `tooltip`. For a
  * {@link ElementOrPositionCommand#isToggleable toggleable} command, the button is toggleable, so assistive technology
- * is told whether it is "on". Without a target, the button is enabled when the command is. With a target (e.g. in a context menu of an element), it is enabled and "on" according to the
- * command {@link ElementOrPositionCommand#getState state} for that target, kept up to date as the document changes.
+ * is told whether it is "on". Without a target, the button is enabled when the command is. With a target (e.g. in a
+ * context menu of an element), it is enabled and "on" according to the command
+ * {@link ElementOrPositionCommand#getState state} for that target, kept up to date as the document changes.
+ *
+ * A failed (rejected) command is reported with a warning of the `Notification` plugin.
  */
 export default class ElementOrPositionButtonView extends ButtonView {
 	/**
@@ -40,73 +43,80 @@ export default class ElementOrPositionButtonView extends ButtonView {
 	constructor(
 		locale: Locale | undefined,
 		command: ElementOrPositionCommand,
-		{ withText = false, target }: ElementOrPositionButtonViewOptions = {}
+		options: ElementOrPositionButtonViewOptions = {}
 	) {
 		super(locale);
 
 		this.command = command;
-		this.target = target;
+		this.target = options.target;
 
-		this.set({ withText, isToggleable: command.isToggleable });
-		this.bind('label', 'icon').to(command, 'title', 'icon');
+		bindButtonToCommand(this, command, options);
+	}
+}
 
-		if (withText) {
-			this.tooltip = false;
-		} else {
-			this.bind('tooltip').to(command, 'tooltip');
-		}
+/**
+ * Makes the button reflect the command and execute it when clicked, as {@link ElementOrPositionButtonView} does. Also
+ * used for menu items, which are a different kind of button.
+ */
+export function bindButtonToCommand(
+	button: ButtonView,
+	command: ElementOrPositionCommand,
+	{ withText = false, target }: ElementOrPositionButtonViewOptions = {}
+): void {
+	const editor = command.editor;
 
-		if (target) {
-			this._updateState(target);
+	button.set({ withText, isToggleable: command.isToggleable });
+	button.bind('label', 'icon').to(command, 'title', 'icon');
 
-			this.listenTo(command.editor.model.document, 'change', () => {
-				this._updateState(target);
-			});
-			this.listenTo(command.editor, 'change:isReadOnly', () => {
-				this._updateState(target);
-			});
-			this.listenTo(command, 'change:isForceDisabled', () => {
-				this._updateState(target);
-			});
-		} else {
-			this.bind('isEnabled').to(command, 'isEnabled');
-		}
-
-		this.on('execute', () => {
-			// Focus first: focusing reads the DOM selection, which would override a selection set by the command.
-			command.editor.editing.view.focus();
-
-			const result = target ? command.executeFor(target) : command.execute();
-
-			if (result instanceof Promise) {
-				result.catch((error: unknown) => {
-					this._reportError(error);
-				});
-			}
-		});
+	if (withText) {
+		button.tooltip = false;
+	} else {
+		button.bind('tooltip').to(command, 'tooltip');
 	}
 
-	/**
-	 * Shows a warning about a failed (asynchronous) command, e.g. a clipboard command without the clipboard permission,
-	 * with the `Notification` plugin. Without that plugin, the error is not handled.
-	 */
-	private _reportError(error: unknown): void {
-		const editor = this.command.editor;
+	if (target) {
+		const updateState = (): void => {
+			const { isEnabled, isOn } = command.getState(target);
 
-		if (!editor.plugins.has(Notification)) {
-			throw error;
+			button.isEnabled = isEnabled;
+			button.isOn = isOn;
+		};
+
+		updateState();
+		button.listenTo(editor.model.document, 'change', updateState);
+		button.listenTo(editor, 'change:isReadOnly', updateState);
+		button.listenTo(command, 'change:isForceDisabled', updateState);
+	} else {
+		button.bind('isEnabled').to(command, 'isEnabled');
+	}
+
+	button.on('execute', () => {
+		// Focus first: focusing reads the DOM selection, which would override a selection set by the command.
+		editor.editing.view.focus();
+
+		const result = target ? command.executeFor(target) : command.execute();
+
+		if (result instanceof Promise) {
+			result.catch((error: unknown) => {
+				reportError(command, error);
+			});
 		}
+	});
+}
 
-		editor.plugins.get(Notification).showWarning(error instanceof Error ? error.message : String(error), {
-			title: editor.t('Could not complete "%0".', this.command.title),
-			namespace: 'elementCommand'
-		});
+/**
+ * Shows a warning about a failed (asynchronous) command, e.g. a clipboard command without the clipboard permission,
+ * with the `Notification` plugin. Without that plugin, the error is not handled.
+ */
+function reportError(command: ElementOrPositionCommand, error: unknown): void {
+	const editor = command.editor;
+
+	if (!editor.plugins.has(Notification)) {
+		throw error;
 	}
 
-	private _updateState(target: ElementOrPosition): void {
-		const { isEnabled, isOn } = this.command.getState(target);
-
-		this.isEnabled = isEnabled;
-		this.isOn = isOn;
-	}
+	editor.plugins.get(Notification).showWarning(error instanceof Error ? error.message : String(error), {
+		title: editor.t('Could not complete "%0".', command.title),
+		namespace: 'elementCommand'
+	});
 }

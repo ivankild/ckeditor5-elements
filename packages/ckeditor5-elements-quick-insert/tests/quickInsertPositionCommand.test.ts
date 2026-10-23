@@ -1,13 +1,5 @@
-import {
-	ButtonView,
-	Heading,
-	Paragraph,
-	_getModelData,
-	_setModelData,
-	type ClassicEditor,
-	type ModelElement
-} from 'ckeditor5';
-import { SubmenuView, type ElementMenu, type ElementMenuConfig } from 'ckeditor5-elements-core';
+import { Heading, Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
+import { ElementMenuView, type ElementMenu, type ElementMenuConfig } from 'ckeditor5-elements-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import QuickInsert from '../src/quickInsert.js';
@@ -103,20 +95,20 @@ describe('QuickInsertPositionCommand', () => {
 		it('inserts at the position chosen in the menu', () => {
 			menu.open(child(0), new DOMRect(), insertMenu);
 
-			const submenu = menu.view!.items.first;
+			const menuView = menu.view;
 
-			if (!(submenu instanceof SubmenuView)) {
-				throw new Error('Expected a submenu.');
+			if (!(menuView instanceof ElementMenuView)) {
+				throw new Error('Expected the menu of an element.');
 			}
 
-			const [, after] = Array.from(submenu.panelView.items).filter(item => item instanceof ButtonView);
+			const [, after] = menuView.buttons;
 
 			expect(after.label).toBe('Insert after');
 
-			submenu.open();
-			after.fire('execute');
+			menuView.menus[0].isOpen = true;
+			after.element!.click();
 
-			const view = menu.view?.items.first;
+			const view = menu.view;
 
 			expect(view).toBeInstanceOf(QuickInsertView);
 

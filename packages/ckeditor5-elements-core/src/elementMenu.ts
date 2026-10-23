@@ -1,19 +1,17 @@
 import {
-	ButtonView,
 	ContextualBalloon,
+	DropdownMenuRootListView,
+	KeystrokeHandler,
 	Notification,
 	Plugin,
 	clickOutsideHandler,
 	type Editor,
+	type FocusableView,
 	type ModelElement,
-	type RectSource,
-	type View
+	type RectSource
 } from 'ckeditor5';
 import ElementMenuView from './elementMenuView.js';
-import ElementOrPositionButtonView from './elementOrPositionButtonView.js';
 import ElementOrPositionCommand from './elementOrPositionCommand.js';
-import MenuSeparatorView from './menuSeparatorView.js';
-import SubmenuView from './submenuView.js';
 import { isInDocument } from './utils.js';
 
 /**
@@ -48,11 +46,11 @@ export type ElementMenuItem = ElementOrPositionCommand | ElementSubmenu | '|';
 export type ElementMenuConfig = (element: ModelElement, editor: Editor) => (ElementMenuItem | null | undefined)[];
 
 /**
- * The options of {@link ElementMenu#show}.
+ * The options of {@link ElementMenu#open} and {@link ElementMenu#show}.
  */
 export interface ElementMenuShowOptions {
 	/**
-	 * The accessible name of the menu.
+	 * The accessible name of the menu of an element (see {@link ElementMenu#open}). Defaults to "Element menu".
 	 */
 	label?: string;
 
@@ -75,19 +73,21 @@ export interface ElementMenuShowOptions {
 
 /**
  * Shows menus in a balloon: the menu of an element, built from commands, submenus and separators (see {@link open}),
- * or a menu of any views (see {@link show}).
+ * or any view, e.g. the quick insert search (see {@link show}).
  *
- * The element context menu, the breadcrumbs and quick insert show their menus with it.
+ * The element context menu, the breadcrumbs and quick insert show their menus with it. The menu of an element is
+ * CKEditor's dropdown menu (see {@link ElementMenuView}).
  *
- * Items that fire `execute` (e.g. buttons) close the menu. Esc and clicking outside close it too; Esc returns the focus to
- * the editor, or to {@link ElementMenuShowOptions.returnFocusTo}.
+ * Executing an item closes the menu. Esc and clicking outside close it too; Esc returns the focus to the editor, or to
+ * {@link ElementMenuShowOptions.returnFocusTo}.
  */
 export default class ElementMenu extends Plugin {
 	/**
-	 * The currently open menu, if any.
+	 * The view in the open menu, if any.
 	 */
-	public view: ElementMenuView | null = null;
+	public view: FocusableView | null = null;
 
+	private _keystrokes: KeystrokeHandler | null = null;
 	private _isObsolete: (() => boolean) | null = null;
 	private _onHide: (() => void) | null = null;
 
@@ -120,15 +120,18 @@ export default class ElementMenu extends Plugin {
 		config: ElementMenuConfig,
 		{ label = this.editor.t('Element menu'), isObsolete, ...options }: ElementMenuShowOptions = {}
 	): boolean {
-		const views = this._createItemViews(config(element, this.editor), element);
+		const items = cleanItems(config(element, this.editor));
 
-		if (!views.length) {
+		if (!items.length) {
 			return false;
 		}
 
-		this.show(views, target, {
+		const view = new ElementMenuView(this.editor.locale, this.editor.ui.view.body, items, element);
+
+		view.ariaLabel = label;
+
+		this.show(view, target, {
 			...options,
-			label,
 			isObsolete: () => !isInDocument(element) || !!isObsolete?.()
 		});
 
@@ -136,37 +139,31 @@ export default class ElementMenu extends Plugin {
 	}
 
 	/**
-	 * Shows a menu with the given views next to the target (e.g. a button, or a `DOMRect` in viewport coordinates).
+	 * Shows the view (e.g. a menu) next to the target (e.g. a button, or a `DOMRect` in viewport coordinates), and
+	 * focuses it. The menu closes when the view, or an item of CKEditor's dropdown menu in it, fires `execute`.
 	 */
 	public show(
-		items: View[],
+		view: FocusableView,
 		target: RectSource,
-		{ label, isObsolete, returnFocusTo, onHide }: ElementMenuShowOptions = {}
+		{ isObsolete, returnFocusTo, onHide }: ElementMenuShowOptions = {}
 	): void {
 		this.hide();
 
-		const view = new ElementMenuView(this.editor.locale, { label });
+		const close = (): void => {
+			// The item may have opened another menu already (e.g. "Insert before" opens quick insert).
+			if (this.view === view) {
+				this.hide();
+			}
+		};
 
-		view.items.addMany(items);
-
-		for (const item of items) {
-			this.listenTo(item, 'execute', () => {
-				// The item may have opened another menu already (e.g. "Insert before" opens quick insert).
-				if (this.view === view) {
-					this.hide();
-				}
-			});
-		}
-
-		this.listenTo(view, 'cancel', () => {
-			this.hide();
-			(returnFocusTo ?? this.editor.editing.view).focus();
-		});
+		this.listenTo(view, 'execute', close);
+		this.listenTo(view, 'menu:execute', close);
 
 		clickOutsideHandler({
 			emitter: view,
 			activator: () => this._balloon.visibleView === view,
-			contextElements: () => (this._balloon.view.element ? [this._balloon.view.element] : []),
+			// The open nested menus are in panels outside the balloon.
+			contextElements: () => [this._balloon.view.element, ...getOpenPanels(view)].filter(element => !!element),
 			callback: () => {
 				this.hide();
 			}
@@ -179,7 +176,21 @@ export default class ElementMenu extends Plugin {
 			singleViewMode: true
 		});
 
+		const keystrokes = new KeystrokeHandler();
+
+		// Esc in a nested menu closes only that menu.
+		keystrokes.set('Esc', (data, cancel) => {
+			this.hide();
+			(returnFocusTo ?? this.editor.editing.view).focus();
+			cancel();
+		});
+
+		if (view.element) {
+			keystrokes.listenTo(view.element);
+		}
+
 		this.view = view;
+		this._keystrokes = keystrokes;
 		this._isObsolete = isObsolete ?? null;
 		this._onHide = onHide ?? null;
 		view.focus();
@@ -196,14 +207,11 @@ export default class ElementMenu extends Plugin {
 			return;
 		}
 
+		this._keystrokes?.destroy();
 		this.view = null;
+		this._keystrokes = null;
 		this._isObsolete = null;
 		this._onHide = null;
-
-		for (const item of view.items) {
-			this.stopListening(item);
-		}
-
 		this.stopListening(view);
 
 		if (this._balloon.hasView(view)) {
@@ -219,72 +227,46 @@ export default class ElementMenu extends Plugin {
 		super.destroy();
 	}
 
-	/**
-	 * Creates the views of menu items, without separators at the start or the end, or repeated ones.
-	 */
-	private _createItemViews(items: readonly (ElementMenuItem | null | undefined)[], element: ModelElement): View[] {
-		const views: View[] = [];
-
-		for (const item of compact(items)) {
-			const view = this._createItemView(item, element);
-			const previous = views.at(-1);
-
-			if (!view || (view instanceof MenuSeparatorView && (!previous || previous instanceof MenuSeparatorView))) {
-				continue;
-			}
-
-			views.push(view);
-		}
-
-		if (views.at(-1) instanceof MenuSeparatorView) {
-			views.pop();
-		}
-
-		return views;
-	}
-
-	/**
-	 * Creates the view of a menu item: a separator; a button for a command; a submenu (with an enabled button only when
-	 * one of its items is enabled) for a submenu. Returns `null` for a submenu without items.
-	 */
-	private _createItemView(item: ElementMenuItem, element: ModelElement): View | null {
-		const locale = this.editor.locale;
-
-		if (item === '|') {
-			return new MenuSeparatorView(locale);
-		}
-
-		if (!(item instanceof ElementOrPositionCommand)) {
-			const views = this._createItemViews(item.items, element);
-
-			if (!views.length) {
-				return null;
-			}
-
-			const submenu = new SubmenuView(locale, item.title, views, { icon: item.icon });
-
-			submenu.buttonView.isEnabled = views.some(
-				view =>
-					(view instanceof SubmenuView && view.buttonView.isEnabled) ||
-					(view instanceof ButtonView && view.isEnabled)
-			);
-
-			return submenu;
-		}
-
-		const button = new ElementOrPositionButtonView(locale, item, { withText: true, target: element });
-
-		// A toggleable button with a checkable role tells assistive technology whether it is "on" with `aria-checked`.
-		button.role = item.isToggleable ? 'menuitemcheckbox' : 'menuitem';
-
-		return button;
-	}
-
 	private get _balloon(): ContextualBalloon {
 		return this.editor.plugins.get(ContextualBalloon);
 	}
 }
 
-function compact<T>(items: readonly (T | null | undefined)[]): T[] {
-	return items.filter((item): item is T => item !== null && item !== undefined);
+/**
+ * Returns the items without missing ones, submenus without items, and separators at the start or the end, or
+ * repeated ones.
+ */
+function cleanItems(items: readonly (ElementMenuItem | null | undefined)[]): ElementMenuItem[] {
+	const result: ElementMenuItem[] = [];
+
+	for (const item of items) {
+		const cleaned = item === '|' || item instanceof ElementOrPositionCommand || !item ? item : cleanSubmenu(item);
+
+		if (!cleaned || (cleaned === '|' && (!result.length || result.at(-1) === '|'))) {
+			continue;
+		}
+
+		result.push(cleaned);
+	}
+
+	if (result.at(-1) === '|') {
+		result.pop();
+	}
+
+	return result;
+}
+
+function cleanSubmenu(submenu: ElementSubmenu): ElementSubmenu | null {
+	const items = cleanItems(submenu.items);
+
+	return items.length ? { ...submenu, items } : null;
+}
+
+/**
+ * Returns the panels of the open nested menus of CKEditor's dropdown menu.
+ */
+function getOpenPanels(view: FocusableView): (HTMLElement | null)[] {
+	return view instanceof DropdownMenuRootListView
+		? view.menus.filter(menu => menu.isOpen).map(menu => menu.panelView.element)
+		: [];
 }

@@ -1,113 +1,220 @@
-import { ButtonView, keyCodes, type KeystrokeInfo } from 'ckeditor5';
-import { createPlainView } from '../../../testUtils/editor.js';
+import {
+	DropdownMenuRootListView,
+	Paragraph,
+	_getModelData,
+	_setModelData,
+	keyCodes,
+	type ClassicEditor,
+	type DropdownMenuListItemButtonView,
+	type Editor,
+	type ModelElement
+} from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Container, createEditor } from '../../../testUtils/editor.js';
+import { describeItems, keystroke } from '../../../testUtils/menu.js';
+import ElementCommand from '../src/elementCommand.js';
+import { type ElementMenuItem } from '../src/elementMenu.js';
 import ElementMenuView from '../src/elementMenuView.js';
+import ElementOrPositionCommand from '../src/elementOrPositionCommand.js';
 
-function press(view: ElementMenuView, keyCode: number, shiftKey = false): void {
-	const data: KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } = {
-		keyCode,
-		shiftKey,
-		altKey: false,
-		ctrlKey: false,
-		metaKey: false,
-		preventDefault: vi.fn(),
-		stopPropagation: vi.fn()
-	};
+/**
+ * A command that is always enabled, also in read-only mode.
+ */
+class AlwaysEnabledCommand extends ElementOrPositionCommand {
+	constructor(editor: Editor) {
+		super(editor);
 
-	view.keystrokes.press(data);
-}
+		this.title = 'Always';
+		this.affectsData = false;
+	}
 
-function createButton(label: string): ButtonView {
-	const button = new ButtonView();
-
-	button.set({ label, withText: true });
-
-	return button;
+	protected override _isEnabledFor(): boolean {
+		return true;
+	}
 }
 
 describe('ElementMenuView', () => {
-	let view: ElementMenuView;
-	let first: ButtonView;
-	let second: ButtonView;
+	let editor: ClassicEditor;
+	let container: ElementCommand;
+	let plain: ElementOrPositionCommand;
+	let view: ElementMenuView | undefined;
 
-	beforeEach(() => {
-		view = new ElementMenuView();
-		first = createButton('First');
-		second = createButton('Second');
+	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
 
-		// A view that cannot be focused, e.g. a separator.
-		view.items.addMany([first, createPlainView(), second]);
+	function createView(items: ElementMenuItem[], target: ModelElement = child(1)): ElementMenuView {
+		view?.element?.remove();
+		view?.destroy();
+		view = new ElementMenuView(editor.locale, editor.ui.view.body, items, target);
 		view.render();
 		document.body.append(view.element!);
+
+		return view;
+	}
+
+	const button = (label: string): DropdownMenuListItemButtonView => view!.buttons.find(item => item.label === label)!;
+
+	beforeEach(async () => {
+		editor = await createEditor({ plugins: [Paragraph, Container] });
+
+		container = new ElementCommand(editor);
+		container.elementName = 'container';
+		container.set({ title: 'Container', icon: '<svg id="container"></svg>' });
+		editor.commands.add('container', container);
+
+		plain = new ElementOrPositionCommand(editor);
+		plain.title = 'Plain';
+
+		_setModelData(editor.model, '<container><paragraph>f[]oo</paragraph></container><paragraph>bar</paragraph>');
 	});
 
-	afterEach(() => {
-		view.element?.remove();
-		view.destroy();
+	afterEach(async () => {
+		view?.element?.remove();
+		view?.destroy();
+		view = undefined;
+		await editor.destroy();
 	});
 
-	it('renders a menu', () => {
-		expect(view.element?.getAttribute('role')).toBe('menu');
-		expect(view.element?.classList.contains('ck-elements-menu')).toBe(true);
-		expect(view.element?.children).toHaveLength(3);
+	it("is CKEditor's dropdown menu", () => {
+		createView([container]);
+
+		expect(view).toBeInstanceOf(DropdownMenuRootListView);
+		expect(view!.element?.getAttribute('role')).toBe('menu');
+		expect(view!.element?.classList.contains('ck-elements-menu')).toBe(true);
+		expect(view!.target).toBe(child(1));
 	});
 
-	it('focus() focuses the first focusable item', () => {
-		view.focus();
+	describe('command buttons', () => {
+		it('show the command title and icon, and its state for the target', () => {
+			createView([container, plain]);
 
-		expect(document.activeElement).toBe(first.element);
+			expect(describeItems(view!)).toEqual(['Container', 'Plain']);
+			expect(button('Container').icon).toBe('<svg id="container"></svg>');
+			expect(button('Container').isEnabled).toBe(true);
+			expect(button('Container').isOn).toBe(false);
+			expect(container.isOn).toBe(true);
+		});
+
+		it('are checkable menu items for toggleable commands, plain menu items otherwise', () => {
+			createView([container, plain], child(0).getChild(0) as ModelElement);
+
+			expect(button('Container').element?.getAttribute('role')).toBe('menuitemcheckbox');
+			expect(button('Container').element?.getAttribute('aria-checked')).toBe('true');
+			expect(button('Plain').element?.getAttribute('role')).toBe('menuitem');
+			expect(button('Plain').element?.hasAttribute('aria-checked')).toBe(false);
+		});
+
+		it('follow the state as it changes', () => {
+			createView([container]);
+
+			editor.enableReadOnlyMode('test');
+
+			expect(button('Container').isEnabled).toBe(false);
+		});
+
+		it('execute the command for the target, and fire `menu:execute`', () => {
+			const executeSpy = vi.fn();
+
+			createView([container]);
+			view!.on('menu:execute', executeSpy);
+			button('Container').element!.click();
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<container><paragraph>foo</paragraph></container><container><paragraph>bar</paragraph></container>'
+			);
+			expect(executeSpy).toHaveBeenCalled();
+		});
 	});
 
-	it('moves the focus with the arrow keys and Tab, skipping views that cannot be focused', () => {
-		view.focus();
+	describe('submenus', () => {
+		it("are CKEditor's nested menus, with their icon", () => {
+			createView([
+				{
+					title: 'More',
+					icon: '<svg id="more"></svg>',
+					items: [plain, { title: 'Even more', items: [container] }]
+				}
+			]);
 
-		press(view, keyCodes.arrowdown);
-		expect(document.activeElement).toBe(second.element);
+			const [more, evenMore] = view!.menus;
 
-		press(view, keyCodes.arrowup);
-		expect(document.activeElement).toBe(first.element);
+			expect(describeItems(view!)).toEqual(['More ›']);
+			expect(describeItems(more.listView)).toEqual(['Plain', 'Even more ›']);
+			expect(describeItems(evenMore.listView)).toEqual(['Container']);
+			expect(more.buttonView.icon).toBe('<svg id="more"></svg>');
+		});
 
-		press(view, keyCodes.tab);
-		expect(document.activeElement).toBe(second.element);
+		it('are enabled when one of their items is, also in a nested submenu', () => {
+			editor.enableReadOnlyMode('test');
+			createView([
+				{
+					title: 'Enabled',
+					items: [container, { title: 'Nested', items: [new AlwaysEnabledCommand(editor)] }]
+				},
+				{ title: 'Disabled', items: [container] }
+			]);
 
-		press(view, keyCodes.tab, true);
-		expect(document.activeElement).toBe(first.element);
+			expect(view!.menus.map(menu => [menu.buttonView.label, menu.isEnabled])).toEqual([
+				['Enabled', true],
+				['Nested', true],
+				['Disabled', false]
+			]);
+		});
+
+		it('open on hover, next to their item, in a panel in the body collection', () => {
+			createView([plain, { title: 'More', items: [container] }]);
+
+			const [more] = view!.menus;
+
+			more.element!.parentElement!.dispatchEvent(new MouseEvent('mouseenter'));
+
+			expect(more.isOpen).toBe(true);
+			expect(editor.ui.view.body.has(more.panelView)).toBe(true);
+			expect(more.panelView.element?.classList.contains('ck-elements-menu__panel')).toBe(true);
+		});
+
+		it('execute a nested command, and fire `menu:execute`', () => {
+			const executeSpy = vi.fn();
+
+			const paragraph = child(1);
+
+			createView([{ title: 'More', items: [container] }]);
+			view!.on('menu:execute', executeSpy);
+			view!.menus[0].isOpen = true;
+			button('Container').element!.click();
+
+			expect(paragraph.parent?.is('element', 'container')).toBe(true);
+			expect(executeSpy).toHaveBeenCalled();
+		});
 	});
 
-	it('registers items added after rendering', () => {
-		const third = createButton('Third');
+	describe('separators', () => {
+		it('are shown between items, in the menu and in submenus', () => {
+			createView([plain, '|', container, '|', { title: 'More', items: [plain, '|', container] }]);
 
-		view.items.add(third);
-		view.focus();
-		press(view, keyCodes.arrowup);
+			expect(describeItems(view!)).toEqual(['Plain', '|', 'Container', '|', 'More ›']);
+			expect(describeItems(view!.menus[0].listView)).toEqual(['Plain', '|', 'Container']);
+			expect(view!.element?.querySelector('.ck-list__separator')?.getAttribute('role')).toBe('separator');
+		});
 
-		expect(document.activeElement).toBe(third.element);
+		it('are skipped by the arrow keys', () => {
+			createView([plain, '|', container]);
+
+			view!.focus();
+			view!.keystrokes.press(keystroke(keyCodes.arrowdown));
+
+			expect(document.activeElement).toBe(button('Container').element);
+		});
 	});
 
-	it('fires `cancel` on Esc', () => {
-		const cancelSpy = vi.fn();
+	it('prevents the native context menu in the menu and in the panels of nested menus', () => {
+		createView([{ title: 'More', items: [container] }]);
+		view!.menus[0].isOpen = true;
 
-		view.on('cancel', cancelSpy);
-		press(view, keyCodes.esc);
+		for (const element of [view!.element!, view!.menus[0].panelView.element!]) {
+			const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
 
-		expect(cancelSpy).toHaveBeenCalled();
-	});
-
-	it('has no accessible name unless given', () => {
-		expect(view.element?.hasAttribute('aria-label')).toBe(false);
-
-		const named = new ElementMenuView(undefined, { label: 'Element menu' });
-
-		named.render();
-		expect(named.element?.getAttribute('aria-label')).toBe('Element menu');
-		named.destroy();
-	});
-
-	it('prevents the native context menu in it', () => {
-		const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
-
-		first.element!.dispatchEvent(event);
-
-		expect(event.defaultPrevented).toBe(true);
+			element.dispatchEvent(event);
+			expect(event.defaultPrevented).toBe(true);
+		}
 	});
 });
