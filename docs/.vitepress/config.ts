@@ -9,6 +9,7 @@ const PACKAGES = [
 	'ckeditor5-elements-clipboard',
 	'ckeditor5-elements-actions',
 	'ckeditor5-elements-toolbar',
+	'ckeditor5-elements-example',
 	'ckeditor5-elements-context-menu',
 	'ckeditor5-elements-quick-insert'
 ];
@@ -36,6 +37,7 @@ export default defineConfig({
 	themeConfig: {
 		nav: [
 			{ text: 'Guide', link: '/guide/getting-started' },
+			{ text: 'Example', link: '/example' },
 			{ text: 'API', link: '/api/' }
 		],
 		sidebar: {

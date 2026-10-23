@@ -7,10 +7,9 @@ import {
 	ModelSelection
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Container, createEditor } from '../../../testUtils/editor.js';
+import { BlockObject, Container, createEditor } from '../../../testUtils/editor.js';
 import ElementCommand from '../src/elementCommand.js';
 import ElementOrPositionCommand, { type ElementOrPosition } from '../src/elementOrPositionCommand.js';
-import { ElementsEditing } from 'ckeditor5-elements-example';
 
 /**
  * Exposes the protected members.
@@ -41,7 +40,7 @@ describe('ElementOrPositionCommand', () => {
 	const child = (index: number): ModelElement => root().getChild(index) as ModelElement;
 
 	beforeEach(async () => {
-		editor = await createEditor({ plugins: [Paragraph, Container, ElementsEditing] });
+		editor = await createEditor({ plugins: [Paragraph, Container, BlockObject] });
 
 		command = new TestCommand(editor);
 		editor.commands.add('test', command);

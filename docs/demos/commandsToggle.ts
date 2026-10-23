@@ -1,5 +1,5 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { Note } from './shared/note';
+import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 export default {

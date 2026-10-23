@@ -1,6 +1,6 @@
 import { Essentials, List, Paragraph, Plugin } from 'ckeditor5';
 import { ElementActions, ElementContextMenu, ElementOrPositionButtonView } from 'ckeditor5-elements';
-import { Note } from './shared/note';
+import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 const ACTIONS = ['moveElementUp', 'moveElementDown', 'duplicateElement', 'deleteElement'] as const;

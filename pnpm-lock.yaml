@@ -217,6 +217,9 @@ importers:
       ckeditor5-elements:
         specifier: workspace:*
         version: link:../packages/ckeditor5-elements
+      ckeditor5-elements-example:
+        specifier: workspace:*
+        version: link:../packages/ckeditor5-elements-example
     devDependencies:
       typedoc:
         specifier: ^0.28.20
@@ -303,11 +306,15 @@ importers:
   packages/ckeditor5-elements-example:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
-      ckeditor5-elements-core:
+      ckeditor5-elements:
         specifier: workspace:*
-        version: link:../ckeditor5-elements-core
+        version: link:../ckeditor5-elements
+    devDependencies:
+      vite:
+        specifier: ^8.3.5
+        version: 8.3.5(@types/node@24.19.2)(yaml@2.9.1)
 
   packages/ckeditor5-elements-quick-insert:
     dependencies:

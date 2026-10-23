@@ -14,6 +14,7 @@
 			"ckeditor5-elements-clipboard": ["../packages/ckeditor5-elements-clipboard/src/index.ts"],
 			"ckeditor5-elements-actions": ["../packages/ckeditor5-elements-actions/src/index.ts"],
 			"ckeditor5-elements-toolbar": ["../packages/ckeditor5-elements-toolbar/src/index.ts"],
+			"ckeditor5-elements-example": ["../packages/ckeditor5-elements-example/src/index.ts"],
 			"ckeditor5-elements-context-menu": ["../packages/ckeditor5-elements-context-menu/src/index.ts"],
 			"ckeditor5-elements-quick-insert": ["../packages/ckeditor5-elements-quick-insert/src/index.ts"]
 		}

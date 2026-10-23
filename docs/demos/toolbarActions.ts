@@ -1,6 +1,6 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
 import { ElementActions, ElementToolbar } from 'ckeditor5-elements';
-import { Note } from './shared/note';
+import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'];

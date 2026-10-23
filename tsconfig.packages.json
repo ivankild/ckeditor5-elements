@@ -24,9 +24,6 @@
 		},
 		{
 			"path": "packages/ckeditor5-elements-quick-insert"
-		},
-		{
-			"path": "packages/ckeditor5-elements-example"
 		}
 	]
 }

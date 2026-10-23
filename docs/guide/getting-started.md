@@ -41,9 +41,15 @@ Like `ckeditor5`, `ckeditor5-elements` brings its features in packages of its ow
 or import them yourself: two versions of them would be loaded, which fails.
 :::
 
-All the examples in this guide are live editors, and their source is shown below them. They use a `note` element
-(`<aside class="note">`) defined in the docs:
+::: tip See it all at work
+The [full example](../example) is an editor with all the features together. Its source is in the
+[`ckeditor5-elements-example`](https://github.com/ivankild/ckeditor5-elements/tree/main/packages/ckeditor5-elements-example)
+package; run it with `pnpm example`.
+:::
 
-::: details `shared/note.ts`
-<<< @/demos/shared/note.ts
+All the examples in this guide are live editors, and their source is shown below them. They use the `note` element
+(`<aside class="note">`) of the full example:
+
+::: details `note.ts`
+<<< ../../packages/ckeditor5-elements-example/src/note.ts
 :::

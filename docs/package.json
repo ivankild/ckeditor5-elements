@@ -11,7 +11,8 @@
 	},
 	"dependencies": {
 		"ckeditor5": "^49.0.0",
-		"ckeditor5-elements": "workspace:*"
+		"ckeditor5-elements": "workspace:*",
+		"ckeditor5-elements-example": "workspace:*"
 	},
 	"devDependencies": {
 		"typedoc": "^0.28.20",

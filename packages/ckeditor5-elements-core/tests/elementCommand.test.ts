@@ -1,8 +1,7 @@
 import { Bold, Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import ElementCommand from '../src/elementCommand.js';
-import { Container, createEditor } from '../../../testUtils/editor.js';
+import { BlockObject, Container, createEditor } from '../../../testUtils/editor.js';
 
 describe('ElementCommand', () => {
 	let editor: ClassicEditor;
@@ -13,7 +12,7 @@ describe('ElementCommand', () => {
 	const child = (index: number): ModelElement => root().getChild(index) as ModelElement;
 
 	beforeEach(async () => {
-		editor = await createEditor({ plugins: [Paragraph, Bold, Container, ElementsEditing] });
+		editor = await createEditor({ plugins: [Paragraph, Bold, Container, BlockObject] });
 
 		command = new ElementCommand(editor);
 		command.elementName = 'container';

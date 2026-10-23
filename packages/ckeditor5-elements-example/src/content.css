@@ -1,0 +1,15 @@
+/* The styles of the `Note` element, in the editor and in the published content. */
+.ck-content aside.note {
+	--note-color: #4f46e5;
+	--note-background: #eef2ff;
+
+	margin: 0.6em 0;
+	padding: 0.2em 1em;
+	border-left: 4px solid var(--note-color);
+	background: var(--note-background);
+}
+
+.ck-content aside.note.warning {
+	--note-color: #d97706;
+	--note-background: #fffbeb;
+}

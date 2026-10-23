@@ -4,6 +4,7 @@ import EditorDemo from './EditorDemo.vue';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-elements/index.css';
+import 'ckeditor5-elements-example/content.css';
 import './custom.css';
 
 export default {

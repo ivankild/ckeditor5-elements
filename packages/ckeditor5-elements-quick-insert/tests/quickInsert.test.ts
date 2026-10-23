@@ -11,13 +11,12 @@ import {
 	type KeystrokeInfo,
 	type ModelElement
 } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ElementMenu } from 'ckeditor5-elements-core';
 import QuickInsert from '../src/quickInsert.js';
 import QuickInsertCommand from '../src/quickInsertCommand.js';
 import QuickInsertView from '../src/quickInsertView.js';
-import { createEditor } from '../../../testUtils/editor.js';
+import { BlockObject, createEditor } from '../../../testUtils/editor.js';
 
 describe('QuickInsert', () => {
 	let editor: ClassicEditor;
@@ -49,7 +48,7 @@ describe('QuickInsert', () => {
 
 	beforeEach(async () => {
 		editor = await createEditor({
-			plugins: [Paragraph, Heading, ShiftEnter, ElementsEditing, QuickInsert],
+			plugins: [Paragraph, Heading, ShiftEnter, BlockObject, QuickInsert],
 			quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' }, exclude: ['heading3'] }
 		});
 

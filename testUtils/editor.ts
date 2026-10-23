@@ -35,6 +35,20 @@ export class Container extends Plugin {
 }
 
 /**
+ * Registers an `element` model element: a block object, converted to `<div class="ck-element">`.
+ */
+export class BlockObject extends Plugin {
+	public static get pluginName(): 'BlockObject' {
+		return 'BlockObject' as const;
+	}
+
+	public init(): void {
+		this.editor.model.schema.register('element', { inheritAllFrom: '$blockObject' });
+		this.editor.conversion.elementToElement({ model: 'element', view: { name: 'div', classes: 'ck-element' } });
+	}
+}
+
+/**
  * Creates a simple view that cannot be focused, e.g. a menu separator.
  */
 export function createPlainView(): View {

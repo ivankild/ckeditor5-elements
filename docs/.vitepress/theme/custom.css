@@ -7,11 +7,10 @@
 	line-height: 1.6;
 }
 
-.editor-demo .ck-content aside.note {
-	margin: 0.6em 0;
-	padding: 0.2em 1em;
-	border-left: 4px solid var(--vp-c-brand-1);
-	background: var(--vp-c-brand-soft);
+/* The notes of the full example, in the colors of the documentation. */
+.editor-demo .ck-content aside.note:not(.warning) {
+	--note-color: var(--vp-c-brand-1);
+	--note-background: var(--vp-c-brand-soft);
 }
 
 .editor-demo__controls {

@@ -1,16 +1,8 @@
 /**
- * An example element feature (`Elements`: the `element` model element, the `insertElement` and `element` commands
- * and buttons). The commands and button views it uses are in `ckeditor5-elements-core`.
- *
- * @module ckeditor5-elements-example
+ * The full example of CKEditor 5 Elements: the editor config with all its features, its data, and the `Note` element
+ * it uses. The documentation shows it too.
  */
 
-// Plugins.
-export { default as Elements } from './elements.js';
-export { default as ElementsEditing } from './elementsEditing.js';
-export { default as ElementsUI } from './elementsUI.js';
-
-// Commands.
-export { default as InsertElementCommand } from './insertElementCommand.js';
-
-import './augmentation.js';
+export { Note, NoteCommand } from './note.js';
+export { elementMenu, exampleConfig } from './config.js';
+export { exampleData } from './data.js';

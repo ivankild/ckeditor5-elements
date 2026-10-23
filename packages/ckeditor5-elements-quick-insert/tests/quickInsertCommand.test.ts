@@ -8,10 +8,9 @@ import {
 	type ModelElement,
 	type ModelPosition
 } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import QuickInsertCommand from '../src/quickInsertCommand.js';
-import { Container, createEditor } from '../../../testUtils/editor.js';
+import { BlockObject, Container, createEditor } from '../../../testUtils/editor.js';
 
 describe('QuickInsertCommand', () => {
 	let editor: ClassicEditor;
@@ -22,7 +21,7 @@ describe('QuickInsertCommand', () => {
 	const inRoot = (offset: number): ModelPosition => editor.model.createPositionAt(root(), offset);
 
 	beforeEach(async () => {
-		editor = await createEditor({ plugins: [Paragraph, Heading, ShiftEnter, Container, ElementsEditing] });
+		editor = await createEditor({ plugins: [Paragraph, Heading, ShiftEnter, Container, BlockObject] });
 
 		command = new QuickInsertCommand(editor);
 		editor.commands.add('quickInsert', command);

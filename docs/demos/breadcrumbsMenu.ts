@@ -6,7 +6,7 @@ import {
 	ElementContextMenu,
 	type ElementMenuConfig
 } from 'ckeditor5-elements';
-import { Note } from './shared/note';
+import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 // One menu for both: right-clicking an element, and clicking its breadcrumb.

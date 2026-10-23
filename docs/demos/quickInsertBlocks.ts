@@ -1,6 +1,6 @@
 import { Essentials, Heading, Paragraph, Plugin } from 'ckeditor5';
 import { ElementContextMenu, ElementOrPositionButtonView, insertIcon, QuickInsert } from 'ckeditor5-elements';
-import { Note } from './shared/note';
+import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 /**

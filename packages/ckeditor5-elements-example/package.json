@@ -2,38 +2,24 @@
 	"name": "ckeditor5-elements-example",
 	"private": true,
 	"version": "49.0.0-alpha.1",
-	"description": "An example element feature built on ckeditor5-elements-core, used by the tests. Not published.",
-	"keywords": [
-		"ckeditor",
-		"ckeditor5",
-		"ckeditor 5",
-		"ckeditor5-feature",
-		"ckeditor5-plugin"
-	],
+	"description": "The full example of CKEditor 5 Elements: an editor with all its features. Not published.",
 	"license": "MIT",
 	"type": "module",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
-		},
+		".": "./src/index.ts",
+		"./content.css": "./src/content.css",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"dist",
-		"src",
-		"README.md"
-	],
-	"sideEffects": false,
-	"dependencies": {
-		"ckeditor5-elements-core": "workspace:*"
-	},
-	"peerDependencies": {
-		"ckeditor5": ">=49.0.0"
-	},
 	"scripts": {
-		"build": "tsc --build"
+		"dev": "node ../../scripts/buildUmbrellaStyles.js && vite",
+		"build": "node ../../scripts/buildUmbrellaStyles.js && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"ckeditor5": "^49.0.0",
+		"ckeditor5-elements": "workspace:*"
+	},
+	"devDependencies": {
+		"vite": "^8.3.5"
 	}
 }
