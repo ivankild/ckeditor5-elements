@@ -3,6 +3,7 @@ import {
 	ImageBlock,
 	ImageInline,
 	Italic,
+	keyCodes,
 	Link,
 	LinkImage,
 	List,
@@ -22,6 +23,7 @@ import Breadcrumbs from '../src/breadcrumbs.js';
 import BreadcrumbsView from '../src/breadcrumbsView.js';
 import { ElementClipboard, type ElementCopyCommand } from 'ckeditor5-elements-clipboard';
 import { ElementMenu, type ElementMenuView } from 'ckeditor5-elements-core';
+import { pressIn } from '../../../testUtils/keyboard.js';
 import { describeItems } from '../../../testUtils/menu.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 
@@ -39,25 +41,11 @@ describe('Breadcrumbs', () => {
 	/**
 	 * Presses a key in the focused element, as the browser does: the event bubbles, e.g. to the toolbar.
 	 */
-	function pressKey(key: 'ArrowLeft' | 'ArrowRight'): void {
-		const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
-
-		// CKEditor reads the key code.
-		Object.defineProperty(event, 'keyCode', { value: key === 'ArrowLeft' ? 37 : 39 });
-		document.activeElement!.dispatchEvent(event);
-	}
+	const pressKey = (keyCode: number): void => {
+		pressIn(document.activeElement!, keyCode);
+	};
 
 	const focusedText = (): string => document.activeElement?.textContent.trim() ?? '';
-
-	/**
-	 * Presses Esc in the open menu.
-	 */
-	function pressEsc(): void {
-		const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
-
-		Object.defineProperty(event, 'keyCode', { value: 27 });
-		document.activeElement!.dispatchEvent(event);
-	}
 
 	/**
 	 * Sets the data while converting the data view seems slow (every `performance.now()` call is 20 ms later), so the
@@ -366,10 +354,10 @@ describe('Breadcrumbs', () => {
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 
 			view.focus(1);
-			pressKey('ArrowRight');
+			pressKey(keyCodes.arrowright);
 			expect(focusedText()).toBe('p');
 
-			pressKey('ArrowLeft');
+			pressKey(keyCodes.arrowleft);
 			expect(focusedText()).toBe('section.container');
 		});
 
@@ -482,7 +470,7 @@ describe('Breadcrumbs', () => {
 			button.element!.click();
 			expect(document.activeElement).not.toBe(button.element);
 
-			pressEsc();
+			pressKey(keyCodes.esc);
 			expect(document.activeElement).toBe(button.element);
 		});
 
@@ -502,7 +490,7 @@ describe('Breadcrumbs', () => {
 			});
 			expect(button.element?.isConnected).toBe(false);
 
-			pressEsc();
+			pressKey(keyCodes.esc);
 
 			expect(focusSpy).toHaveBeenCalled();
 		});
@@ -603,7 +591,7 @@ describe('Breadcrumbs', () => {
 			const seen = [focusedText()];
 
 			for (let i = 0; i < 4; i++) {
-				pressKey('ArrowRight');
+				pressKey(keyCodes.arrowright);
 				seen.push(focusedText());
 			}
 
@@ -621,13 +609,13 @@ describe('Breadcrumbs', () => {
 			const seen = [focusedText()];
 
 			for (const key of [
-				'ArrowRight',
-				'ArrowRight',
-				'ArrowRight',
-				'ArrowLeft',
-				'ArrowLeft',
-				'ArrowLeft'
-			] as const) {
+				keyCodes.arrowright,
+				keyCodes.arrowright,
+				keyCodes.arrowright,
+				keyCodes.arrowleft,
+				keyCodes.arrowleft,
+				keyCodes.arrowleft
+			]) {
 				pressKey(key);
 				seen.push(focusedText());
 			}
@@ -648,10 +636,10 @@ describe('Breadcrumbs', () => {
 			view.setItems(plugin.items);
 
 			view.focus(1);
-			pressKey('ArrowLeft');
+			pressKey(keyCodes.arrowleft);
 			expect(focusedText()).toBe('p');
 
-			pressKey('ArrowRight');
+			pressKey(keyCodes.arrowright);
 			expect(focusedText()).toBe('section.container');
 
 			view.element!.remove();

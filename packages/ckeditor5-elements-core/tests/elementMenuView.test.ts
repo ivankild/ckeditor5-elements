@@ -11,7 +11,8 @@ import {
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
-import { describeItems, keystroke } from '../../../testUtils/menu.js';
+import { keystroke } from '../../../testUtils/keyboard.js';
+import { describeItems } from '../../../testUtils/menu.js';
 import ElementCommand from '../src/elementCommand.js';
 import { type ElementMenuItem } from '../src/elementMenu.js';
 import ElementMenuView from '../src/elementMenuView.js';

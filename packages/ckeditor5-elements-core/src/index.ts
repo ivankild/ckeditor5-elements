@@ -32,6 +32,6 @@ export { default as ElementButtonView } from './elementButtonView.js';
 export { default as ElementMenuView } from './elementMenuView.js';
 
 // Utils.
-export { isInDocument, isStandalone, selectNewElement } from './utils.js';
+export { getElementAtSelection, isInDocument, isStandalone, selectNewElement } from './utils.js';
 
 import './augmentation.js';

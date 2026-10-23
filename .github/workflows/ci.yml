@@ -1,0 +1,41 @@
+# Checks every push to main and every pull request: types, lint, formatting and the tests (in Chrome), and a smoke test
+# that installs the packed packages into a new app, as a user would.
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    check:
+        name: Check (CKEditor ${{ matrix.ckeditor }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                # `locked`: the version in pnpm-lock.yaml. `latest`: the newest 49.x, which the peer range allows: it
+                # catches a CKEditor release that breaks the packages.
+                ckeditor: [locked, latest]
+        steps:
+            - uses: actions/checkout@v4
+            # The pnpm version is the `packageManager` field of package.json.
+            - uses: pnpm/action-setup@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - name: Update CKEditor to the newest version the packages allow
+              if: matrix.ckeditor == 'latest'
+              run: pnpm update ckeditor5 --recursive
+            # The tests run in Chrome, which the runner has installed.
+            - run: pnpm check
+            - run: pnpm smoke

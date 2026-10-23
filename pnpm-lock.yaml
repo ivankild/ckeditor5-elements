@@ -240,7 +240,7 @@ importers:
   packages/ckeditor5-elements:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-actions:
         specifier: workspace:*
@@ -267,7 +267,7 @@ importers:
   packages/ckeditor5-elements-actions:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-core:
         specifier: workspace:*
@@ -276,13 +276,13 @@ importers:
   packages/ckeditor5-elements-breadcrumbs:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
 
   packages/ckeditor5-elements-clipboard:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-core:
         specifier: workspace:*
@@ -291,7 +291,7 @@ importers:
   packages/ckeditor5-elements-context-menu:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-core:
         specifier: workspace:*
@@ -300,7 +300,7 @@ importers:
   packages/ckeditor5-elements-core:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
 
   packages/ckeditor5-elements-example:
@@ -319,7 +319,7 @@ importers:
   packages/ckeditor5-elements-quick-insert:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-core:
         specifier: workspace:*
@@ -328,7 +328,7 @@ importers:
   packages/ckeditor5-elements-toolbar:
     dependencies:
       ckeditor5:
-        specifier: '>=49.0.0'
+        specifier: ^49.0.0
         version: 49.0.0
       ckeditor5-elements-core:
         specifier: workspace:*

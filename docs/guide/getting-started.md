@@ -1,10 +1,13 @@
 # Getting started
 
-CKEditor 5 Elements is one package, `ckeditor5-elements`. Install it next to `ckeditor5` (version 49 or later):
+CKEditor 5 Elements is one package, `ckeditor5-elements`. Install it next to `ckeditor5`:
 
 ```sh
 npm install ckeditor5 ckeditor5-elements
 ```
+
+The version of `ckeditor5-elements` follows the major version of CKEditor: `49.x` works with `ckeditor5` 49.x (the
+peer dependency is `^49.0.0`). A new CKEditor major version needs a new release.
 
 Import the features from `ckeditor5-elements`, and its stylesheet, `ckeditor5-elements/index.css`, which styles all of
 them:

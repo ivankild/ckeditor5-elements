@@ -1,5 +1,5 @@
 import { Plugin, type ModelElement, type RectSource, type ViewElement } from 'ckeditor5';
-import { ElementMenu, isInDocument } from 'ckeditor5-elements-core';
+import { ElementMenu, getElementAtSelection, isInDocument } from 'ckeditor5-elements-core';
 import ContextMenuObserver, { type ViewDocumentContextMenuEvent } from './contextMenuObserver.js';
 
 /**
@@ -82,8 +82,7 @@ export default class ElementContextMenu extends Plugin {
 		const editing = this.editor.editing;
 		const selection = this.editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
-		const parent = selection.getFirstPosition()?.parent;
-		const element = selectedElement ?? (parent?.is('element') && !parent.is('rootElement') ? parent : null);
+		const element = getElementAtSelection(selection);
 		const viewElement = selectedElement && editing.mapper.toViewElement(selectedElement);
 		const viewRange = editing.view.document.selection.getFirstRange();
 		const target = viewElement

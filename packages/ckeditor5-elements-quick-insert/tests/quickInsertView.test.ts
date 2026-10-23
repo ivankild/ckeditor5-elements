@@ -1,26 +1,15 @@
-import { keyCodes, type KeystrokeInfo, type Locale, type ClassicEditor, Paragraph } from 'ckeditor5';
+import { keyCodes, type Locale, type ClassicEditor, Paragraph } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import QuickInsertListView from '../src/quickInsertListView.js';
 import QuickInsertView from '../src/quickInsertView.js';
 import { createEditor } from '../../../testUtils/editor.js';
+import { keystroke } from '../../../testUtils/keyboard.js';
 
 const items = [
 	{ name: 'paragraph', label: 'Paragraph' },
 	{ name: 'heading1', label: 'Heading 1' },
 	{ name: 'heading2', label: 'Heading 2' }
 ];
-
-function keystroke(keyCode: number): KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } {
-	return {
-		keyCode,
-		altKey: false,
-		ctrlKey: false,
-		metaKey: false,
-		shiftKey: false,
-		preventDefault: vi.fn(),
-		stopPropagation: vi.fn()
-	};
-}
 
 describe('QuickInsert views', () => {
 	let editor: ClassicEditor;

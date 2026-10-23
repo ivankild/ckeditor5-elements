@@ -9,5 +9,5 @@
 		"noEmit": true,
 		"types": ["node"]
 	},
-	"include": ["vitest.config.ts", "testUtils"]
+	"include": ["vitest.config.ts", "testUtils", "scripts/*.d.ts"]
 }

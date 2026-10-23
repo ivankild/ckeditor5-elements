@@ -9,22 +9,11 @@ import {
 } from 'ckeditor5';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
-import { describeItems, keystroke } from '../../../testUtils/menu.js';
+import { press, pressIn } from '../../../testUtils/keyboard.js';
+import { describeItems } from '../../../testUtils/menu.js';
 import ElementCommand from '../src/elementCommand.js';
 import ElementMenu, { type ElementMenuConfig } from '../src/elementMenu.js';
 import ElementMenuView from '../src/elementMenuView.js';
-
-/**
- * Creates a `keydown` event, as the browser fires it.
- */
-function keydown(keyCode: number): KeyboardEvent {
-	const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true });
-
-	// CKEditor reads the key code.
-	Object.defineProperty(event, 'keyCode', { value: keyCode });
-
-	return event;
-}
 
 describe('ElementMenu', () => {
 	let editor: ClassicEditor;
@@ -56,7 +45,7 @@ describe('ElementMenu', () => {
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
 	const menuView = (): ElementMenuView => menu.view as ElementMenuView;
 	const pressEsc = (): void => {
-		menu.view!.element!.dispatchEvent(keydown(keyCodes.esc));
+		pressIn(menu.view!.element!, keyCodes.esc);
 	};
 
 	afterEach(async () => {
@@ -199,7 +188,7 @@ describe('ElementMenu', () => {
 			const [more] = menuView().menus;
 
 			more.isOpen = true;
-			more.keystrokes.press(keystroke(keyCodes.esc));
+			press(more.keystrokes, keyCodes.esc);
 
 			expect(more.isOpen).toBe(false);
 			expect(menu.view).not.toBeNull();
@@ -300,7 +289,7 @@ describe('ElementMenu', () => {
 			const button = new ButtonView();
 
 			menu.show(button, new DOMRect());
-			button.element!.dispatchEvent(keydown(keyCodes.esc));
+			pressIn(button.element!, keyCodes.esc);
 
 			expect(menu.view).toBeNull();
 		});

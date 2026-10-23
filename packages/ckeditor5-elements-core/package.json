@@ -38,7 +38,7 @@
 		"README.md"
 	],
 	"peerDependencies": {
-		"ckeditor5": ">=49.0.0"
+		"ckeditor5": "^49.0.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

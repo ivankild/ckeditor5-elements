@@ -1,4 +1,11 @@
-import type { ModelElement, ModelPosition, ModelSchema, ModelWriter } from 'ckeditor5';
+import type {
+	ModelDocumentSelection,
+	ModelElement,
+	ModelPosition,
+	ModelSchema,
+	ModelSelection,
+	ModelWriter
+} from 'ckeditor5';
 
 /**
  * Whether the element (or position) is in the document. Unlike `element.isAttached()`, removed elements (moved to
@@ -8,6 +15,16 @@ export function isInDocument(elementOrPosition: ModelElement | ModelPosition): b
 	const root = elementOrPosition.root;
 
 	return root.is('rootElement') && root.rootName !== '$graveyard' && root.isAttached();
+}
+
+/**
+ * Returns the element at the selection: the selected element (e.g. an image), or the element with the cursor, i.e. the
+ * parent of the start of the selection. Never a root: `null` when the selection is directly in one.
+ */
+export function getElementAtSelection(selection: ModelSelection | ModelDocumentSelection): ModelElement | null {
+	const element = selection.getSelectedElement() ?? selection.getFirstPosition()?.parent;
+
+	return element?.is('element') && !element.is('rootElement') ? element : null;
 }
 
 /**

@@ -1,6 +1,6 @@
 # ckeditor5-elements
 
-Element-level features for CKEditor 5 v49 or later, in one package:
+Element-level features for CKEditor 5 v49, in one package:
 
 | Feature              | Exports                                                                                                    |
 | -------------------- | ---------------------------------------------------------------------------------------------------------- |

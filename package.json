@@ -13,15 +13,18 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"check": "pnpm typecheck && pnpm lint && pnpm lint:css && pnpm format:check && pnpm test",
+		"check": "pnpm typecheck && pnpm lint && pnpm lint:css && pnpm lint:packages && pnpm format:check && pnpm test",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"typecheck": "pnpm build && tsc -p packages/ckeditor5-elements-core/tests && tsc -p packages/ckeditor5-elements/tests && tsc -p packages/ckeditor5-elements-example && tsc -p packages/ckeditor5-elements-breadcrumbs/tests && tsc -p packages/ckeditor5-elements-clipboard/tests && tsc -p packages/ckeditor5-elements-actions/tests && tsc -p packages/ckeditor5-elements-toolbar/tests && tsc -p packages/ckeditor5-elements-context-menu/tests && tsc -p packages/ckeditor5-elements-quick-insert/tests && tsc -p docs && tsc -p .",
+		"typecheck": "pnpm build && node scripts/typecheck.js",
 		"docs:dev": "pnpm --filter docs dev",
 		"example": "pnpm --filter ckeditor5-elements-example dev",
 		"docs:build": "pnpm --filter docs build",
-		"lint:css": "node scripts/checkCssVariables.js"
+		"lint:css": "node scripts/checkCssVariables.js",
+		"lint:packages": "node scripts/checkPackages.js",
+		"version:set": "node scripts/setVersion.js",
+		"smoke": "node scripts/smokeTest.js"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

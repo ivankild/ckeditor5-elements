@@ -5,12 +5,12 @@ import {
 	_setModelData,
 	keyCodes,
 	type ClassicEditor,
-	type KeystrokeInfo,
 	type ModelElement
 } from 'ckeditor5';
 import { ElementCommand, ElementMenu, type ElementMenuConfig } from 'ckeditor5-elements-core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
+import { press } from '../../../testUtils/keyboard.js';
 import ElementContextMenu from '../src/elementContextMenu.js';
 
 describe('ElementContextMenu', () => {
@@ -61,22 +61,7 @@ describe('ElementContextMenu', () => {
 		return event.defaultPrevented;
 	}
 
-	function pressShiftF10(): boolean {
-		const preventDefault = vi.fn();
-		const data: KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } = {
-			keyCode: keyCodes.f10,
-			shiftKey: true,
-			altKey: false,
-			ctrlKey: false,
-			metaKey: false,
-			preventDefault,
-			stopPropagation: vi.fn()
-		};
-
-		editor.keystrokes.press(data);
-
-		return preventDefault.mock.calls.length > 0;
-	}
+	const pressShiftF10 = (): boolean => press(editor.keystrokes, keyCodes.f10, { shiftKey: true });
 
 	const editable = (): HTMLElement => editor.ui.getEditableElement()!;
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;

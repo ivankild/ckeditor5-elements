@@ -1,0 +1,18 @@
+{
+	// The settings of the projects that use the sources of the packages instead of their builds (the tests, the docs,
+	// the example): the packages resolve to their `src/index.ts`. The projects extend it, and add their own `types` and
+	// `include`.
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"composite": false,
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"paths": {
+			"ckeditor5-elements": ["./packages/ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-*": ["./packages/ckeditor5-elements-*/src/index.ts"]
+		}
+	}
+}

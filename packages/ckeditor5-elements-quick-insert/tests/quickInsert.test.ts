@@ -8,7 +8,6 @@ import {
 	ModelSelection,
 	env,
 	type ClassicEditor,
-	type KeystrokeInfo,
 	type ModelElement
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,6 +16,7 @@ import QuickInsert from '../src/quickInsert.js';
 import QuickInsertCommand from '../src/quickInsertCommand.js';
 import QuickInsertView from '../src/quickInsertView.js';
 import { BlockObject, createEditor } from '../../../testUtils/editor.js';
+import { press } from '../../../testUtils/keyboard.js';
 
 describe('QuickInsert', () => {
 	let editor: ClassicEditor;
@@ -29,22 +29,7 @@ describe('QuickInsert', () => {
 		return view instanceof QuickInsertView ? view : null;
 	};
 
-	function pressAltEnter(): { prevented: boolean } {
-		const preventDefault = vi.fn();
-		const data: KeystrokeInfo & { preventDefault(): void; stopPropagation(): void } = {
-			keyCode: keyCodes.enter,
-			altKey: true,
-			ctrlKey: false,
-			metaKey: false,
-			shiftKey: false,
-			preventDefault,
-			stopPropagation: vi.fn()
-		};
-
-		editor.keystrokes.press(data);
-
-		return { prevented: preventDefault.mock.calls.length > 0 };
-	}
+	const pressAltEnter = (): boolean => press(editor.keystrokes, keyCodes.enter, { altKey: true });
 
 	beforeEach(async () => {
 		editor = await createEditor({
@@ -86,9 +71,7 @@ describe('QuickInsert', () => {
 	});
 
 	it('opens the menu on Alt+Enter', () => {
-		const { prevented } = pressAltEnter();
-
-		expect(prevented).toBe(true);
+		expect(pressAltEnter()).toBe(true);
 		expect(getView()).toBeInstanceOf(QuickInsertView);
 		expect(Array.from(getView()!.listView.items)).toHaveLength(4);
 		expect(_getModelData(editor.model)).toBe('<paragraph>foo</paragraph>[<element></element>]');
@@ -103,7 +86,7 @@ describe('QuickInsert', () => {
 	it('does not open the menu when the command is disabled', () => {
 		editor.enableReadOnlyMode('test');
 
-		expect(pressAltEnter().prevented).toBe(false);
+		expect(pressAltEnter()).toBe(false);
 		expect(plugin.open()).toBe(false);
 		expect(menu.view).toBeNull();
 	});
@@ -274,36 +257,19 @@ describe('QuickInsert keystroke config', () => {
 		await editor.destroy();
 	});
 
-	function press(keystroke: Partial<KeystrokeInfo>): boolean {
-		const preventDefault = vi.fn();
-
-		editor.keystrokes.press({
-			keyCode: keyCodes.enter,
-			altKey: false,
-			ctrlKey: false,
-			metaKey: false,
-			shiftKey: false,
-			...keystroke,
-			preventDefault,
-			stopPropagation: vi.fn()
-		} as KeystrokeInfo & { preventDefault(): void; stopPropagation(): void });
-
-		return preventDefault.mock.calls.length > 0;
-	}
-
 	it('uses the configured keystroke', async () => {
 		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: 'Ctrl+Space' } });
 		editor.editing.view.focus();
 
-		expect(press({ altKey: true })).toBe(false);
+		expect(press(editor.keystrokes, keyCodes.enter, { altKey: true })).toBe(false);
 		// `Ctrl` means Cmd on macOS.
-		expect(press({ keyCode: keyCodes.space, ...(env.isMac ? { metaKey: true } : { ctrlKey: true }) })).toBe(true);
+		expect(press(editor.keystrokes, keyCodes.space, env.isMac ? { metaKey: true } : { ctrlKey: true })).toBe(true);
 	});
 
 	it('registers no keystroke with `false`', async () => {
 		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: false } });
 
-		expect(press({ altKey: true })).toBe(false);
+		expect(press(editor.keystrokes, keyCodes.enter, { altKey: true })).toBe(false);
 	});
 
 	it('lists the keystroke in the accessibility help', async () => {
