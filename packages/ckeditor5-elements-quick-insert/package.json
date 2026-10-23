@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-quick-insert",
-	"version": "0.1.0",
+	"version": "49.0.0-alpha.0",
 	"description": "Quick insert for CKEditor 5: search and insert the elements allowed at a position (Alt+Enter, or the context menu).",
 	"keywords": [
 		"ckeditor",
@@ -31,7 +31,7 @@
 		"*.css"
 	],
 	"dependencies": {
-		"ckeditor5-elements-core": "workspace:^"
+		"ckeditor5-elements-core": "workspace:*"
 	},
 	"peerDependencies": {
 		"ckeditor5": ">=49.0.0"

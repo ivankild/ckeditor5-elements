@@ -7,6 +7,8 @@
  * @module ckeditor5-elements-core
  */
 
+import './singleCopyGuard.js';
+
 // Plugins.
 export {
 	default as ElementMenu,

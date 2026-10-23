@@ -11,7 +11,7 @@ import {
 	type KeystrokeInfo,
 	type ModelElement
 } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements';
+import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ElementMenu } from 'ckeditor5-elements-core';
 import QuickInsert from '../src/quickInsert.js';

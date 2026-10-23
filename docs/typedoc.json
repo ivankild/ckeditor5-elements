@@ -1,13 +1,6 @@
 {
 	"$schema": "https://typedoc.org/schema.json",
-	"entryPoints": [
-		"../packages/ckeditor5-elements-core/src/index.ts",
-		"../packages/ckeditor5-elements/src/index.ts",
-		"../packages/ckeditor5-elements-breadcrumbs/src/index.ts",
-		"../packages/ckeditor5-elements-clipboard/src/index.ts",
-		"../packages/ckeditor5-elements-context-menu/src/index.ts",
-		"../packages/ckeditor5-elements-quick-insert/src/index.ts"
-	],
+	"entryPoints": ["../packages/ckeditor5-elements/src/index.ts"],
 	"tsconfig": "./tsconfig.typedoc.json",
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
 	"out": "./api",

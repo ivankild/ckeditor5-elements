@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-clipboard",
-	"version": "0.1.0",
+	"version": "49.0.0-alpha.0",
 	"description": "Clipboard commands for CKEditor 5 elements: copy, cut, paste, paste before and paste after an element.",
 	"keywords": [
 		"ckeditor",
@@ -27,7 +27,7 @@
 	],
 	"sideEffects": false,
 	"dependencies": {
-		"ckeditor5-elements-core": "workspace:^"
+		"ckeditor5-elements-core": "workspace:*"
 	},
 	"peerDependencies": {
 		"ckeditor5": ">=49.0.0"

@@ -1,5 +1,5 @@
 import { Essentials, Paragraph, type ClassicEditor, type ModelElement } from 'ckeditor5';
-import { ElementClipboard } from 'ckeditor5-elements-clipboard';
+import { ElementClipboard } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 /**

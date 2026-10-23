@@ -8,7 +8,7 @@ import {
 	type ModelElement,
 	type ModelPosition
 } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements';
+import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import QuickInsertCommand from '../src/quickInsertCommand.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';

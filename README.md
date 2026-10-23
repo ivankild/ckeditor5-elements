@@ -1,16 +1,37 @@
 # CKEditor 5 Elements
 
-Element-level features for CKEditor 5 v49 or later.
+Element-level features for CKEditor 5 v49 or later: commands that act on an element, an element context menu, clipboard
+commands for elements, quick insert and breadcrumbs.
 
-| Package                                                                       | Description                                                        | Depends on                             |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------- |
-| [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)                 | Element commands, their button views, and the `ElementMenu` plugin | –                                      |
-| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | An example element feature                                         | `ckeditor5-elements-core`              |
-| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element            | `ckeditor5-elements-core`              |
-| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators               | `ckeditor5-elements-core`              |
-| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus   | `ckeditor5-elements-core`              |
-| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu    | – (uses `ElementMenu` by an interface) |
-| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference    |                                        |
+```sh
+npm install ckeditor5 ckeditor5-elements
+```
+
+```ts
+import { Breadcrumbs, ElementClipboard, ElementContextMenu, QuickInsert } from 'ckeditor5-elements';
+import 'ckeditor5-elements/index.css';
+```
+
+See [`ckeditor5-elements`](packages/ckeditor5-elements) and the [documentation](docs).
+
+## Packages
+
+As `ckeditor5` is for CKEditor, [`ckeditor5-elements`](packages/ckeditor5-elements) is the package to install: it
+re-exports the feature packages, which are published too, all in the same version, and combines their styles.
+
+| Package                                                                       | Contents                                                               | Depends on                                  |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------- |
+| [`ckeditor5-elements`](packages/ckeditor5-elements)                           | Everything below, and one stylesheet                                   | all below, in the same version              |
+| [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)                 | Element commands, their button views, and the `ElementMenu` plugin     | –                                           |
+| [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element                | `ckeditor5-elements-core`                   |
+| [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators                   | `ckeditor5-elements-core`                   |
+| [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus       | `ckeditor5-elements-core`                   |
+| [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu        | – (uses `ElementMenu` through an interface) |
+| [`ckeditor5-elements-example`](packages/ckeditor5-elements-example)           | An example element feature, used by the tests (private, not published) | `ckeditor5-elements-core`                   |
+| [`docs`](docs)                                                                | Documentation: guides with live examples, and the API reference        |                                             |
+
+The feature packages depend on each other in exact versions. Core fails to load twice, as CKEditor does
+(`ckeditor-duplicated-modules`): two copies of it would mean two versions installed.
 
 ## Development
 
@@ -33,12 +54,19 @@ packages/<package>/
 ├── src/          # sources
 ├── tests/        # tests, mirroring src/
 └── theme/        # styles, published as `<package>/index.css`
+packages/ckeditor5-elements/
+└── src/index.ts  # re-exports the feature packages; `pnpm build` combines their styles into dist/index.css
 testUtils/        # helpers shared by the tests
+scripts/          # build and check scripts
 docs/             # VitePress site: guide/ pages, demos/ (live examples), api/ (generated by TypeDoc)
 ```
 
 ## Publishing
 
+All packages have the same version; release them together:
+
 ```sh
 pnpm publish:all
 ```
+
+pnpm replaces the `workspace:*` dependencies with the exact version.

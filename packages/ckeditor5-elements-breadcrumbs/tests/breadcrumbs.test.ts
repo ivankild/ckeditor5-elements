@@ -64,11 +64,13 @@ describe('Breadcrumbs', () => {
 	 * next conversion waits.
 	 */
 	function setDataSlowly(data: string): void {
-		let now = 0;
-		const spy = vi.spyOn(performance, 'now').mockImplementation(() => (now += 20));
+		// The spy of `beforeEach()`.
+		const now = vi.spyOn(performance, 'now');
+		let time = 0;
 
+		now.mockImplementation(() => (time += 20));
 		_setModelData(editor.model, data);
-		spy.mockRestore();
+		now.mockReturnValue(0);
 	}
 
 	async function setUp(
@@ -79,7 +81,14 @@ describe('Breadcrumbs', () => {
 		plugin = editor.plugins.get('Breadcrumbs');
 	}
 
+	// Converting the data view takes no time, so the tests do not depend on the speed of the machine: a slow conversion
+	// would delay the next one (see `setDataSlowly()`).
+	beforeEach(() => {
+		vi.spyOn(performance, 'now').mockReturnValue(0);
+	});
+
 	afterEach(async () => {
+		vi.restoreAllMocks();
 		await editor.destroy();
 	});
 

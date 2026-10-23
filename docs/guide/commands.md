@@ -1,11 +1,10 @@
 # Commands
 
-The packages are built around one kind of command: a command that acts on a **position or an element**.
+CKEditor 5 Elements is built around one kind of command: a command that acts on a **position or an element**.
 
 ## `ElementOrPositionCommand`
 
-`ElementOrPositionCommand` (from `ckeditor5-elements-core`) is the base class. It holds what a button or a menu item needs to
-know about the command:
+`ElementOrPositionCommand` is the base class. It holds what a button or a menu item needs to know about the command:
 
 - the observable `title`, `icon` and `tooltip`,
 - whether it is enabled, and "on", for **any** target: `getState(target)` returns `{ isEnabled, isOn }` without changing
@@ -20,7 +19,7 @@ A subclass describes when it is enabled and "on" in `_isEnabledFor(target)` and 
 `execute()`:
 
 ```ts
-import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements';
 
 class HighlightCommand extends ElementOrPositionCommand {
 	constructor(editor: Editor) {

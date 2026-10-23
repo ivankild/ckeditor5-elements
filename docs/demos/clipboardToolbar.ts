@@ -1,6 +1,5 @@
 import { Essentials, Heading, Paragraph, Plugin } from 'ckeditor5';
-import { ElementOrPositionButtonView } from 'ckeditor5-elements-core';
-import { ElementClipboard } from 'ckeditor5-elements-clipboard';
+import { ElementClipboard, ElementOrPositionButtonView } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 /**

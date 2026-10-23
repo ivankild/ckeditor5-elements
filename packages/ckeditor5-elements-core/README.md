@@ -1,26 +1,24 @@
 # ckeditor5-elements-core
 
-The base of the element commands, their buttons and the element menu for CKEditor 5. The other `ckeditor5-elements-*`
-packages build on it. Requires CKEditor 5 v49 or later.
+The base of CKEditor 5 Elements: commands that act on a position or an element (`ElementOrPositionCommand`,
+`ElementCommand`), their buttons (`ElementOrPositionButtonView`, `ElementButtonView`), and the `ElementMenu` plugin, which
+shows the menus of the context menu, the breadcrumbs and quick insert.
 
-| Export                        | What it is                                                                                                                                                                                                                                                 |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ElementOrPositionCommand`    | The base for commands that act on a position or an element (given, or taken from the selection): observable `title`, `icon` and `tooltip`, `getState(target)`, `executeFor(target)`, `isForceDisabled`, `isToggleable`, and helpers to resolve the target. |
-| `ElementCommand`              | An `ElementOrPositionCommand` that wraps the target with an element, or unwraps it. Configure `elementName` and `elementAttributes`.                                                                                                                       |
-| `ElementOrPositionButtonView` | A button that reflects an `ElementOrPositionCommand`. Options: `withText` renders the title; `target` makes it reflect and execute the command for that position or element.                                                                               |
-| `ElementButtonView`           | An `ElementOrPositionButtonView` for an `ElementCommand`, which also reflects `isOn`.                                                                                                                                                                      |
-| `ElementMenu`                 | A plugin that shows menus in a balloon: `open(element, target, config)` for the menu of an element (the `ElementMenuConfig` items: commands, submenus and `'\|'` separators), `show(view, target)` for any view.                                           |
-| `ElementMenuView`             | The menu of an element: CKEditor's dropdown menu (`DropdownMenuRootListView`), with its buttons connected to the commands.                                                                                                                                 |
-| `isInDocument()`              | Whether a model element or position is in the document, i.e. not removed.                                                                                                                                                                                  |
+## Installation
 
-A toggle command and its toolbar button:
+This package is part of `ckeditor5-elements`. Install the whole package to use it:
+
+```sh
+npm install ckeditor5 ckeditor5-elements
+```
+
+## Usage
 
 ```ts
-import { type Editor } from 'ckeditor5';
-import { ElementButtonView, ElementCommand } from 'ckeditor5-elements-core';
+import { ElementButtonView, ElementCommand } from 'ckeditor5-elements';
 
 class CalloutCommand extends ElementCommand {
-	constructor(editor: Editor) {
+	constructor(editor) {
 		super(editor);
 
 		this.elementName = 'callout';
@@ -28,17 +26,12 @@ class CalloutCommand extends ElementCommand {
 	}
 }
 
-const command = new CalloutCommand(editor);
-
-editor.commands.add('callout', command);
-editor.ui.componentFactory.add('callout', locale => new ElementButtonView(locale, command));
+editor.commands.add('callout', new CalloutCommand(editor));
+editor.ui.componentFactory.add('callout', locale => new ElementButtonView(locale, editor.commands.get('callout')));
 ```
 
-Buttons report failed (rejected) commands with a warning of the `Notification` plugin.
+See the "Commands" guide of the documentation.
 
-The menu styles are in `ckeditor5-elements-core/index.css`. The context menu, the breadcrumbs menu and quick insert
-need them:
+## License
 
-```ts
-import 'ckeditor5-elements-core/index.css';
-```
+MIT

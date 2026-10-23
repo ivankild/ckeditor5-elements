@@ -1,6 +1,6 @@
 # Clipboard
 
-`ElementClipboard` (from `ckeditor5-elements-clipboard`) registers clipboard commands that act on a whole element:
+`ElementClipboard` registers clipboard commands that act on a whole element:
 
 | Command              | Does                                                   |
 | -------------------- | ------------------------------------------------------ |

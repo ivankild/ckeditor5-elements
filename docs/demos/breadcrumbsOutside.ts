@@ -1,5 +1,5 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
+import { Breadcrumbs } from 'ckeditor5-elements';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 

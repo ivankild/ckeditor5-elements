@@ -23,6 +23,8 @@ const apiSidebar: DefaultTheme.SidebarItem[] = existsSync(apiSidebarFile)
 export default defineConfig({
 	title: 'CKEditor 5 Elements',
 	description: 'Element commands, context menu, clipboard, quick insert and breadcrumbs for CKEditor 5.',
+	// From `public/`.
+	head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }]],
 	cleanUrls: true,
 	themeConfig: {
 		nav: [

@@ -6,8 +6,8 @@ import ContextMenuObserver, { type ViewDocumentContextMenuEvent } from './contex
  * Shows the menu of an element when the user right-clicks it, or opens the context menu with the keyboard (the menu
  * key, or Shift+F10) while the cursor is in it.
  *
- * The items come from the `elementContextMenu` editor config option only (see `ElementMenuConfig` in
- * `ckeditor5-elements-core`): commands, submenus and `'|'` separators. Without it, or when it returns no items for an
+ * The items come from the `elementContextMenu` editor config option only (see `ElementMenuConfig`): commands, submenus
+ * and `'|'` separators. Without it, or when it returns no items for an
  * element, the native context menu shows. The menu itself is shown by the `ElementMenu` plugin.
  */
 export default class ElementContextMenu extends Plugin {

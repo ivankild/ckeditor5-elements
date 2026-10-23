@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementCommand from '../src/elementCommand.js';
 import ElementOrPositionCommand, { type ElementOrPosition } from '../src/elementOrPositionCommand.js';
-import { ElementsEditing } from 'ckeditor5-elements';
+import { ElementsEditing } from 'ckeditor5-elements-example';
 
 /**
  * Exposes the protected members.

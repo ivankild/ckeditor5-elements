@@ -8,6 +8,18 @@
 	"references": [
 		{
 			"path": "../ckeditor5-elements-core"
+		},
+		{
+			"path": "../ckeditor5-elements-clipboard"
+		},
+		{
+			"path": "../ckeditor5-elements-context-menu"
+		},
+		{
+			"path": "../ckeditor5-elements-quick-insert"
+		},
+		{
+			"path": "../ckeditor5-elements-breadcrumbs"
 		}
 	]
 }

@@ -1,7 +1,5 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { ElementClipboard, pasteIcon } from 'ckeditor5-elements-clipboard';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import { QuickInsert, insertIcon } from 'ckeditor5-elements-quick-insert';
+import { ElementClipboard, ElementContextMenu, insertIcon, pasteIcon, QuickInsert } from 'ckeditor5-elements';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 

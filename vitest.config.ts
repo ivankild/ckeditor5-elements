@@ -11,6 +11,7 @@ export default defineConfig({
 		alias: [
 			{ find: /^ckeditor5-elements-core$/, replacement: resolvePackage('ckeditor5-elements-core') },
 			{ find: /^ckeditor5-elements$/, replacement: resolvePackage('ckeditor5-elements') },
+			{ find: /^ckeditor5-elements-example$/, replacement: resolvePackage('ckeditor5-elements-example') },
 			{ find: /^ckeditor5-elements-breadcrumbs$/, replacement: resolvePackage('ckeditor5-elements-breadcrumbs') },
 			{ find: /^ckeditor5-elements-clipboard$/, replacement: resolvePackage('ckeditor5-elements-clipboard') },
 			{

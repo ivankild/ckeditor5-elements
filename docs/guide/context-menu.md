@@ -1,22 +1,22 @@
 # Context menu
 
-`ElementContextMenu` (from `ckeditor5-elements-context-menu`) shows a menu when an element is right-clicked, or when
-the context menu is opened with the keyboard. It is configured only by the `elementContextMenu` editor option: a
+`ElementContextMenu` shows a menu when an element is right-clicked, or when the context menu is opened with the
+keyboard. It is configured only by the `elementContextMenu` editor option: a
 callback that gets the model element and the editor, and returns the items.
 
 ```ts
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import 'ckeditor5-elements-core/index.css';
+import { ElementContextMenu } from 'ckeditor5-elements';
+import 'ckeditor5-elements/index.css';
 
 // In the editor config:
 elementContextMenu: (element, editor) => [/* commands, submenus and '|' separators */];
 ```
 
-The menu is shown by the `ElementMenu` plugin from `ckeditor5-elements-core` (loaded by `ElementContextMenu`), which
+The menu is shown by the `ElementMenu` plugin (loaded by `ElementContextMenu`), which
 also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. The menu is CKEditor's dropdown
 menu (`DropdownMenuRootListView`): CKEditor builds it and handles the nested menus, the keyboard and right-to-left
 languages; the plugin connects its buttons to the commands. A toggle that is on is shown as CKEditor shows an "on"
-button. Its few extra styles are in `ckeditor5-elements-core/index.css`.
+button.
 
 - A **command** (any [`ElementOrPositionCommand`](./commands)) is shown as a button with its title and icon, enabled
   and "on" according to its state for the element. Choosing it executes it for the element. A toggle (a command with
@@ -32,9 +32,8 @@ the browser does not allow reading the clipboard) is reported with a warning of 
 `Could not complete "<command title>".` By default, CKEditor shows only the message, with `window.alert()`; a custom
 notification UI gets the title too.
 
-All the commands of these packages have icons. The icons are exported too, e.g. for submenus:
-`insertIcon`, `insertBeforeIcon` and `insertAfterIcon` from `ckeditor5-elements-quick-insert`, and `copyIcon`,
-`cutIcon`, `pasteIcon`, `pasteBeforeIcon` and `pasteAfterIcon` from `ckeditor5-elements-clipboard`.
+All the commands have icons, and the icons are exported too, e.g. for submenus: `insertIcon`, `insertBeforeIcon`,
+`insertAfterIcon`, `copyIcon`, `cutIcon`, `pasteIcon`, `pasteBeforeIcon` and `pasteAfterIcon`.
 
 ## Clipboard commands
 

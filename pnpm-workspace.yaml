@@ -2,4 +2,5 @@ packages:
     - packages/*
     - docs
 allowBuilds:
-    esbuild: set this to true or false
+    # esbuild's install script only checks its binary, which pnpm installs anyway.
+    esbuild: false

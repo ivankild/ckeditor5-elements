@@ -1,6 +1,5 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { ElementClipboard } from 'ckeditor5-elements-clipboard';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import { ElementClipboard, ElementContextMenu } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {

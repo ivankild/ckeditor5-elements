@@ -59,21 +59,6 @@ importers:
       ckeditor5-elements:
         specifier: workspace:*
         version: link:../packages/ckeditor5-elements
-      ckeditor5-elements-breadcrumbs:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-breadcrumbs
-      ckeditor5-elements-clipboard:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-clipboard
-      ckeditor5-elements-context-menu:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-context-menu
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-core
-      ckeditor5-elements-quick-insert:
-        specifier: workspace:*
-        version: link:../packages/ckeditor5-elements-quick-insert
     devDependencies:
       typedoc:
         specifier: ^0.28.20
@@ -96,9 +81,21 @@ importers:
       ckeditor5:
         specifier: '>=49.0.0'
         version: 49.0.0
+      ckeditor5-elements-breadcrumbs:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-breadcrumbs
+      ckeditor5-elements-clipboard:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-clipboard
+      ckeditor5-elements-context-menu:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-context-menu
       ckeditor5-elements-core:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ckeditor5-elements-core
+      ckeditor5-elements-quick-insert:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-quick-insert
 
   packages/ckeditor5-elements-breadcrumbs:
     dependencies:
@@ -112,7 +109,7 @@ importers:
         specifier: '>=49.0.0'
         version: 49.0.0
       ckeditor5-elements-core:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-context-menu:
@@ -121,7 +118,7 @@ importers:
         specifier: '>=49.0.0'
         version: 49.0.0
       ckeditor5-elements-core:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-core:
@@ -130,13 +127,22 @@ importers:
         specifier: '>=49.0.0'
         version: 49.0.0
 
+  packages/ckeditor5-elements-example:
+    dependencies:
+      ckeditor5:
+        specifier: '>=49.0.0'
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
   packages/ckeditor5-elements-quick-insert:
     dependencies:
       ckeditor5:
         specifier: '>=49.0.0'
         version: 49.0.0
       ckeditor5-elements-core:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ckeditor5-elements-core
 
 packages:

@@ -1,5 +1,5 @@
 import { Bold, Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
-import { ElementsEditing } from 'ckeditor5-elements';
+import { ElementsEditing } from 'ckeditor5-elements-example';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import ElementCommand from '../src/elementCommand.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';

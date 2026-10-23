@@ -11,8 +11,7 @@ import ElementPasteCommand from './elementPasteCommand.js';
  * ```
  *
  * The commands have titles and icons, so they can be menu items (e.g. in the `elementContextMenu` config of
- * `ckeditor5-elements-context-menu`) and buttons. Copying and pasting go through the clipboard pipeline, as Ctrl+C and
- * Ctrl+V do.
+ * `ElementContextMenu`) and buttons. Copying and pasting go through the clipboard pipeline, as Ctrl+C and Ctrl+V do.
  */
 export default class ElementClipboard extends Plugin {
 	public static get requires(): readonly [typeof ClipboardPipeline, typeof Notification] {

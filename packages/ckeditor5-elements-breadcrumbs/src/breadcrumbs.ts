@@ -28,9 +28,9 @@ const THROTTLE_TIME = 250;
 export interface BreadcrumbsConfig {
 	/**
 	 * Returns the items of the menu that opens when a breadcrumb is clicked, for the element of the breadcrumb: the
-	 * same items as in the `elementContextMenu` option (commands, submenus and `'|'` separators; see `ElementMenuConfig`
-	 * in `ckeditor5-elements-core`), so one callback can serve both. Without this option, or without a loaded
-	 * `ElementMenu` plugin, breadcrumbs cannot be clicked.
+	 * same items as in the `elementContextMenu` option (commands, submenus and `'|'` separators; see `ElementMenuConfig`),
+	 * so one callback can serve both. Without this option, or without a loaded `ElementMenu` plugin, breadcrumbs cannot
+	 * be clicked.
 	 */
 	menu?: BreadcrumbsMenuItems;
 }
@@ -54,8 +54,8 @@ interface DataView {
  *
  * Clicking is configured only by the `breadcrumbs.menu` editor config option (see {@link BreadcrumbsConfig}): with it,
  * the items are buttons that open a menu of their element; without it, they are labels. The menu is shown by the
- * `ElementMenu` plugin from `ckeditor5-elements-core` (also loaded by `ElementContextMenu`), which is used through the
- * {@link BreadcrumbsMenu} interface, without a dependency on that package.
+ * `ElementMenu` plugin (loaded by `ElementContextMenu` and `QuickInsert`), which is used through the
+ * {@link BreadcrumbsMenu} interface: the breadcrumbs do not depend on the other features.
  *
  * The data view is converted again only when elements change, not when typing or moving the cursor. For a large
  * document, that happens at most every 250 ms.
@@ -268,8 +268,8 @@ export default class Breadcrumbs extends Plugin {
 }
 
 /**
- * The part of the `ElementMenu` plugin (from `ckeditor5-elements-core`) the breadcrumbs use.
- * The breadcrumbs do not depend on that package: the plugin is looked up by name and checked against this interface.
+ * The part of the `ElementMenu` plugin the breadcrumbs use. The breadcrumbs do not depend on the other features: the
+ * plugin is looked up by name and checked against this interface.
  */
 export interface BreadcrumbsMenu {
 	open(

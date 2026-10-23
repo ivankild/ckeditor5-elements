@@ -1,5 +1,5 @@
 import { Essentials, Heading, Paragraph } from 'ckeditor5';
-import { QuickInsert } from 'ckeditor5-elements-quick-insert';
+import { QuickInsert } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {

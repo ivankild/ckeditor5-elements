@@ -1,8 +1,5 @@
 import { Essentials, Paragraph } from 'ckeditor5';
-import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
-import { ElementClipboard } from 'ckeditor5-elements-clipboard';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
-import type { ElementMenuConfig } from 'ckeditor5-elements-core';
+import { Breadcrumbs, ElementClipboard, ElementContextMenu, type ElementMenuConfig } from 'ckeditor5-elements';
 import { Note } from './shared/note';
 import type { Demo } from './shared/demo';
 

@@ -4,18 +4,14 @@
 	"type": "module",
 	"scripts": {
 		"api": "typedoc",
-		"dev": "pnpm api && vitepress dev",
-		"build": "pnpm api && vitepress build",
+		"styles": "node ../scripts/buildUmbrellaStyles.js",
+		"dev": "pnpm styles && pnpm api && vitepress dev",
+		"build": "pnpm styles && pnpm api && vitepress build",
 		"preview": "vitepress preview"
 	},
 	"dependencies": {
 		"ckeditor5": "^49.0.0",
-		"ckeditor5-elements": "workspace:*",
-		"ckeditor5-elements-breadcrumbs": "workspace:*",
-		"ckeditor5-elements-clipboard": "workspace:*",
-		"ckeditor5-elements-context-menu": "workspace:*",
-		"ckeditor5-elements-quick-insert": "workspace:*",
-		"ckeditor5-elements-core": "workspace:*"
+		"ckeditor5-elements": "workspace:*"
 	},
 	"devDependencies": {
 		"typedoc": "^0.28.20",

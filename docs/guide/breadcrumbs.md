@@ -1,6 +1,6 @@
 # Breadcrumbs
 
-`Breadcrumbs` (from `ckeditor5-elements-breadcrumbs`) shows the element path at the cursor, e.g. `aside.note › p`, as
+`Breadcrumbs` shows the element path at the cursor, e.g. `aside.note › p`, as
 the `breadcrumbs` toolbar component.
 
 The path is made of the elements of the editor **data** (as `editor.getData()` outputs it), not of the editing view, so
@@ -16,8 +16,8 @@ it has no editing-only classes or wrappers:
 Text attributes such as `<strong>` or `<a>` are not part of the path.
 
 ```ts
-import { Breadcrumbs } from 'ckeditor5-elements-breadcrumbs';
-import 'ckeditor5-elements-breadcrumbs/index.css';
+import { Breadcrumbs } from 'ckeditor5-elements';
+import 'ckeditor5-elements/index.css';
 ```
 
 The path is a list in a `nav` landmark ("Element path"), and the element with the cursor is marked with
@@ -42,9 +42,8 @@ By default, the breadcrumbs are labels. CKEditor's `-` toolbar item (a line brea
 The `breadcrumbs.menu` option makes the breadcrumbs buttons that open a menu of their element. It takes the same items as
 [`elementContextMenu`](./context-menu), so one callback can serve both. The parts of a structure open the menu of the
 structure (`tbody` opens the menu of the table). List items (`ul`, `li`) stay labels: lists are attributes of the
-blocks in them, not elements. The menu is shown by the `ElementMenu` plugin
-of `ckeditor5-elements-core`, so load it too (`ElementContextMenu` and `QuickInsert` load it); without it, the
-breadcrumbs stay labels. Its styles are in `ckeditor5-elements-core/index.css`.
+blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, so load it too
+(`ElementContextMenu` and `QuickInsert` load it); without it, the breadcrumbs stay labels.
 
 <EditorDemo name="breadcrumbsMenu" />
 
@@ -55,9 +54,9 @@ breadcrumbs stay labels. Its styles are in `ckeditor5-elements-core/index.css`.
 The buttons tell screen readers that they open a menu (`aria-haspopup`, `aria-expanded`), and Esc in the menu returns
 the focus to the button.
 
-::: tip No dependency
-`ckeditor5-elements-breadcrumbs` does not depend on the other packages. It looks up the `ElementMenu` plugin by name and
-uses it through the `BreadcrumbsMenu` interface.
+::: tip Independent of the other features
+The breadcrumbs do not depend on the other features. They look up the `ElementMenu` plugin by name, and use it through
+the `BreadcrumbsMenu` interface, so without it they work as labels.
 :::
 
 ## Keyboard

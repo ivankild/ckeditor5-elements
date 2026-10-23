@@ -1,15 +1,13 @@
 # Quick insert
 
-`QuickInsert` (from `ckeditor5-elements-quick-insert`) opens a menu with a search field and the elements that can be
-inserted at a position. Type to filter, press Enter to insert the first match, or use the arrow keys to pick one.
+`QuickInsert` opens a menu with a search field and the elements that can be inserted at a position. Type to filter, press Enter to insert the first match, or use the arrow keys to pick one.
 
 ```ts
-import { QuickInsert } from 'ckeditor5-elements-quick-insert';
-import 'ckeditor5-elements-core/index.css';
-import 'ckeditor5-elements-quick-insert/index.css';
+import { QuickInsert } from 'ckeditor5-elements';
+import 'ckeditor5-elements/index.css';
 ```
 
-The menu is shown by the `ElementMenu` plugin from `ckeditor5-elements-core`, which `QuickInsert` loads. It does not add
+The menu is shown by the `ElementMenu` plugin, which `QuickInsert` loads. It does not add
 a right-click menu; that needs [`ElementContextMenu`](./context-menu).
 
 ## Which elements are listed

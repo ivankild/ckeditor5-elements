@@ -1,16 +1,15 @@
 /**
- * An example element feature (`Elements`: the `element` model element, the `insertElement` and `element` commands
- * and buttons). The commands and button views it uses are in `ckeditor5-elements-core`.
+ * CKEditor 5 Elements: commands that act on an element and their buttons, the element menu, the element context menu,
+ * clipboard commands for elements, quick insert and breadcrumbs.
+ *
+ * This package brings them all, as `ckeditor5` does for CKEditor: install it, and import everything from it. Its
+ * stylesheet, `ckeditor5-elements/index.css`, has the styles of all of them.
  *
  * @module ckeditor5-elements
  */
 
-// Plugins.
-export { default as Elements } from './elements.js';
-export { default as ElementsEditing } from './elementsEditing.js';
-export { default as ElementsUI } from './elementsUI.js';
-
-// Commands.
-export { default as InsertElementCommand } from './insertElementCommand.js';
-
-import './augmentation.js';
+export * from 'ckeditor5-elements-core';
+export * from 'ckeditor5-elements-clipboard';
+export * from 'ckeditor5-elements-context-menu';
+export * from 'ckeditor5-elements-quick-insert';
+export * from 'ckeditor5-elements-breadcrumbs';

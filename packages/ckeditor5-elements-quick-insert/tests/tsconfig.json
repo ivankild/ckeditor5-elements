@@ -11,6 +11,7 @@
 		"paths": {
 			"ckeditor5-elements-core": ["../../ckeditor5-elements-core/src/index.ts"],
 			"ckeditor5-elements": ["../../ckeditor5-elements/src/index.ts"],
+			"ckeditor5-elements-example": ["../../ckeditor5-elements-example/src/index.ts"],
 			"ckeditor5-elements-breadcrumbs": ["../../ckeditor5-elements-breadcrumbs/src/index.ts"],
 			"ckeditor5-elements-clipboard": ["../../ckeditor5-elements-clipboard/src/index.ts"],
 			"ckeditor5-elements-context-menu": ["../../ckeditor5-elements-context-menu/src/index.ts"],
