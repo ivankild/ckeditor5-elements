@@ -13,6 +13,8 @@
 		"resolveJsonModule": true,
 		"paths": {
 			"ckeditor5-elements": ["./packages/ckeditor5-elements/src/index.ts"],
+			// A subpath export: without it, the subpath resolves to the build, which a clean checkout does not have.
+			"ckeditor5-elements-schema/validate": ["./packages/ckeditor5-elements-schema/src/validate.ts"],
 			"ckeditor5-elements-*": ["./packages/ckeditor5-elements-*/src/index.ts"]
 		}
 	}

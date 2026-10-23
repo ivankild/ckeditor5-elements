@@ -51,7 +51,7 @@ const SELECTED_CLASS = 'ck-elements-selected';
  *
  * Names are made selectable in the model schema (`isSelectable`), so the selection on them is kept: a filter cannot,
  * so the elements it matches must be selectable already (e.g. objects). Features can add elements with
- * {@link #add}.
+ * {@link ElementSelectable#add}.
  */
 export default class ElementSelectable extends Plugin {
 	private readonly _matchers: ElementSelectableMatcher[] = [];
