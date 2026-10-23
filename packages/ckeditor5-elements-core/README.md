@@ -30,7 +30,7 @@ editor.commands.add('callout', new CalloutCommand(editor));
 editor.ui.componentFactory.add('callout', locale => new ElementButtonView(locale, editor.commands.get('callout')));
 ```
 
-See the "Commands" guide of the documentation.
+See the [Commands guide](https://ivankild.github.io/ckeditor5-elements/guide/commands) of the documentation.
 
 ## License
 

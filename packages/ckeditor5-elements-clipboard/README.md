@@ -21,7 +21,7 @@ await editor.execute('copyElement', element);
 await editor.execute('pasteElementAfter'); // The element at the selection.
 ```
 
-See the "Clipboard" guide of the documentation.
+See the [Clipboard guide](https://ivankild.github.io/ckeditor5-elements/guide/clipboard) of the documentation.
 
 ## License
 

@@ -12,7 +12,8 @@ import { Breadcrumbs, ElementClipboard, ElementContextMenu, QuickInsert } from '
 import 'ckeditor5-elements/index.css';
 ```
 
-See [`ckeditor5-elements`](packages/ckeditor5-elements) and the [documentation](docs).
+See [`ckeditor5-elements`](packages/ckeditor5-elements) and the [documentation](https://ivankild.github.io/ckeditor5-elements/), with live examples and the API
+reference (its source is in [`docs`](docs)).
 
 ## Packages
 
@@ -63,10 +64,15 @@ docs/             # VitePress site: guide/ pages, demos/ (live examples), api/ (
 
 ## Publishing
 
-All packages have the same version; release them together:
+All packages have the same version, the CKEditor version they are built for with a pre-release suffix (e.g.
+`49.0.0-alpha.0`). Release them together, from `main`, logged in to npm (`npm login`):
 
 ```sh
 pnpm publish:all
 ```
 
-pnpm replaces the `workspace:*` dependencies with the exact version.
+pnpm replaces the `workspace:*` dependencies with the exact version. The packages are published with the `alpha`
+dist-tag; change `--tag` in the `publish:all` script for other releases.
+
+The documentation is published on [GitHub Pages](https://ivankild.github.io/ckeditor5-elements/) by the
+[Docs workflow](.github/workflows/docs.yml) on every push to `main` (or when run by hand).

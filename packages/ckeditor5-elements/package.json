@@ -10,6 +10,16 @@
 		"ckeditor5-plugin"
 	],
 	"license": "MIT",
+	"author": "Ivan Kildyushov",
+	"homepage": "https://ivankild.github.io/ckeditor5-elements/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ivankild/ckeditor5-elements.git",
+		"directory": "packages/ckeditor5-elements"
+	},
+	"bugs": {
+		"url": "https://github.com/ivankild/ckeditor5-elements/issues"
+	},
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

@@ -57,7 +57,7 @@ versions of them would be loaded, which fails.
 
 ## Documentation
 
-The guides, with live examples, and the API reference are in the `docs` folder of the repository.
+[CKEditor 5 Elements documentation](https://ivankild.github.io/ckeditor5-elements/): guides with live examples, and the API reference.
 
 ## License
 

@@ -25,7 +25,7 @@ toolbar: ['bold', 'italic', '|', 'breadcrumbs'],
 breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
 ```
 
-See the "Breadcrumbs" guide of the documentation.
+See the [Breadcrumbs guide](https://ivankild.github.io/ckeditor5-elements/guide/breadcrumbs) of the documentation.
 
 ## License
 

@@ -22,7 +22,7 @@ plugins: [..., ElementContextMenu, ElementClipboard],
 elementContextMenu: (element, editor) => [editor.commands.get('copyElement'), editor.commands.get('cutElement')]
 ```
 
-See the "Context menu" guide of the documentation.
+See the [Context menu guide](https://ivankild.github.io/ckeditor5-elements/guide/context-menu) of the documentation.
 
 ## License
 

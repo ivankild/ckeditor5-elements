@@ -11,6 +11,9 @@ const PACKAGES = [
 	'ckeditor5-elements-quick-insert'
 ];
 
+// The site is published on GitHub Pages, at https://ivankild.github.io/ckeditor5-elements/.
+const BASE = '/ckeditor5-elements/';
+
 const resolvePackage = (name: string): string =>
 	fileURLToPath(new URL(`../../packages/${name}/src/index.ts`, import.meta.url));
 
@@ -23,8 +26,9 @@ const apiSidebar: DefaultTheme.SidebarItem[] = existsSync(apiSidebarFile)
 export default defineConfig({
 	title: 'CKEditor 5 Elements',
 	description: 'Element commands, context menu, clipboard, quick insert and breadcrumbs for CKEditor 5.',
-	// From `public/`.
-	head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }]],
+	base: BASE,
+	// From `public/`. Links in `head` do not get the base.
+	head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }]],
 	cleanUrls: true,
 	themeConfig: {
 		nav: [
@@ -47,6 +51,7 @@ export default defineConfig({
 			],
 			'/api/': [{ text: 'API reference', items: apiSidebar }]
 		},
+		socialLinks: [{ icon: 'github', link: 'https://github.com/ivankild/ckeditor5-elements' }],
 		outline: [2, 3],
 		search: { provider: 'local' }
 	},

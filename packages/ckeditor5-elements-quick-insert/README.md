@@ -23,7 +23,7 @@ plugins: [..., QuickInsert],
 quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' } }
 ```
 
-See the "Quick insert" guide of the documentation.
+See the [Quick insert guide](https://ivankild.github.io/ckeditor5-elements/guide/quick-insert) of the documentation.
 
 ## License
 
