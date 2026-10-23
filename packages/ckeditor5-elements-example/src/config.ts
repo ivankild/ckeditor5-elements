@@ -5,9 +5,15 @@ import {
 	Essentials,
 	Heading,
 	HorizontalLine,
+	ImageBlock,
+	ImageCaption,
+	ImageInline,
+	ImageInsert,
 	Italic,
 	Link,
+	LinkImage,
 	List,
+	MediaEmbed,
 	Paragraph,
 	Table,
 	TableToolbar,
@@ -16,12 +22,15 @@ import {
 import {
 	Breadcrumbs,
 	ElementActions,
+	ElementAttributes,
+	ElementClickable,
 	ElementClipboard,
 	ElementContextMenu,
 	ElementToolbar,
 	QuickInsert,
 	insertIcon,
 	pasteIcon,
+	type ElementClickableDefinition,
 	type ElementMenuConfig
 } from 'ckeditor5-elements';
 import { Note } from './note.js';
@@ -57,8 +66,16 @@ export const elementMenu: ElementMenuConfig = (element, editor) => [
 		]
 	},
 	'|',
+	editor.commands.get('showElementAttributes'),
 	editor.commands.get('deleteElement')
 ];
+
+/**
+ * Shows the attributes of the clicked element, with the command of `ElementAttributes`.
+ */
+const showAttributes: ElementClickableDefinition['callback'] = (element, editor) => {
+	editor.commands.get('showElementAttributes')?.executeFor(element);
+};
 
 const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'];
 
@@ -80,11 +97,19 @@ export const exampleConfig: EditorConfig = {
 		Table,
 		TableToolbar,
 		HorizontalLine,
+		ImageBlock,
+		ImageInline,
+		ImageCaption,
+		ImageInsert,
+		LinkImage,
+		MediaEmbed,
 		Note,
 		ElementContextMenu,
 		ElementClipboard,
 		ElementActions,
+		ElementAttributes,
 		ElementToolbar,
+		ElementClickable,
 		QuickInsert,
 		Breadcrumbs
 	],
@@ -103,6 +128,8 @@ export const exampleConfig: EditorConfig = {
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
+			'insertImage',
+			'mediaEmbed',
 			'insertTable',
 			'horizontalLine',
 			'|',
@@ -115,8 +142,28 @@ export const exampleConfig: EditorConfig = {
 		shouldNotGroupWhenFull: true
 	},
 	table: { contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'] },
+	// A provider that needs no network: the preview of an embedded medium is a box with its address.
+	mediaEmbed: {
+		providers: [
+			{
+				name: 'example',
+				url: /^https:\/\/example\.com\/(.+)/,
+				html: match => `<div class="example-media">Media: <code>${match[0]}</code></div>`
+			}
+		]
+	},
 	elementContextMenu: elementMenu,
 	breadcrumbs: { menu: elementMenu },
+	elementClickables: [
+		// Click an image, a medium, or anything with a link (a linked image): a modal with its attributes.
+		{
+			element: element =>
+				['imageBlock', 'imageInline', 'media'].includes(element.name) || element.hasAttribute('linkHref'),
+			callback: showAttributes
+		},
+		// Double-click a note: the same modal.
+		{ element: 'note', event: 'dblclick', callback: showAttributes }
+	],
 	elementToolbars: [
 		// "Note" unwraps the note; the actions act on the whole note.
 		{ element: 'note', items: ['note', '|', ...ACTIONS], ariaLabel: 'Note toolbar' },
@@ -134,10 +181,11 @@ export const exampleConfig: EditorConfig = {
 			heading3: 'Heading 3',
 			note: 'Note',
 			blockQuote: 'Block quote',
+			media: 'Media',
 			horizontalLine: 'Horizontal line',
 			softBreak: 'Line break'
 		},
-		// A table needs rows and cells: insert it with its toolbar button.
-		exclude: ['table']
+		// These need rows and cells, or an address: insert them with their toolbar buttons.
+		exclude: ['table', 'imageBlock', 'imageInline', 'media']
 	}
 };

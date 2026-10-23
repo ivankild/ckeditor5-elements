@@ -1,3 +1,11 @@
+// An image that needs no network.
+const imageSource =
+	'data:image/svg+xml;utf8,' +
+	encodeURIComponent(
+		'<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="160" height="90" fill="#4f46e5"/>' +
+			'<text x="80" y="52" font-size="16" fill="white" text-anchor="middle" font-family="sans-serif">Image</text></svg>'
+	);
+
 /**
  * The data of the full example.
  */
@@ -19,4 +27,10 @@ export const exampleData =
 	'only a line break fits. To insert blocks, use <strong>Insert › Insert after</strong> in the menu of a block.</p>' +
 	'<figure class="table"><table><tbody><tr><td>Copy or cut a whole table from its menu,</td>' +
 	'<td>or the paragraph in a cell.</td></tr></tbody></table></figure>' +
+	'<h3>Clickable elements</h3>' +
+	'<p><strong>Click an image</strong>, the medium, or the linked image to see their attributes in a modal. ' +
+	'<strong>Double-click a note</strong> for the attributes of the note.</p>' +
+	`<figure class="image"><img src="${imageSource}" alt="An example image" width="160" height="90"></figure>` +
+	'<figure class="media"><oembed url="https://example.com/video/1"></oembed></figure>' +
+	`<p>A linked image: <a href="https://ckeditor.com"><img src="${imageSource}" alt="A linked image" width="48" height="27"></a></p>` +
 	'<blockquote><p>The last block cannot move down.</p></blockquote>';

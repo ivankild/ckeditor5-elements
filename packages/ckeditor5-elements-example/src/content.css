@@ -13,3 +13,17 @@
 	--note-color: #d97706;
 	--note-background: #fffbeb;
 }
+
+/* Clickable elements: the example shows their attributes. */
+.ck-content figure.image img,
+.ck-content figure.media,
+.ck-content img.image-inline {
+	cursor: pointer;
+}
+
+.ck-content .example-media {
+	padding: 1.5em;
+	border: 1px dashed #9ca3af;
+	background: #f3f4f6;
+	text-align: center;
+}

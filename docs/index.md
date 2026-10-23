@@ -29,9 +29,15 @@ features:
     - title: Actions
       details: Move an element up or down, duplicate it as an empty element of the same kind, or delete it.
       link: /guide/actions
+    - title: Attributes
+      details: Show the attributes of an element, as key-value pairs, in a modal, from a menu, a toolbar, a click or code.
+      link: /guide/attributes
     - title: Element toolbar
       details: A floating toolbar for the elements you choose, by name or filter, with buttons that act on the element.
       link: /guide/toolbar
+    - title: Clickable elements
+      details: Call a function, with the model element, when an element that matches a name or a filter is clicked or double-clicked.
+      link: /guide/clickable
     - title: Quick insert
       details: Alt+Enter, or a menu item, opens a searchable list of the elements allowed at a position.
       link: /guide/quick-insert

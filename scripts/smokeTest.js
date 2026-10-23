@@ -88,6 +88,7 @@ try {
 import {
 	Breadcrumbs,
 	ElementActions,
+	ElementClickable,
 	ElementClipboard,
 	ElementContextMenu,
 	ElementToolbar,
@@ -117,6 +118,7 @@ const editor = await ClassicEditor.create({
 		ElementClipboard,
 		ElementActions,
 		ElementToolbar,
+		ElementClickable,
 		QuickInsert,
 		Breadcrumbs
 	],
@@ -124,6 +126,7 @@ const editor = await ClassicEditor.create({
 	elementContextMenu: menu,
 	breadcrumbs: { menu },
 	elementToolbars: [{ element: 'paragraph', items: ['moveElementDown', 'deleteElement'] }],
+	elementClickables: [{ element: 'paragraph', callback: element => { (window as unknown as { clicked: string }).clicked = element.name; } }],
 	quickInsert: { keystroke: 'Alt+Enter' }
 });
 
@@ -177,6 +180,7 @@ async function runInBrowser(distDir) {
 				'ElementClipboard',
 				'ElementActions',
 				'ElementToolbar',
+				'ElementClickable',
 				'QuickInsert',
 				'Breadcrumbs',
 				'ElementMenu'
@@ -186,6 +190,10 @@ async function runInBrowser(distDir) {
 		assert(plugins.length === 0, `Missing plugins: ${plugins.join(', ')}`);
 
 		await page.locator('.ck-editor__editable p').click();
+		assert(
+			(await page.evaluate(() => window.clicked)) === 'paragraph',
+			'The click did not reach the clickable element callback.'
+		);
 		assert((await page.locator('.ck-elements-breadcrumbs__item').count()) > 0, 'No breadcrumbs.');
 		await page.waitForSelector(
 			'.ck-balloon-panel_visible .ck-toolbar-container, .ck-toolbar-container.ck-balloon-panel_visible'

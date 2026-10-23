@@ -1,0 +1,30 @@
+/*
+ * The table of the attributes dialog. It is excluded from CKEditor's reset (`ck-reset_all-excluded`), so it has its own
+ * styles.
+ */
+.ck-elements-attributes table {
+	width: min(32em, 80vw);
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+.ck-elements-attributes th,
+.ck-elements-attributes td {
+	padding: 0.3em 0.8em;
+	border-bottom: 1px solid var(--ck-color-base-border);
+	text-align: left;
+	vertical-align: top;
+	/* The dialog does not wrap its content, but long values, such as the data of an image, must wrap. */
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.ck-elements-attributes th {
+	width: 7em;
+	font-weight: 600;
+}
+
+.ck-elements-attributes .ck-elements-attributes__empty {
+	color: var(--ck-color-text);
+	opacity: 0.65;
+}

@@ -245,9 +245,15 @@ importers:
       ckeditor5-elements-actions:
         specifier: workspace:*
         version: link:../ckeditor5-elements-actions
+      ckeditor5-elements-attributes:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-attributes
       ckeditor5-elements-breadcrumbs:
         specifier: workspace:*
         version: link:../ckeditor5-elements-breadcrumbs
+      ckeditor5-elements-clickable:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-clickable
       ckeditor5-elements-clipboard:
         specifier: workspace:*
         version: link:../ckeditor5-elements-clipboard
@@ -273,11 +279,29 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-elements-core
 
+  packages/ckeditor5-elements-attributes:
+    dependencies:
+      ckeditor5:
+        specifier: ^49.0.0
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
   packages/ckeditor5-elements-breadcrumbs:
     dependencies:
       ckeditor5:
         specifier: ^49.0.0
         version: 49.0.0
+
+  packages/ckeditor5-elements-clickable:
+    dependencies:
+      ckeditor5:
+        specifier: ^49.0.0
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-clipboard:
     dependencies:

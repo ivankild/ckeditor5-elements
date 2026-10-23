@@ -33,7 +33,9 @@ await ClassicEditor.create({
 | [Context menu](./context-menu) | `ElementContextMenu`: a menu of commands for the right-clicked element |
 | [Clipboard](./clipboard)       | `ElementClipboard`: copy, cut and paste whole elements                 |
 | [Actions](./actions)           | `ElementActions`: move an element up or down, duplicate or delete it   |
+| [Attributes](./attributes)     | `ElementAttributes`: show the attributes of an element in a modal      |
 | [Element toolbar](./toolbar)   | `ElementToolbar`: floating toolbars for elements, by name or filter    |
+| [Clickable](./clickable)       | `ElementClickable`: a callback when an element is clicked              |
 | [Quick insert](./quick-insert) | `QuickInsert`: search and insert an element allowed at a position      |
 | [Breadcrumbs](./breadcrumbs)   | `Breadcrumbs`: the element path at the cursor                          |
 

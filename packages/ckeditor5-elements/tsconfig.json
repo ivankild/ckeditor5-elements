@@ -16,7 +16,13 @@
 			"path": "../ckeditor5-elements-actions"
 		},
 		{
+			"path": "../ckeditor5-elements-attributes"
+		},
+		{
 			"path": "../ckeditor5-elements-toolbar"
+		},
+		{
+			"path": "../ckeditor5-elements-clickable"
 		},
 		{
 			"path": "../ckeditor5-elements-context-menu"

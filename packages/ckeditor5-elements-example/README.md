@@ -26,5 +26,6 @@ In the editor:
 - Put the cursor in a note or a heading: its floating toolbar, which acts on the whole element.
 - Click a breadcrumb (the second toolbar line): the menu of that element.
 - Alt+Enter (Option+Enter on macOS): quick insert.
+- Click an image, the medium or the linked image: a modal with its attributes (the `showElementAttributes` command). Double-click a note: the same for the note. It is in the menus too, as "Show attributes".
 
 `pnpm --filter ckeditor5-elements-example build` builds a static site in `dist`.

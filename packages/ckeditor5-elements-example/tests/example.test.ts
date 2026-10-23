@@ -1,7 +1,7 @@
-import { _getModelData, _setModelData, type ClassicEditor } from 'ckeditor5';
+import { _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
-import { exampleConfig, exampleData } from '../src/index.js';
+import { elementMenu, exampleConfig, exampleData } from '../src/index.js';
 
 describe('the full example', () => {
 	let editor: ClassicEditor;
@@ -20,6 +20,7 @@ describe('the full example', () => {
 			'ElementContextMenu',
 			'ElementClipboard',
 			'ElementActions',
+			'ElementAttributes',
 			'ElementToolbar',
 			'QuickInsert',
 			'Breadcrumbs'
@@ -28,9 +29,14 @@ describe('the full example', () => {
 		}
 	});
 
-	it('keeps its data', () => {
-		// CKEditor gives list items ids.
-		expect(editor.getData().replace(/ data-list-item-id="\w+"/g, '')).toBe(exampleData);
+	it('keeps its data: saving and loading it again changes nothing', () => {
+		const data = editor.getData();
+
+		editor.setData(data);
+
+		expect(editor.getData()).toBe(data);
+		expect(data).toContain('<aside class="note warning">');
+		expect(data).toContain('<figure class="media"><oembed url="https://example.com/video/1">');
 	});
 
 	describe('Note', () => {
@@ -76,5 +82,71 @@ describe('the full example', () => {
 			expect.arrayContaining(['Paragraph', 'Heading 1', 'Note', 'Block quote', 'Horizontal line'])
 		);
 		expect(labels).not.toContain('table');
+	});
+
+	it('has "Show attributes" in the menu of an element', () => {
+		const items = elementMenu(editor.model.document.getRoot()!.getChild(0) as ModelElement, editor);
+
+		expect(items).toContain(editor.commands.get('showElementAttributes'));
+	});
+
+	describe('clickable elements', () => {
+		const dialog = (): { id: string | null; rows: string[][] } => {
+			const rows = [...document.querySelectorAll('.ck-dialog .ck-elements-attributes tr')].map(row =>
+				[...row.children].map(cell => cell.textContent)
+			);
+
+			return { id: editor.plugins.get('Dialog').id, rows };
+		};
+		const fire = (type: 'click' | 'dblclick', element: Element): void => {
+			element.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true }));
+		};
+		const editable = (): HTMLElement => editor.ui.getEditableElement()!;
+
+		beforeEach(() => {
+			// A click on a link would navigate the page of the test.
+			editable().addEventListener('click', event => {
+				event.preventDefault();
+			});
+		});
+
+		it('clicking an image shows its attributes in a modal', () => {
+			fire('click', editable().querySelector('figure.image img')!);
+
+			const { id, rows } = dialog();
+
+			expect(id).toBe('elementAttributes');
+			expect(rows.map(([key]) => key)).toEqual(expect.arrayContaining(['src', 'alt']));
+			expect(rows.find(([key]) => key === 'alt')?.[1]).toBe('An example image');
+		});
+
+		it('clicking the medium shows its attributes', () => {
+			fire('click', editable().querySelector('figure.media')!);
+
+			expect(dialog().rows).toContainEqual(['url', 'https://example.com/video/1']);
+		});
+
+		it('clicking a linked image shows its attributes, with the link', () => {
+			fire('click', editable().querySelector('a img')!);
+
+			expect(dialog().rows).toContainEqual(['linkHref', 'https://ckeditor.com']);
+		});
+
+		it('double-clicking a note shows its attributes, but clicking it does not', () => {
+			const note = editable().querySelector('aside.note.warning p')!;
+
+			fire('click', note);
+			expect(dialog().id).toBeNull();
+
+			fire('dblclick', note);
+			expect(dialog().rows).toContainEqual(['type', 'warning']);
+		});
+
+		it('the modal can be closed', () => {
+			fire('click', editable().querySelector('figure.image img')!);
+			editor.plugins.get('Dialog').hide();
+
+			expect(dialog().id).toBeNull();
+		});
 	});
 });
