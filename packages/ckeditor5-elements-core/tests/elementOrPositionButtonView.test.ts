@@ -90,6 +90,44 @@ describe('ElementOrPositionButtonView', () => {
 		});
 	});
 
+	describe('with a function as the target', () => {
+		it('acts on the element the function returns, and follows it', () => {
+			let target: ModelElement | null = child(1);
+
+			view = new ElementOrPositionButtonView(editor.locale, command, { target: () => target });
+			view.render();
+
+			expect(view.isOn).toBe(false);
+
+			target = child(0).getChild(0) as ModelElement;
+			editor.model.change(writer => {
+				writer.setSelection(child(1), 0);
+			});
+
+			expect(view.isOn).toBe(true);
+
+			target = child(1);
+			view.element!.click();
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<container><paragraph>foo</paragraph></container><container><paragraph>bar</paragraph></container>'
+			);
+		});
+
+		it('is disabled, and does nothing, when the function returns null', () => {
+			view = new ElementOrPositionButtonView(editor.locale, command, { target: () => null });
+			view.render();
+
+			expect(view.isEnabled).toBe(false);
+
+			view.fire('execute');
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<container><paragraph>foo</paragraph></container><paragraph>bar</paragraph>'
+			);
+		});
+	});
+
 	describe('with a target', () => {
 		beforeEach(() => {
 			view = new ElementOrPositionButtonView(editor.locale, command, { target: child(1) });

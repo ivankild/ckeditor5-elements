@@ -173,7 +173,10 @@ export default class ElementMenu extends Plugin {
 			view,
 			position: { target },
 			withArrow: false,
-			singleViewMode: true
+			singleViewMode: true,
+			// Views that other plugins add to the balloon meanwhile (e.g. an element toolbar, when the selection moves
+			// into its element) go to their own stack, so they do not cover the menu.
+			stackId: 'elementMenu'
 		});
 
 		const keystrokes = new KeystrokeHandler();

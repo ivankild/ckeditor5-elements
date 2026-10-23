@@ -23,6 +23,12 @@ features:
     - title: Clipboard
       details: Copy, cut and paste whole elements, before or after another element, from a menu, a button or code.
       link: /guide/clipboard
+    - title: Actions
+      details: Move an element up or down, duplicate it as an empty element of the same kind, or delete it.
+      link: /guide/actions
+    - title: Element toolbar
+      details: A floating toolbar for the elements you choose, by name or filter, with buttons that act on the element.
+      link: /guide/toolbar
     - title: Quick insert
       details: Alt+Enter, or a menu item, opens a searchable list of the elements allowed at a position.
       link: /guide/quick-insert

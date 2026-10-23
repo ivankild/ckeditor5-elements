@@ -239,6 +239,9 @@ importers:
       ckeditor5:
         specifier: '>=49.0.0'
         version: 49.0.0
+      ckeditor5-elements-actions:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-actions
       ckeditor5-elements-breadcrumbs:
         specifier: workspace:*
         version: link:../ckeditor5-elements-breadcrumbs
@@ -254,6 +257,18 @@ importers:
       ckeditor5-elements-quick-insert:
         specifier: workspace:*
         version: link:../ckeditor5-elements-quick-insert
+      ckeditor5-elements-toolbar:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-toolbar
+
+  packages/ckeditor5-elements-actions:
+    dependencies:
+      ckeditor5:
+        specifier: '>=49.0.0'
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-breadcrumbs:
     dependencies:
@@ -295,6 +310,15 @@ importers:
         version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-quick-insert:
+    dependencies:
+      ckeditor5:
+        specifier: '>=49.0.0'
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
+  packages/ckeditor5-elements-toolbar:
     dependencies:
       ckeditor5:
         specifier: '>=49.0.0'

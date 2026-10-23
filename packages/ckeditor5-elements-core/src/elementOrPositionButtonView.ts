@@ -12,11 +12,18 @@ export interface ElementOrPositionButtonViewOptions {
 	withText?: boolean;
 
 	/**
-	 * The position or element the button acts on. Without it, the button follows the command state for the selection
-	 * and executes the command for the selection.
+	 * The position or element the button acts on, or a function that returns it, e.g. the element of a floating
+	 * toolbar, which changes as the selection moves. The function is called whenever the button updates or is clicked;
+	 * when it returns `null`, the button is disabled. Without a target, the button follows the command state for the
+	 * selection and executes the command for the selection.
 	 */
-	target?: ElementOrPosition;
+	target?: ElementOrPositionTarget;
 }
+
+/**
+ * The target of a button: a position or an element, or a function that returns one (or `null`).
+ */
+export type ElementOrPositionTarget = ElementOrPosition | (() => ElementOrPosition | null);
 
 /**
  * A button that reflects an {@link ElementOrPositionCommand} and executes it when clicked.
@@ -38,7 +45,7 @@ export default class ElementOrPositionButtonView extends ButtonView {
 	/**
 	 * The position or element the button acts on, if any.
 	 */
-	public readonly target: ElementOrPosition | undefined;
+	public readonly target: ElementOrPositionTarget | undefined;
 
 	constructor(
 		locale: Locale | undefined,
@@ -74,9 +81,12 @@ export function bindButtonToCommand(
 		button.bind('tooltip').to(command, 'tooltip');
 	}
 
+	const getTarget = typeof target === 'function' ? target : (): ElementOrPosition | null => target ?? null;
+
 	if (target) {
 		const updateState = (): void => {
-			const { isEnabled, isOn } = command.getState(target);
+			const current = getTarget();
+			const { isEnabled, isOn } = current ? command.getState(current) : { isEnabled: false, isOn: false };
 
 			button.isEnabled = isEnabled;
 			button.isOn = isOn;
@@ -94,7 +104,13 @@ export function bindButtonToCommand(
 		// Focus first: focusing reads the DOM selection, which would override a selection set by the command.
 		editor.editing.view.focus();
 
-		const result = target ? command.executeFor(target) : command.execute();
+		const current = getTarget();
+
+		if (target && !current) {
+			return;
+		}
+
+		const result = current ? command.executeFor(current) : command.execute();
 
 		if (result instanceof Promise) {
 			result.catch((error: unknown) => {

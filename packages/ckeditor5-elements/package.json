@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements",
-	"version": "49.0.0-alpha.0",
-	"description": "Element commands, an element context menu, clipboard commands, quick insert and breadcrumbs for CKEditor 5.",
+	"version": "49.0.0-alpha.1",
+	"description": "Element commands, an element context menu, clipboard commands, element actions, element toolbars, quick insert and breadcrumbs for CKEditor 5.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -40,11 +40,13 @@
 		"*.css"
 	],
 	"dependencies": {
+		"ckeditor5-elements-actions": "workspace:*",
 		"ckeditor5-elements-breadcrumbs": "workspace:*",
 		"ckeditor5-elements-clipboard": "workspace:*",
 		"ckeditor5-elements-context-menu": "workspace:*",
 		"ckeditor5-elements-core": "workspace:*",
-		"ckeditor5-elements-quick-insert": "workspace:*"
+		"ckeditor5-elements-quick-insert": "workspace:*",
+		"ckeditor5-elements-toolbar": "workspace:*"
 	},
 	"peerDependencies": {
 		"ckeditor5": ">=49.0.0"

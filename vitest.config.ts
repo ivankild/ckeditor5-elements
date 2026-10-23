@@ -14,6 +14,8 @@ export default defineConfig({
 			{ find: /^ckeditor5-elements-example$/, replacement: resolvePackage('ckeditor5-elements-example') },
 			{ find: /^ckeditor5-elements-breadcrumbs$/, replacement: resolvePackage('ckeditor5-elements-breadcrumbs') },
 			{ find: /^ckeditor5-elements-clipboard$/, replacement: resolvePackage('ckeditor5-elements-clipboard') },
+			{ find: /^ckeditor5-elements-actions$/, replacement: resolvePackage('ckeditor5-elements-actions') },
+			{ find: /^ckeditor5-elements-toolbar$/, replacement: resolvePackage('ckeditor5-elements-toolbar') },
 			{
 				find: /^ckeditor5-elements-context-menu$/,
 				replacement: resolvePackage('ckeditor5-elements-context-menu')

@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-core",
-	"version": "49.0.0-alpha.0",
+	"version": "49.0.0-alpha.1",
 	"description": "The base of the element commands, buttons and menus for CKEditor 5: ElementOrPositionCommand, ElementCommand, their button views, and ElementMenu.",
 	"keywords": [
 		"ckeditor",

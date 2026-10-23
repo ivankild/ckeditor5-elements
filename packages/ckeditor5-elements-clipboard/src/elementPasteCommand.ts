@@ -1,7 +1,6 @@
 import { ViewDataTransfer, plainTextToHtml, type ClipboardInputEventData, type Editor } from 'ckeditor5';
-import { ElementOrPositionCommand, isInDocument, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { ElementOrPositionCommand, isInDocument, isStandalone, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { pasteAfterIcon, pasteBeforeIcon, pasteIcon } from './icons.js';
-import { isStandalone } from './utils.js';
 
 /**
  * Where the pasted content goes, relative to the element:

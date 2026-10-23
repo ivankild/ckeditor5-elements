@@ -1,7 +1,6 @@
 import { ClipboardPipeline, ViewDataTransfer, type ClipboardOutputTransformationEvent, type Editor } from 'ckeditor5';
-import { ElementOrPositionCommand, isInDocument, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { ElementOrPositionCommand, isInDocument, isStandalone, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { copyIcon, cutIcon } from './icons.js';
-import { isStandalone } from './utils.js';
 
 /**
  * Copies an element to the system clipboard, as HTML and plain text. With `cut: true`, it also removes the element.

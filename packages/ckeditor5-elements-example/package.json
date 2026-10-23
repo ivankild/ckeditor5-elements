@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-example",
 	"private": true,
-	"version": "49.0.0-alpha.0",
+	"version": "49.0.0-alpha.1",
 	"description": "An example element feature built on ckeditor5-elements-core, used by the tests. Not published.",
 	"keywords": [
 		"ckeditor",

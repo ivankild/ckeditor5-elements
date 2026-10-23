@@ -25,12 +25,13 @@ export { default as ElementCommand } from './elementCommand.js';
 // Views.
 export {
 	default as ElementOrPositionButtonView,
-	type ElementOrPositionButtonViewOptions
+	type ElementOrPositionButtonViewOptions,
+	type ElementOrPositionTarget
 } from './elementOrPositionButtonView.js';
 export { default as ElementButtonView } from './elementButtonView.js';
 export { default as ElementMenuView } from './elementMenuView.js';
 
 // Utils.
-export { isInDocument } from './utils.js';
+export { isInDocument, isStandalone, selectNewElement } from './utils.js';
 
 import './augmentation.js';

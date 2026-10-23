@@ -7,6 +7,8 @@ const PACKAGES = [
 	'ckeditor5-elements',
 	'ckeditor5-elements-breadcrumbs',
 	'ckeditor5-elements-clipboard',
+	'ckeditor5-elements-actions',
+	'ckeditor5-elements-toolbar',
 	'ckeditor5-elements-context-menu',
 	'ckeditor5-elements-quick-insert'
 ];
@@ -25,7 +27,8 @@ const apiSidebar: DefaultTheme.SidebarItem[] = existsSync(apiSidebarFile)
 
 export default defineConfig({
 	title: 'CKEditor 5 Elements',
-	description: 'Element commands, context menu, clipboard, quick insert and breadcrumbs for CKEditor 5.',
+	description:
+		'Element commands, context menu, clipboard, actions, toolbars, quick insert and breadcrumbs for CKEditor 5.',
 	base: BASE,
 	// From `public/`. Links in `head` do not get the base.
 	head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }]],
@@ -44,6 +47,8 @@ export default defineConfig({
 						{ text: 'Commands', link: '/guide/commands' },
 						{ text: 'Context menu', link: '/guide/context-menu' },
 						{ text: 'Clipboard', link: '/guide/clipboard' },
+						{ text: 'Actions', link: '/guide/actions' },
+						{ text: 'Element toolbar', link: '/guide/toolbar' },
 						{ text: 'Quick insert', link: '/guide/quick-insert' },
 						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' }
 					]

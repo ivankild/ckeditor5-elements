@@ -1,5 +1,5 @@
-import { type Editor, type ModelElement, type ModelPosition, type ModelWriter } from 'ckeditor5';
-import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { type Editor, type ModelPosition } from 'ckeditor5';
+import { ElementOrPositionCommand, selectNewElement, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { insertIcon } from './icons.js';
 
 /**
@@ -79,25 +79,7 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 			const element = writer.createElement(name);
 
 			writer.insert(element, target);
-			this._setSelection(writer, element);
+			selectNewElement(writer, element);
 		});
-	}
-
-	private _setSelection(writer: ModelWriter, element: ModelElement): void {
-		const schema = this.editor.model.schema;
-
-		if (schema.isObject(element)) {
-			writer.setSelection(element, 'on');
-		} else if (schema.checkChild(element, '$text')) {
-			writer.setSelection(element, 0);
-		} else if (schema.checkChild(element, 'paragraph')) {
-			const paragraph = writer.createElement('paragraph');
-
-			writer.append(paragraph, element);
-			writer.setSelection(paragraph, 0);
-		} else {
-			// Only objects can be selected as a whole. The selection post-fixer moves it to the closest valid place.
-			writer.setSelection(element, 'after');
-		}
 	}
 }

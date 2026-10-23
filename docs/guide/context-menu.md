@@ -47,8 +47,9 @@ The simplest menu: the [clipboard commands](./clipboard) for the right-clicked e
 
 ## Submenus and separators
 
-A toggle command ("Note" is "on" inside a note), an "Insert" submenu with the quick insert commands, and a "Paste"
-submenu with its own separator.
+A toggle command ("Note" is "on" inside a note), an "Insert" submenu with the quick insert commands, the
+[element actions](./actions) (move up and down, duplicate, delete), and a "Paste" submenu with its own separator.
+"Move up" and "Move down" are disabled for the first and the last block.
 
 <EditorDemo name="contextMenuSubmenus" />
 

@@ -1,7 +1,7 @@
 # CKEditor 5 Elements
 
 Element-level features for CKEditor 5 v49 or later: commands that act on an element, an element context menu, clipboard
-commands for elements, quick insert and breadcrumbs.
+commands and actions (move, duplicate, delete) for elements, element toolbars, quick insert and breadcrumbs.
 
 ```sh
 npm install ckeditor5 ckeditor5-elements
@@ -25,6 +25,8 @@ re-exports the feature packages, which are published too, all in the same versio
 | [`ckeditor5-elements`](packages/ckeditor5-elements)                           | Everything below, and one stylesheet                                   | all below, in the same version              |
 | [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)                 | Element commands, their button views, and the `ElementMenu` plugin     | –                                           |
 | [`ckeditor5-elements-clipboard`](packages/ckeditor5-elements-clipboard)       | Copy, cut, paste (before/after) commands for an element                | `ckeditor5-elements-core`                   |
+| [`ckeditor5-elements-actions`](packages/ckeditor5-elements-actions)           | Move up/down, duplicate and delete commands for an element             | `ckeditor5-elements-core`                   |
+| [`ckeditor5-elements-toolbar`](packages/ckeditor5-elements-toolbar)           | Floating toolbars for elements, by name or filter                      | `ckeditor5-elements-core`                   |
 | [`ckeditor5-elements-context-menu`](packages/ckeditor5-elements-context-menu) | Element context menu: commands, submenus, separators                   | `ckeditor5-elements-core`                   |
 | [`ckeditor5-elements-quick-insert`](packages/ckeditor5-elements-quick-insert) | Alt+Enter quick insert; "insert before/after" commands for menus       | `ckeditor5-elements-core`                   |
 | [`ckeditor5-elements-breadcrumbs`](packages/ckeditor5-elements-breadcrumbs)   | Element path at the selection; clickable with a configured menu        | – (uses `ElementMenu` through an interface) |

@@ -8,6 +8,8 @@ Element-level features for CKEditor 5 v49 or later, in one package:
 | Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                   |
 | Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                      |
 | Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter` |
+| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                  |
+| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                         |
 | Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                     |
 | Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu             |
 
@@ -51,8 +53,8 @@ await ClassicEditor.create({
 
 Load only the plugins you use: the others are not part of your build.
 
-The features come in packages of their own (`ckeditor5-elements-core`, `-clipboard`, `-context-menu`, `-quick-insert`,
-`-breadcrumbs`), in the same version as this package, which installs them. Do not install or import them yourself: two
+The features come in packages of their own (`ckeditor5-elements-core`, `-clipboard`, `-actions`, `-toolbar`, `-context-menu`,
+`-quick-insert`, `-breadcrumbs`), in the same version as this package, which installs them. Do not install or import them yourself: two
 versions of them would be loaded, which fails.
 
 ## Documentation
