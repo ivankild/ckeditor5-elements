@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-actions",
-	"version": "49.0.0-alpha.3",
+	"version": "49.0.0-alpha.4",
 	"description": "Element actions for CKEditor 5: move, duplicate and delete an element, and copy, cut and paste it, as commands with titles and icons for menus and toolbars.",
 	"keywords": [
 		"ckeditor",

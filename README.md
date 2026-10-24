@@ -50,7 +50,7 @@ pnpm test            # tests, in headless Chrome
 pnpm test:coverage   # tests with a coverage report in coverage/
 pnpm check           # type check, lint, package consistency, format check and tests
 pnpm smoke           # installs the packed packages into a new app, builds it and runs it in Chrome
-pnpm version:set 49.0.0-alpha.3   # the version of all packages, which have the same one
+pnpm version:set 49.0.0-alpha.4   # the version of all packages, which have the same one
 ```
 
 The tests run in Vitest browser mode, with Playwright driving the installed Google Chrome. To use a Playwright-managed
@@ -84,11 +84,11 @@ docs/             # VitePress site: guide/ pages, demos/ (live examples), api/ (
 ## Publishing
 
 All packages have the same version, the CKEditor version they are built for with a pre-release suffix (e.g.
-`49.0.0-alpha.3`). A version can be published only once: set a new one first. Release them together, from `main` with
+`49.0.0-alpha.4`). A version can be published only once: set a new one first. Release them together, from `main` with
 everything committed, logged in to npm (`npm login`):
 
 ```sh
-pnpm version:set 49.0.0-alpha.4                                    # a version that is not published yet
+pnpm version:set 49.0.0-alpha.5                                    # a version that is not published yet
 pnpm check && pnpm smoke                                           # everything, and the packed packages in an app
 pnpm -r publish --dry-run --access public --tag alpha --no-git-checks  # what would be published
 pnpm publish:all                                                   # cleans, builds and publishes

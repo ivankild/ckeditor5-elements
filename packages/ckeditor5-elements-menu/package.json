@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-menu",
-	"version": "49.0.0-alpha.3",
+	"version": "49.0.0-alpha.4",
 	"description": "Element menus for CKEditor 5: the menu of an element, built from commands, and the element context menu, breadcrumbs and quick insert that open it.",
 	"keywords": [
 		"ckeditor",

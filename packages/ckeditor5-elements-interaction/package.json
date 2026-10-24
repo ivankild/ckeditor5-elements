@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-interaction",
-	"version": "49.0.0-alpha.3",
+	"version": "49.0.0-alpha.4",
 	"description": "Element interaction for CKEditor 5, without CKEditor's widgets: select an element as a whole by a click or by the arrow keys, and react to clicks and double clicks on elements.",
 	"keywords": [
 		"ckeditor",
