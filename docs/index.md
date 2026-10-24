@@ -33,7 +33,7 @@ features:
       details: Show the attributes of an element, as key-value pairs, in a modal, from a menu, a toolbar, a click or code.
       link: /guide/attributes
     - title: Element schema
-      details: Declare the elements of the model schema from a JSON file, with three types of elements and a validation that rejects contradictions.
+      details: Declare the elements of the model schema from a JSON file, with three types of elements and a validation that rejects contradictions. Give them commands and buttons, as CKEditor's bold, headings, block quotes and horizontal lines have.
       link: /guide/schema
     - title: Selectable elements
       details: Select an element as a whole, by a click on its frame or by the arrow keys, without widgets.

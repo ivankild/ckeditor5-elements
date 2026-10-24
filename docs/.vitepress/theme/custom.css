@@ -45,6 +45,13 @@
 	border-radius: 6px;
 }
 
+.editor-demo__model {
+	font-family: var(--vp-font-family-mono);
+	font-size: 13px;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
 .editor-demo__error {
 	color: var(--vp-c-danger-1);
 }
@@ -132,6 +139,25 @@
 	background: var(--vp-c-bg-soft);
 	font-size: 14px;
 	vertical-align: top;
+}
+
+/* The elements of the commands demo. */
+.editor-demo .ck-content .title {
+	margin: 0.6em 0;
+	font-size: 1.4em;
+	font-weight: 700;
+}
+
+.editor-demo .ck-content .chip {
+	display: inline-block;
+	padding: 0 0.6em;
+	border: 1px solid var(--vp-c-brand-1);
+	border-radius: 6px;
+	vertical-align: middle;
+}
+
+.editor-demo .ck-content .chip p {
+	margin: 0;
 }
 
 /* The elements of the element schema examples. */

@@ -34,7 +34,7 @@ await ClassicEditor.create({
 | [Clipboard](./clipboard)       | `ElementClipboard`: copy, cut and paste whole elements                 |
 | [Actions](./actions)           | `ElementActions`: move an element up or down, duplicate or delete it   |
 | [Attributes](./attributes)     | `ElementAttributes`: show the attributes of an element in a modal      |
-| [Element schema](./schema)     | `ElementSchema`: declare elements from a JSON file, with validation    |
+| [Element schema](./schema)     | `ElementSchema`: JSON elements; `ElementSchemaCommands`: their buttons |
 | [Element toolbar](./toolbar)   | `ElementToolbar`: floating toolbars for elements, by name or filter    |
 | [Selectable](./selectable)     | `ElementSelectable`: select an element as a whole, by a click or keys  |
 | [Clickable](./clickable)       | `ElementClickable`: a callback when an element is clicked              |

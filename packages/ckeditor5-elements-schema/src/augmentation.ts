@@ -1,8 +1,9 @@
-import type { ElementSchema, ElementSchemaInput } from './index.js';
+import type { ElementSchema, ElementSchemaCommands, ElementSchemaCommandsConfig, ElementSchemaInput } from './index.js';
 
 declare module 'ckeditor5' {
 	interface PluginsMap {
 		[ElementSchema.pluginName]: ElementSchema;
+		[ElementSchemaCommands.pluginName]: ElementSchemaCommands;
 	}
 
 	interface EditorConfig {
@@ -17,5 +18,11 @@ declare module 'ckeditor5' {
 		 * element sets another tag for the editing view. See {@link ElementSchema}. Default: `false`.
 		 */
 		elementSchemaConverters?: boolean;
+
+		/**
+		 * The commands and the buttons of elements of the schema, as CKEditor's bold, heading, block quote or horizontal
+		 * line, by the name of the command. See {@link ElementSchemaCommands}.
+		 */
+		elementSchemaCommands?: ElementSchemaCommandsConfig;
 	}
 }

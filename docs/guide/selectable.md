@@ -52,8 +52,8 @@ A selected element is deleted by Backspace or Delete, replaced by typing, and co
 
 ## With the element schema
 
-The [element schema](./schema) uses it when it is loaded: the `empty` and the `container` elements of the schema are
-selectable, `block` ones are not (a click in a block puts the cursor in its text). The schema does not depend on this
+The [element schema](./schema) uses it when it is loaded (see [Selected as a whole](./schema-converters#selected-as-a-whole)):
+the `empty` and the `container` elements of the schema are selectable, `block` ones are not (a click in a block puts the cursor in its text). The schema does not depend on this
 plugin: load it, and the schema finds it. With `elementSchemaConverters`, it warns in the console when the plugin is not
 loaded, as the elements could not be selected then.
 

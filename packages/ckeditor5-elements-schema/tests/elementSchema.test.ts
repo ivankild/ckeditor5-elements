@@ -1,5 +1,6 @@
 import {
 	Bold,
+	Essentials,
 	Paragraph,
 	Plugin,
 	type ModelElement,
@@ -10,11 +11,12 @@ import {
 	type ModelSchema
 } from 'ckeditor5';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { userEvent } from 'vitest/browser';
 import { createEditor } from '../../../testUtils/editor.js';
 import ElementSchema from '../src/elementSchema.js';
 import { ElementSelectable } from 'ckeditor5-elements-selectable';
-import ElementSchemaError from '../src/elementSchemaError.js';
-import type { ElementSchemaInput } from '../src/types.js';
+import ElementSchemaError from '../src/definition/elementSchemaError.js';
+import type { ElementSchemaInput } from '../src/definition/types.js';
 
 /**
  * The schema of the tests, one of each kind.
@@ -434,6 +436,25 @@ describe('ElementSchema', () => {
 			expect(html).not.toContain('ck-widget');
 			expect(html).toContain('<div class="note">');
 			expect(view()).toContain('<header class="title">T</header>');
+		});
+
+		it('makes an empty inline element with text typable: it has no block filler, so the text goes in it', async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema, ElementSelectable],
+				elementSchema: CONVERTED,
+				elementSchemaConverters: true
+			});
+
+			_setModelData(editor.model, '<paragraph>a<term>[]</term>b</paragraph>');
+
+			// A `<br>` would make the browser type before the element. The data has no `&nbsp;` either.
+			expect(editor.ui.view.editable.element!.innerHTML).not.toContain('<br');
+			expect(editor.getData()).toBe('<p>a<span class="term"></span>b</p>');
+
+			editor.editing.view.focus();
+			await userEvent.keyboard('xy');
+
+			expect(_getModelData(editor.model)).toBe('<paragraph>a<term>xy[]</term>b</paragraph>');
 		});
 
 		it('warns when nothing selects the elements: the converters make them, and without ElementSelectable they cannot be selected', async () => {

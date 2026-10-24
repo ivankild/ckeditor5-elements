@@ -1,10 +1,10 @@
 import { Plugin, type ModelSchema } from 'ckeditor5';
 import { findPlugin } from 'ckeditor5-elements-core';
-import { compileElementSchema } from './compileElementSchema.js';
-import { convertElementSchema } from './convertElementSchema.js';
-import ElementSchemaError from './elementSchemaError.js';
-import type { ElementSchemaInput, ElementSchemaKind } from './types.js';
-import { validateElementSchema } from './validateElementSchema.js';
+import { compileElementSchema } from './definition/compileElementSchema.js';
+import { convertElementSchema } from './conversion/convertElementSchema.js';
+import ElementSchemaError from './definition/elementSchemaError.js';
+import type { ElementSchemaInput, ElementSchemaKind } from './definition/types.js';
+import { validateElementSchema } from './definition/validateElementSchema.js';
 
 /**
  * Declares elements in the model schema of the editor from a simple definition, the `elementSchema` editor option: a

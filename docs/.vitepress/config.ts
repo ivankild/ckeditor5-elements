@@ -37,7 +37,15 @@ export default defineConfig({
 						{ text: 'Clipboard', link: '/guide/clipboard' },
 						{ text: 'Actions', link: '/guide/actions' },
 						{ text: 'Attributes', link: '/guide/attributes' },
-						{ text: 'Element schema', link: '/guide/schema' },
+						{
+							text: 'Element schema',
+							link: '/guide/schema',
+							items: [
+								{ text: 'Converters', link: '/guide/schema-converters' },
+								{ text: 'Commands and buttons', link: '/guide/schema-commands' },
+								{ text: 'Examples', link: '/guide/schema-examples' }
+							]
+						},
 						{ text: 'Element toolbar', link: '/guide/toolbar' },
 						{ text: 'Selectable elements', link: '/guide/selectable' },
 						{ text: 'Clickable elements', link: '/guide/clickable' },

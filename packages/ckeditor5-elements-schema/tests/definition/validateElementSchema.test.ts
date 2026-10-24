@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { ElementSchemaKind } from '../src/types.js';
-import { validateElementSchema } from '../src/validateElementSchema.js';
+import type { ElementSchemaKind } from '../../src/definition/types.js';
+import { validateElementSchema } from '../../src/definition/validateElementSchema.js';
 
 /**
  * Validates `elements`, and returns the problems as `path: message` lines.

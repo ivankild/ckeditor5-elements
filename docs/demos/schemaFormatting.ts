@@ -1,0 +1,39 @@
+import { Essentials, IconBold, IconItalic, IconUnderline, Paragraph, _getModelData } from 'ckeditor5';
+import { Breadcrumbs, ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
+import formatting from './shared/formatting.json';
+import type { Demo } from './shared/demo';
+
+export default {
+	config: {
+		// No `Bold`, `Italic` and `Underline` of CKEditor: the buttons are the ones of `ElementSchemaCommands`.
+		plugins: [Essentials, Paragraph, ElementSchema, ElementSchemaCommands, Breadcrumbs],
+		toolbar: {
+			items: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '-', 'breadcrumbs'],
+			shouldNotGroupWhenFull: true
+		},
+		elementSchema: formatting,
+		elementSchemaCommands: {
+			bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
+			italic: { title: 'Italic', icon: IconItalic, keystroke: 'Ctrl+I', view: 'em' },
+			underline: { title: 'Underline', icon: IconUnderline, keystroke: 'Ctrl+U', view: 'u' }
+		}
+	},
+	data:
+		'<p>Select text and press <strong>Bold</strong>, <em>Italic</em> or <u>Underline</u>, or ' +
+		'<strong><em>both</em></strong> at once: each one is an <strong>element</strong>, as the breadcrumbs and the ' +
+		'model below show.</p>' +
+		'<p>Put the cursor here, press <strong>Ctrl+B</strong> and type: the text goes in a new bold. Press the right ' +
+		'arrow at the end of a <strong>bold</strong>: the first press goes out of it, and what is typed is not bold.</p>',
+	// Shows the model below the editor, as it changes: elements, where CKEditor's features would have attributes.
+	ready: (editor, container) => {
+		const model = document.createElement('div');
+		const update = (): void => {
+			model.textContent = _getModelData(editor.model, { withoutSelection: true });
+		};
+
+		model.className = 'editor-demo__below editor-demo__model';
+		container.append(model);
+		editor.model.document.on('change:data', update);
+		update();
+	}
+} satisfies Demo;

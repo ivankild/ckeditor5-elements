@@ -61,6 +61,12 @@ and it is "on" inside a matching element.
 <<< @/demos/commandsToggle.ts
 :::
 
+## Commands of the element schema
+
+The [element schema](./schema) has commands of each kind of element, as CKEditor's bold, heading, block quote and
+horizontal line: `ElementSchemaCommands` makes them from a config, with their buttons. They are `ElementOrPositionCommand`s
+too, on a base of their own, `ElementSchemaCommand`. See [Commands and buttons](./schema-commands).
+
 ## Buttons
 
 `ElementOrPositionButtonView` reflects any `ElementOrPositionCommand`:

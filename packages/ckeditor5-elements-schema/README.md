@@ -35,10 +35,36 @@ elementSchemaConverters: true // Optional: converts the elements one to one, as 
 The `empty` and `container` elements can be selected as a whole, by a click and by the arrow keys, when `ElementSelectable`
 (from `ckeditor5-elements-selectable`) is loaded too.
 
+`ElementSchemaCommands` gives elements of the schema a command, a toolbar button and a keystroke, by their kind: an
+inline `block` wraps text, as CKEditor's bold; a `block` renames blocks, as a heading; a `container` wraps blocks, as a
+block quote; an `empty` element and an inline `container` are inserted, as a horizontal line. At the ends of inline
+elements with text, the arrow keys move in two steps, as CKEditor's two-step caret movement does.
+
+```json
+{ "bold": { "type": "block", "isInline": true }, "divider": { "type": "empty" } }
+```
+
+```ts
+import { IconBold, IconHorizontalLine } from 'ckeditor5';
+import { ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
+
+// In the editor config:
+plugins: [..., ElementSchema, ElementSchemaCommands],
+toolbar: ['bold', 'divider'],
+elementSchema: schema,
+elementSchemaCommands: {
+	bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
+	divider: { title: 'Divider', icon: IconHorizontalLine, view: 'hr' }
+}
+```
+
 `validateElementSchema(schema)` checks a definition without an editor, e.g. in a test or in CI. In Node.js, import it from
 `ckeditor5-elements/validate-schema`: the main entry loads CKEditor, which needs a browser.
 
-See the [Element schema guide](https://ivankild.github.io/ckeditor5-elements/guide/schema) of the documentation.
+See the guide of the documentation: [Element schema](https://ivankild.github.io/ckeditor5-elements/guide/schema),
+[Converters](https://ivankild.github.io/ckeditor5-elements/guide/schema-converters),
+[Commands and buttons](https://ivankild.github.io/ckeditor5-elements/guide/schema-commands) and
+[Examples](https://ivankild.github.io/ckeditor5-elements/guide/schema-examples).
 
 ## License
 
