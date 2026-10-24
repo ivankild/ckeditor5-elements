@@ -1,22 +1,12 @@
 /**
- * The base of the element commands, their buttons and menus: `ElementOrPositionCommand` (a command for a position or
- * an element, with its title, icon and state for any target), `ElementCommand` (toggles an element), their button
- * views, and `ElementMenu` (menus of commands, submenus and separators, used by the context menu, the breadcrumbs and
- * quick insert).
+ * The base of the element commands and their buttons: `ElementOrPositionCommand` (a command for a position or an
+ * element, with its title, icon and state for any target), `ElementCommand` (toggles an element), and their button
+ * views. The menus of commands are in `ckeditor5-elements-menu`.
  *
  * @module ckeditor5-elements-core
  */
 
 import './singleCopyGuard.js';
-
-// Plugins.
-export {
-	default as ElementMenu,
-	type ElementMenuConfig,
-	type ElementMenuItem,
-	type ElementMenuShowOptions,
-	type ElementSubmenu
-} from './elementMenu.js';
 
 // Commands.
 export { default as ElementOrPositionCommand, type ElementOrPosition } from './elementOrPositionCommand.js';
@@ -25,14 +15,12 @@ export { default as ElementCommand } from './elementCommand.js';
 // Views.
 export {
 	default as ElementOrPositionButtonView,
+	bindButtonToCommand,
 	type ElementOrPositionButtonViewOptions,
 	type ElementOrPositionTarget
 } from './elementOrPositionButtonView.js';
 export { default as ElementButtonView } from './elementButtonView.js';
-export { default as ElementMenuView } from './elementMenuView.js';
 
 // Utils.
 export { getElementAtSelection, isInDocument, isStandalone, selectNewElement } from './utils.js';
 export { findPlugin, getElementsAround, matchesElement, type ElementMatcher } from './matching.js';
-
-import './augmentation.js';

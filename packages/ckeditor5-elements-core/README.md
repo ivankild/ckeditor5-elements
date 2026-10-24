@@ -1,8 +1,8 @@
 # ckeditor5-elements-core
 
 The base of CKEditor 5 Elements: commands that act on a position or an element (`ElementOrPositionCommand`,
-`ElementCommand`), their buttons (`ElementOrPositionButtonView`, `ElementButtonView`), and the `ElementMenu` plugin, which
-shows the menus of the context menu, the breadcrumbs and quick insert.
+`ElementCommand`), and their buttons (`ElementOrPositionButtonView`, `ElementButtonView`). The menus of commands are in
+`ckeditor5-elements-menu`.
 
 ## Installation
 

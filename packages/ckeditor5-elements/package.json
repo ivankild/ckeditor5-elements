@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements",
-	"version": "49.0.0-alpha.2",
-	"description": "Element commands, an element context menu, clipboard commands, element actions, element attributes, an element schema, selectable elements, element toolbars, clickable elements, quick insert and breadcrumbs for CKEditor 5.",
+	"version": "49.0.0-alpha.3",
+	"description": "Element commands, an element context menu, element actions and clipboard commands, element attributes, an element schema, selectable and clickable elements, element toolbars, quick insert and breadcrumbs for CKEditor 5.",
 	"keywords": [
 		"ckeditor",
 		"ckeditor5",
@@ -46,14 +46,10 @@
 	"dependencies": {
 		"ckeditor5-elements-actions": "workspace:*",
 		"ckeditor5-elements-attributes": "workspace:*",
-		"ckeditor5-elements-breadcrumbs": "workspace:*",
-		"ckeditor5-elements-clickable": "workspace:*",
-		"ckeditor5-elements-clipboard": "workspace:*",
-		"ckeditor5-elements-context-menu": "workspace:*",
 		"ckeditor5-elements-core": "workspace:*",
-		"ckeditor5-elements-quick-insert": "workspace:*",
+		"ckeditor5-elements-interaction": "workspace:*",
+		"ckeditor5-elements-menu": "workspace:*",
 		"ckeditor5-elements-schema": "workspace:*",
-		"ckeditor5-elements-selectable": "workspace:*",
 		"ckeditor5-elements-toolbar": "workspace:*"
 	},
 	"peerDependencies": {

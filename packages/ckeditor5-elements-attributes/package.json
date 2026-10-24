@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-attributes",
-	"version": "49.0.0-alpha.2",
+	"version": "49.0.0-alpha.3",
 	"description": "Element attributes for CKEditor 5: show the attributes of an element, as key-value pairs, in a modal dialog.",
 	"keywords": [
 		"ckeditor",

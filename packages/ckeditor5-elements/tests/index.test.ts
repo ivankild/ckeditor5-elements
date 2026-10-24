@@ -1,14 +1,10 @@
 import { Paragraph } from 'ckeditor5';
 import * as actions from 'ckeditor5-elements-actions';
 import * as attributes from 'ckeditor5-elements-attributes';
-import * as breadcrumbs from 'ckeditor5-elements-breadcrumbs';
-import * as clickable from 'ckeditor5-elements-clickable';
-import * as clipboard from 'ckeditor5-elements-clipboard';
-import * as contextMenu from 'ckeditor5-elements-context-menu';
 import * as core from 'ckeditor5-elements-core';
-import * as quickInsert from 'ckeditor5-elements-quick-insert';
+import * as interaction from 'ckeditor5-elements-interaction';
+import * as menu from 'ckeditor5-elements-menu';
 import * as schema from 'ckeditor5-elements-schema';
-import * as selectable from 'ckeditor5-elements-selectable';
 import * as toolbar from 'ckeditor5-elements-toolbar';
 import { describe, expect, it } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
@@ -18,19 +14,7 @@ describe('ckeditor5-elements', () => {
 	it('exports everything from its packages', () => {
 		const exported: Record<string, unknown> = { ...elements };
 
-		for (const feature of [
-			core,
-			clipboard,
-			actions,
-			attributes,
-			schema,
-			selectable,
-			toolbar,
-			clickable,
-			contextMenu,
-			quickInsert,
-			breadcrumbs
-		]) {
+		for (const feature of [core, actions, attributes, schema, interaction, toolbar, menu]) {
 			for (const [name, value] of Object.entries(feature)) {
 				expect([name, exported[name]]).toEqual([name, value]);
 			}
@@ -38,19 +22,9 @@ describe('ckeditor5-elements', () => {
 	});
 
 	it('exports nothing else', () => {
-		const names = [
-			core,
-			clipboard,
-			actions,
-			attributes,
-			schema,
-			selectable,
-			toolbar,
-			clickable,
-			contextMenu,
-			quickInsert,
-			breadcrumbs
-		].flatMap(feature => Object.keys(feature));
+		const names = [core, actions, attributes, schema, interaction, toolbar, menu].flatMap(feature =>
+			Object.keys(feature)
+		);
 
 		expect(Object.keys(elements).sort()).toEqual(names.sort());
 	});

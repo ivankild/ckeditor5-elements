@@ -33,7 +33,7 @@ elementSchemaConverters: true // Optional: converts the elements one to one, as 
 ```
 
 The `empty` and `container` elements can be selected as a whole, by a click and by the arrow keys, when `ElementSelectable`
-(from `ckeditor5-elements-selectable`) is loaded too.
+(from `ckeditor5-elements-interaction`) is loaded too.
 
 `ElementSchemaCommands` gives elements of the schema a command, a toolbar button and a keystroke, by their kind: an
 inline `block` wraps text, as CKEditor's bold; a `block` renames blocks, as a heading; a `container` wraps blocks, as a

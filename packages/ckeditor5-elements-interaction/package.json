@@ -1,0 +1,53 @@
+{
+	"name": "ckeditor5-elements-interaction",
+	"version": "49.0.0-alpha.3",
+	"description": "Element interaction for CKEditor 5, without CKEditor's widgets: select an element as a whole by a click or by the arrow keys, and react to clicks and double clicks on elements.",
+	"keywords": [
+		"ckeditor",
+		"ckeditor5",
+		"ckeditor 5",
+		"ckeditor5-feature",
+		"ckeditor5-plugin"
+	],
+	"license": "MIT",
+	"author": "Ivan Kildyushov",
+	"homepage": "https://ivankild.github.io/ckeditor5-elements/guide/selectable",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ivankild/ckeditor5-elements.git",
+		"directory": "packages/ckeditor5-elements-interaction"
+	},
+	"bugs": {
+		"url": "https://github.com/ivankild/ckeditor5-elements/issues"
+	},
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./index.css": "./theme/selectable.css",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist",
+		"src",
+		"theme",
+		"README.md"
+	],
+	"sideEffects": [
+		"*.css"
+	],
+	"dependencies": {
+		"ckeditor5-elements-core": "workspace:*"
+	},
+	"peerDependencies": {
+		"ckeditor5": "^49.0.0"
+	},
+	"scripts": {
+		"build": "tsc --build",
+		"prepublishOnly": "npm run build"
+	}
+}

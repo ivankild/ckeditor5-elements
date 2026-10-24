@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-toolbar",
-	"version": "49.0.0-alpha.2",
+	"version": "49.0.0-alpha.3",
 	"description": "Element toolbars for CKEditor 5: floating toolbars for the elements that match a name or a filter, with buttons that act on the element.",
 	"keywords": [
 		"ckeditor",

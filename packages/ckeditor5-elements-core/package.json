@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-core",
-	"version": "49.0.0-alpha.2",
+	"version": "49.0.0-alpha.3",
 	"description": "The base of the element commands, buttons and menus for CKEditor 5: ElementOrPositionCommand, ElementCommand, their button views, and ElementMenu.",
 	"keywords": [
 		"ckeditor",
@@ -28,13 +28,11 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
-		"./index.css": "./theme/elementMenu.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
 		"src",
-		"theme",
 		"README.md"
 	],
 	"peerDependencies": {

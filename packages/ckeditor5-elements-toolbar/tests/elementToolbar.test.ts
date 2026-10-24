@@ -12,7 +12,7 @@ import {
 	type ModelElement
 } from 'ckeditor5';
 import { ElementActions } from 'ckeditor5-elements-actions';
-import { ElementContextMenu } from 'ckeditor5-elements-context-menu';
+import { ElementContextMenu } from 'ckeditor5-elements-menu';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementToolbar from '../src/elementToolbar.js';

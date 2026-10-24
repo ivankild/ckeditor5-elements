@@ -248,30 +248,18 @@ importers:
       ckeditor5-elements-attributes:
         specifier: workspace:*
         version: link:../ckeditor5-elements-attributes
-      ckeditor5-elements-breadcrumbs:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-breadcrumbs
-      ckeditor5-elements-clickable:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-clickable
-      ckeditor5-elements-clipboard:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-clipboard
-      ckeditor5-elements-context-menu:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-context-menu
       ckeditor5-elements-core:
         specifier: workspace:*
         version: link:../ckeditor5-elements-core
-      ckeditor5-elements-quick-insert:
+      ckeditor5-elements-interaction:
         specifier: workspace:*
-        version: link:../ckeditor5-elements-quick-insert
+        version: link:../ckeditor5-elements-interaction
+      ckeditor5-elements-menu:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-menu
       ckeditor5-elements-schema:
         specifier: workspace:*
         version: link:../ckeditor5-elements-schema
-      ckeditor5-elements-selectable:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-selectable
       ckeditor5-elements-toolbar:
         specifier: workspace:*
         version: link:../ckeditor5-elements-toolbar
@@ -286,42 +274,6 @@ importers:
         version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-attributes:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-core
-
-  packages/ckeditor5-elements-breadcrumbs:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-core
-
-  packages/ckeditor5-elements-clickable:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-core
-
-  packages/ckeditor5-elements-clipboard:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-core
-
-  packages/ckeditor5-elements-context-menu:
     dependencies:
       ckeditor5:
         specifier: ^49.0.0
@@ -349,7 +301,16 @@ importers:
         specifier: ^8.3.5
         version: 8.3.5(@types/node@24.19.2)(yaml@2.9.1)
 
-  packages/ckeditor5-elements-quick-insert:
+  packages/ckeditor5-elements-interaction:
+    dependencies:
+      ckeditor5:
+        specifier: ^49.0.0
+        version: 49.0.0
+      ckeditor5-elements-core:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-core
+
+  packages/ckeditor5-elements-menu:
     dependencies:
       ckeditor5:
         specifier: ^49.0.0
@@ -359,15 +320,6 @@ importers:
         version: link:../ckeditor5-elements-core
 
   packages/ckeditor5-elements-schema:
-    dependencies:
-      ckeditor5:
-        specifier: ^49.0.0
-        version: 49.0.0
-      ckeditor5-elements-core:
-        specifier: workspace:*
-        version: link:../ckeditor5-elements-core
-
-  packages/ckeditor5-elements-selectable:
     dependencies:
       ckeditor5:
         specifier: ^49.0.0

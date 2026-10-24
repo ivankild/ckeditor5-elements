@@ -6,9 +6,9 @@
 	"scripts": {
 		"dev": "pnpm docs:dev",
 		"build": "tsc --build tsconfig.packages.json && node scripts/buildUmbrellaStyles.js",
-		"clean": "tsc --build --clean tsconfig.packages.json",
+		"clean": "node scripts/clean.js",
 		"watch": "tsc --build --watch tsconfig.packages.json",
-		"publish:all": "pnpm run build && pnpm -r publish --access public --tag alpha",
+		"publish:all": "pnpm run clean && pnpm run build && pnpm -r publish --access public --tag alpha",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",

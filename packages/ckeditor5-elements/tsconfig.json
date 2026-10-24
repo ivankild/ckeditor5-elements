@@ -10,9 +10,6 @@
 			"path": "../ckeditor5-elements-core"
 		},
 		{
-			"path": "../ckeditor5-elements-clipboard"
-		},
-		{
 			"path": "../ckeditor5-elements-actions"
 		},
 		{
@@ -25,19 +22,10 @@
 			"path": "../ckeditor5-elements-toolbar"
 		},
 		{
-			"path": "../ckeditor5-elements-clickable"
+			"path": "../ckeditor5-elements-interaction"
 		},
 		{
-			"path": "../ckeditor5-elements-context-menu"
-		},
-		{
-			"path": "../ckeditor5-elements-quick-insert"
-		},
-		{
-			"path": "../ckeditor5-elements-breadcrumbs"
-		},
-		{
-			"path": "../ckeditor5-elements-selectable"
+			"path": "../ckeditor5-elements-menu"
 		}
 	]
 }

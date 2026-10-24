@@ -14,7 +14,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { createEditor } from '../../../testUtils/editor.js';
 import ElementSchema from '../src/elementSchema.js';
-import { ElementSelectable } from 'ckeditor5-elements-selectable';
+import { ElementSelectable } from 'ckeditor5-elements-interaction';
 import ElementSchemaError from '../src/definition/elementSchemaError.js';
 import type { ElementSchemaInput } from '../src/definition/types.js';
 

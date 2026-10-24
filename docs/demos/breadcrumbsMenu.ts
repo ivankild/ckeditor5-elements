@@ -29,8 +29,7 @@ export default {
 		plugins: [Essentials, Paragraph, Note, Breadcrumbs, ElementContextMenu, ElementClipboard, ElementActions],
 		toolbar: { items: ['undo', 'redo', '|', 'note', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementContextMenu: menu,
-		// With a menu, the breadcrumbs are buttons that open it. The `ElementMenu` plugin (loaded by `ElementContextMenu`)
-		// shows it.
+		// With a menu, the breadcrumbs are buttons that open it, with the `ElementMenu` plugin, as the context menu does.
 		breadcrumbs: { menu }
 	},
 	data:

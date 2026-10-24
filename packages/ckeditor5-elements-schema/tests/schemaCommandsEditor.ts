@@ -7,7 +7,7 @@ import {
 	type ClassicEditor,
 	type ModelElement
 } from 'ckeditor5';
-import { ElementSelectable } from 'ckeditor5-elements-selectable';
+import { ElementSelectable } from 'ckeditor5-elements-interaction';
 import { afterEach } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
 import type ElementSchemaCommand from '../src/commands/elementSchemaCommand.js';

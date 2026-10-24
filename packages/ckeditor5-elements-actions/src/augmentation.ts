@@ -1,8 +1,17 @@
-import type { ElementActions, ElementDeleteCommand, ElementDuplicateCommand, ElementMoveCommand } from './index.js';
+import type {
+	ElementActions,
+	ElementClipboard,
+	ElementCopyCommand,
+	ElementDeleteCommand,
+	ElementDuplicateCommand,
+	ElementMoveCommand,
+	ElementPasteCommand
+} from './index.js';
 
 declare module 'ckeditor5' {
 	interface PluginsMap {
 		[ElementActions.pluginName]: ElementActions;
+		[ElementClipboard.pluginName]: ElementClipboard;
 	}
 
 	interface CommandsMap {
@@ -10,5 +19,10 @@ declare module 'ckeditor5' {
 		moveElementDown: ElementMoveCommand;
 		duplicateElement: ElementDuplicateCommand;
 		deleteElement: ElementDeleteCommand;
+		copyElement: ElementCopyCommand;
+		cutElement: ElementCopyCommand;
+		pasteElement: ElementPasteCommand;
+		pasteElementBefore: ElementPasteCommand;
+		pasteElementAfter: ElementPasteCommand;
 	}
 }

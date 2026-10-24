@@ -42,8 +42,8 @@ By default, the breadcrumbs are labels. CKEditor's `-` toolbar item (a line brea
 The `breadcrumbs.menu` option makes the breadcrumbs buttons that open a menu of their element. It takes the same items as
 [`elementContextMenu`](./context-menu), so one callback can serve both. The parts of a structure open the menu of the
 structure (`tbody` opens the menu of the table). List items (`ul`, `li`) stay labels: lists are attributes of the
-blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, so load it too
-(`ElementContextMenu` and `QuickInsert` load it); without it, the breadcrumbs stay labels.
+blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, which `Breadcrumbs` loads, as the context
+menu and quick insert do: it is the same menu as the context menu's. Without the option, the breadcrumbs are labels.
 
 <EditorDemo name="breadcrumbsMenu" />
 
@@ -53,11 +53,6 @@ blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, so 
 
 The buttons tell screen readers that they open a menu (`aria-haspopup`, `aria-expanded`), and Esc in the menu returns
 the focus to the button.
-
-::: tip Independent of the other features
-The breadcrumbs depend only on the core, not on the other features. They look up the `ElementMenu` plugin by name, and
-use it through the `BreadcrumbsMenu` interface, so without it they work as labels.
-:::
 
 ## Keyboard
 

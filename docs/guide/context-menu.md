@@ -12,8 +12,8 @@ import 'ckeditor5-elements/index.css';
 elementContextMenu: (element, editor) => [/* commands, submenus and '|' separators */];
 ```
 
-The menu is shown by the `ElementMenu` plugin (loaded by `ElementContextMenu`), which
-also shows the [breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. The menu is CKEditor's dropdown
+The menu is shown by the `ElementMenu` plugin (loaded by `ElementContextMenu`), which also shows the
+[breadcrumbs](./breadcrumbs) and [quick insert](./quick-insert) menus. The menu is CKEditor's dropdown
 menu (`DropdownMenuRootListView`): CKEditor builds it and handles the nested menus, the keyboard and right-to-left
 languages; the plugin connects its buttons to the commands. A toggle that is on is shown as CKEditor shows an "on"
 button.

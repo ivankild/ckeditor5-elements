@@ -27,30 +27,46 @@ export default defineConfig({
 			{ text: 'API', link: '/api/' }
 		],
 		sidebar: {
+			// The groups follow the packages: the core, the actions, the menus, the interaction, the schema.
 			'/guide/': [
 				{
 					text: 'Guide',
 					items: [
 						{ text: 'Getting started', link: '/guide/getting-started' },
-						{ text: 'Commands', link: '/guide/commands' },
-						{ text: 'Context menu', link: '/guide/context-menu' },
-						{ text: 'Clipboard', link: '/guide/clipboard' },
+						{ text: 'Commands', link: '/guide/commands' }
+					]
+				},
+				{
+					text: 'Element actions',
+					items: [
 						{ text: 'Actions', link: '/guide/actions' },
-						{ text: 'Attributes', link: '/guide/attributes' },
-						{
-							text: 'Element schema',
-							link: '/guide/schema',
-							items: [
-								{ text: 'Converters', link: '/guide/schema-converters' },
-								{ text: 'Commands and buttons', link: '/guide/schema-commands' },
-								{ text: 'Examples', link: '/guide/schema-examples' }
-							]
-						},
-						{ text: 'Element toolbar', link: '/guide/toolbar' },
+						{ text: 'Clipboard', link: '/guide/clipboard' },
+						{ text: 'Attributes', link: '/guide/attributes' }
+					]
+				},
+				{
+					text: 'Menus',
+					items: [
+						{ text: 'Context menu', link: '/guide/context-menu' },
+						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' },
+						{ text: 'Quick insert', link: '/guide/quick-insert' }
+					]
+				},
+				{
+					text: 'Interaction',
+					items: [
 						{ text: 'Selectable elements', link: '/guide/selectable' },
 						{ text: 'Clickable elements', link: '/guide/clickable' },
-						{ text: 'Quick insert', link: '/guide/quick-insert' },
-						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' }
+						{ text: 'Element toolbar', link: '/guide/toolbar' }
+					]
+				},
+				{
+					text: 'Element schema',
+					items: [
+						{ text: 'Element schema', link: '/guide/schema' },
+						{ text: 'Converters', link: '/guide/schema-converters' },
+						{ text: 'Commands and buttons', link: '/guide/schema-commands' },
+						{ text: 'Examples', link: '/guide/schema-examples' }
 					]
 				}
 			],

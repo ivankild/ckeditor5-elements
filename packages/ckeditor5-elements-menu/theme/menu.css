@@ -1,0 +1,131 @@
+/*
+ * The menu of an element is CKEditor's dropdown menu, so CKEditor styles it. Only the alignment of labels is added.
+ */
+
+/* In a menu with icons (or a nested menu of it), items without an icon get the space of one, so that all labels line up. */
+:is(.ck.ck-elements-menu, .ck.ck-elements-menu__panel > .ck-dropdown-menu-list):has(
+		> .ck-list__item > :is(.ck-button, .ck-dropdown-menu-list__nested-menu > .ck-button) > .ck-button__icon
+	)
+	> .ck-list__item
+	> :is(.ck-button, .ck-dropdown-menu-list__nested-menu > .ck-button):not(:has(> .ck-button__icon))
+	> .ck-button__label {
+	/* The width of an icon, and the gap after it. */
+	margin-inline-start: calc(var(--ck-icon-size) + var(--ck-button-icon-gap));
+}
+
+/*
+ * The element path: ancestors are muted, the innermost element (where the cursor is) is emphasised. Items are separated
+ * by chevrons. Buttons (with a menu) and labels (without one) look the same, except buttons react to hover and focus.
+ */
+.ck.ck-elements-breadcrumbs {
+	--ck-elements-breadcrumbs-item-height: 24px;
+	--ck-elements-breadcrumbs-separator-size: 0.38em;
+
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	font-size: var(--ck-font-size-sm);
+	color: var(--ck-color-text);
+}
+
+.ck.ck-toolbar .ck.ck-elements-breadcrumbs {
+	min-height: var(--ck-size-control-min-height);
+}
+
+.ck.ck-elements-breadcrumbs__list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 2px 0;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ck.ck-elements-breadcrumbs__list-item {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+}
+
+/* Both item kinds: buttons and labels. */
+.ck.ck-elements-breadcrumbs__item,
+.ck.ck-button.ck-elements-breadcrumbs__item {
+	display: inline-flex;
+	align-items: center;
+	min-width: 0;
+	min-height: var(--ck-elements-breadcrumbs-item-height);
+	height: var(--ck-elements-breadcrumbs-item-height);
+	padding: 0 var(--ck-spacing-sm);
+	border-radius: var(--ck-border-radius-control);
+	font-family: var(--ck-font-family);
+	font-size: inherit;
+	line-height: 1;
+	white-space: nowrap;
+	color: color-mix(in srgb, var(--ck-color-text) 65%, transparent);
+}
+
+.ck.ck-button.ck-elements-breadcrumbs__item .ck-button__label {
+	font-size: inherit;
+	line-height: 1;
+}
+
+/* The innermost element: where the cursor is. */
+.ck.ck-elements-breadcrumbs__item[aria-current] {
+	color: var(--ck-color-text);
+	font-weight: 600;
+}
+
+/* Labels cannot be clicked, but can be focused with the keyboard. */
+.ck.ck-elements-breadcrumbs__label {
+	cursor: default;
+}
+
+.ck.ck-elements-breadcrumbs__label:focus {
+	outline: none;
+	box-shadow:
+		0 0 0 1px var(--ck-color-focus-border),
+		var(--ck-focus-shadow);
+}
+
+/* Buttons show they can be clicked. */
+.ck.ck-button.ck-elements-breadcrumbs__item:hover,
+.ck.ck-button.ck-elements-breadcrumbs__item:focus,
+.ck.ck-button.ck-elements-breadcrumbs__item.ck-on {
+	color: var(--ck-color-text);
+}
+
+/* A chevron between items, in the gap before each item, so it is not part of a button's hover area. */
+.ck.ck-elements-breadcrumbs__list-item + .ck.ck-elements-breadcrumbs__list-item {
+	position: relative;
+	margin-left: calc(var(--ck-spacing-base) + var(--ck-elements-breadcrumbs-separator-size));
+}
+
+.ck.ck-elements-breadcrumbs__list-item + .ck.ck-elements-breadcrumbs__list-item::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: calc(-0.5 * var(--ck-spacing-base) - var(--ck-elements-breadcrumbs-separator-size));
+	width: var(--ck-elements-breadcrumbs-separator-size);
+	height: var(--ck-elements-breadcrumbs-separator-size);
+	border-top: 1.5px solid color-mix(in srgb, var(--ck-color-text) 40%, transparent);
+	border-right: 1.5px solid color-mix(in srgb, var(--ck-color-text) 40%, transparent);
+	transform: translateY(-50%) rotate(45deg);
+	pointer-events: none;
+}
+
+.ck.ck-elements-quick-insert {
+	width: 260px;
+}
+
+.ck.ck-elements-quick-insert .ck-search__results {
+	max-height: 240px;
+	overflow-y: auto;
+}
+
+.ck.ck-elements-quick-insert .ck-list__item > .ck.ck-button {
+	width: 100%;
+}
