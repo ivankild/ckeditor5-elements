@@ -1,6 +1,19 @@
 # Getting started
 
-CKEditor 5 Elements is one package, `ckeditor5-elements`. Install it next to `ckeditor5`:
+CKEditor 5 Elements is **element first**: the content is a tree of named elements, each with its attributes, and every
+feature acts on an element.
+
+- **The content is elements.** Blocks, containers, objects and inline elements, formatting included: a bold is an
+  element, as a paragraph is. Each one has a name, attributes of its own, and the place in the tree that the
+  [element schema](./schema) gives it.
+- **The features act on elements.** A [command](./commands) is for an element; a [menu](./context-menu) is the menu of
+  an element; the [clipboard](./clipboard) copies whole elements; the [breadcrumbs](./breadcrumbs) show the path of
+  elements at the cursor; an element is [selected](./selectable) as a whole; [quick insert](./quick-insert) inserts the
+  elements allowed at a place.
+- **The data is the model, element for element.** The [converters of the schema](./schema-converters) write each
+  element with its name and its attributes, and read the same data back.
+
+It is one package, `ckeditor5-elements`. Install it next to `ckeditor5`:
 
 ```sh
 npm install ckeditor5 ckeditor5-elements

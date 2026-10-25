@@ -20,8 +20,8 @@ declare module 'ckeditor5' {
 		elementSchemaConverters?: boolean;
 
 		/**
-		 * The commands and the buttons of elements of the schema, as CKEditor's bold, heading, block quote or horizontal
-		 * line, by the name of the command. See {@link ElementSchemaCommands}.
+		 * The commands and the buttons of the elements of the schema, by the name of the command: the command of each
+		 * element is the one of its kind (formatting, block, container, inserted element). See {@link ElementSchemaCommands}.
 		 */
 		elementSchemaCommands?: ElementSchemaCommandsConfig;
 	}

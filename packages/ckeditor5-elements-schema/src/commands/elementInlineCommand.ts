@@ -11,8 +11,9 @@ import type { ElementOrPosition } from 'ckeditor5-elements-core';
 import ElementSchemaCommand from './elementSchemaCommand.js';
 
 /**
- * Toggles an inline element with text, as CKEditor's `bold` toggles an attribute of text, but with an element, e.g. a
- * `bold` that is an inline `block` of the element schema.
+ * Toggles an inline element with text on the selection, e.g. a `bold` that is an inline `block` of the element schema:
+ * formatting is an element, as the rest of the content, with its name and attributes, in the tree of elements. It works
+ * as CKEditor's `bold` command does for its mark on the text.
  *
  * ```ts
  * editor.execute('bold'); // The selection.

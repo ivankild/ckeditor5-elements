@@ -1,8 +1,9 @@
 # Element schema
 
-`ElementSchema` declares elements in the editor's model schema from a **simple definition**: a plain object, such as a JSON
-file. Instead of CKEditor's generic items and `is*` flags, every element has one of three **types**, and the definition is
-**validated**, so a contradictory file is rejected before the editor starts.
+`ElementSchema` declares the **elements of the content** from a **simple definition**: a plain object, such as a JSON
+file. It is the list of the elements that the content is made of, formatting included: what each one holds, where it
+goes, and which attributes it has. Instead of CKEditor's generic items and `is*` flags, every element has one of three
+**types**, and the definition is **validated**, so a contradictory file is rejected before the editor starts.
 
 ```json
 {
@@ -40,8 +41,8 @@ a callout. In a line of text, only inline elements are listed: the badge, the te
 The schema has more pages:
 
 - [Converters](./schema-converters): how the elements look in the data and in the editor.
-- [Commands and buttons](./schema-commands): a command, a toolbar button and a keystroke for each element, as CKEditor's
-  bold, heading, block quote or horizontal line have.
+- [Commands and buttons](./schema-commands): a command, a toolbar button and a keystroke for each element, by its kind:
+  formatting, blocks, containers and inserted elements.
 - [Examples](./schema-examples): a table, a gallery, and inline elements, as live schemas.
 
 ## Types: what an element holds
@@ -72,7 +73,7 @@ yours, in the converters and the CSS, e.g. `display: inline-block`.)
 | Inline `type` | Is like                                    | Allowed by default       |
 | ------------- | ------------------------------------------ | ------------------------ |
 | `empty`       | an inline image, a line break              | where text is: in blocks |
-| `block`       | a bold that is an element, with attributes | where text is: in blocks |
+| `block`       | a bold, a link, a term: text in a line     | where text is: in blocks |
 | `container`   | one of several boxes in a line, in a block | where text is: in blocks |
 
 Inline elements of **every type are allowed only in blocks**. A block holds text and any number of inline elements, so it
@@ -84,21 +85,22 @@ validation rejects it.
 
 ### Inline text elements
 
-An inline `block` is in the model what a text attribute is in CKEditor's formatting, such as bold, with a difference: it is
-an element, so it can have attributes of its own. In the demo, the `term` has an `id`:
+An inline `block` is an element in a line of text that holds text: a term, a link, an abbreviation, or formatting, such
+as a bold. It is an element as any other: it has its name and attributes of its own, and it nests. In the demo, the
+`term` has an `id`:
 
 ```json
 { "term": { "type": "block", "isInline": true, "allowAttributes": ["id"] } }
 ```
 
 ```
-<paragraph>a <term id="term-1">b <$text bold="true">c</$text></term> d</paragraph>
+<paragraph>a <term id="term-1">b <bold>c</bold></term> d</paragraph>
 ```
 
-- It holds text, which can have the attributes text can have (the bold above), and other inline elements.
+- It holds text and other inline elements, e.g. a bold in a term.
 - By default, it is allowed where text is: in blocks, and in other inline elements. Not in the root or in containers.
 
-To make one work as CKEditor's bold, with a button that wraps the selection, see
+To give one a command and a button that wrap the selected text with it, as CKEditor's bold has, see
 [Formatting](./schema-commands#formatting-bold-italic-underline). An empty one takes the cursor, e.g. after it is inserted
 with quick insert: see [Typing in an empty inline element](./schema-converters#typing-in-an-empty-inline-element).
 
@@ -118,7 +120,7 @@ out in a line (cards, columns, chips). Each one holds blocks, as a container doe
 <cards><card><paragraph>One</paragraph></card><card><paragraph>Two</paragraph></card></cards>
 ```
 
-`allowIn` restricts the card to its row. Without it, a card would be allowed in every block, as a bold is.
+`allowIn` restricts the card to its row. Without it, a card would be allowed in every block, as every inline element is.
 
 ## What an element can have
 

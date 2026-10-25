@@ -1,7 +1,9 @@
 # CKEditor 5 Elements
 
-Element-level features for CKEditor 5 v49: commands that act on an element, an element context menu, clipboard
-commands and actions (move, duplicate, delete) and attributes for elements, a JSON element schema, selectable elements, element toolbars, clickable elements, quick insert and breadcrumbs.
+Element-first editing for CKEditor 5 v49. The content is a tree of named elements, each with its attributes, declared
+from a JSON schema, formatting included; the data mirrors the model, element for element. Every feature acts on an
+element: commands and their buttons, the element menu and context menu, actions (move, duplicate, delete) and the
+clipboard, attributes, selection and clicks, element toolbars, quick insert and breadcrumbs.
 
 **[Try the full example](https://ivankild.github.io/ckeditor5-elements/example)**: an editor with all the features
 together. Its source is in [`packages/ckeditor5-elements-example`](packages/ckeditor5-elements-example).

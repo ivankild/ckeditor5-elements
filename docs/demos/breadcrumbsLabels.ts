@@ -15,7 +15,7 @@ export default {
 	},
 	data:
 		'<aside class="note"><p>Move the cursor here: the path is <code>aside.note › p</code>.</p></aside>' +
-		'<p>Text attributes such as <strong>bold</strong> are not part of the path.</p>' +
+		"<p>CKEditor's own <strong>bold</strong> is a mark on the text, not an element: it is not part of the path.</p>" +
 		'<ul><li>In a list item: <code>ul › li</code>.</li></ul>' +
 		'<figure class="table"><table><tbody><tr><td>In a table cell</td><td>' +
 		'<code>figure.table › table › tbody › tr › td</code></td></tr></tbody></table></figure>'

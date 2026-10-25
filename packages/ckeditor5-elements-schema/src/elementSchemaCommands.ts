@@ -47,8 +47,9 @@ export interface ElementSchemaCommandDefinition {
 export type ElementSchemaCommandsConfig = Record<string, ElementSchemaCommandDefinition>;
 
 /**
- * Commands and toolbar buttons for the elements of the element schema, as CKEditor's features have for theirs: the
- * command of an element is the one of its kind (see {@link ElementSchemaCommand}).
+ * A command, a toolbar button and a keystroke for every element of the element schema, formatting included: the command
+ * of an element is the one of its kind (see {@link ElementSchemaCommand}), and works as the CKEditor feature of that
+ * kind.
  *
  * | Element                       | Command                     | Works as CKEditor's           |
  * | ----------------------------- | --------------------------- | ----------------------------- |

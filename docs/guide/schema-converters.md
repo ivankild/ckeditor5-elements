@@ -1,12 +1,12 @@
 # Schema converters
 
-The [element schema](./schema) declares what can be in the model. How the elements look in the editor and in the data is
+The [element schema](./schema) declares the elements of the content. How they look in the editor and in the data is
 declared with **converters**, as for any element of CKEditor: by the plugin, one to one, or by you.
 
 ## One to one: `elementSchemaConverters`
 
-For a start, or for data that is nothing special, set `elementSchemaConverters: true`: the plugin declares the converters
-**one to one**, in the data and in the editor.
+With `elementSchemaConverters: true`, the plugin declares the converters **one to one**, in the data and in the editor:
+the data has the elements of the model as they are, each with its name and its attributes, and is read back the same.
 
 ```ts
 plugins: [..., ElementSchema],

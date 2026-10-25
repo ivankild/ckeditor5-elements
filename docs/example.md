@@ -6,7 +6,8 @@ outline: false
 
 An editor with all the features of CKEditor 5 Elements together, on top of CKEditor's common features: headings,
 lists, tables, block quotes, a `note` element with a warning type, and the elements of a JSON file (a tip, steps and a
-status).
+status). The features act on elements, whichever plugin they come from: a heading, a table or a note is an element as
+the ones of the file are.
 
 - **Right-click** a block, or press **Shift+F10**: its [menu](./guide/context-menu) toggles a note, inserts, duplicates,
   moves, copies, pastes or deletes it.

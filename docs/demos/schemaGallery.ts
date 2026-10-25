@@ -1,4 +1,4 @@
-import { Bold, Essentials, Paragraph } from 'ckeditor5';
+import { Essentials, Paragraph } from 'ckeditor5';
 import {
 	Breadcrumbs,
 	ElementContextMenu,
@@ -18,7 +18,6 @@ export default {
 		plugins: [
 			Essentials,
 			Paragraph,
-			Bold,
 			ElementSchema,
 			// Selects the `empty` and `container` elements of the schema as a whole.
 			ElementSelectable,
@@ -29,7 +28,7 @@ export default {
 			Breadcrumbs
 		],
 		// `-` starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
-		toolbar: { items: ['undo', 'redo', '|', 'bold', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		toolbar: { items: ['undo', 'redo', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementSchema: gallery,
 		// The elements are `div` and `span` in the data, and in the editor.
 		elementSchemaConverters: true,
@@ -47,6 +46,6 @@ export default {
 	},
 	data:
 		'<p>A gallery is a block, so it holds inline figures, several in a line. Each figure is a container: a photo, then ' +
-		'a caption. Right-click the caption, then <b>Insert › Insert after</b>.</p>' +
+		'a caption. Right-click the caption, then Insert › Insert after.</p>' +
 		`<div class="gallery">${figure('Morning')}${figure('Noon')}${figure('Evening')}</div>`
 } satisfies Demo;

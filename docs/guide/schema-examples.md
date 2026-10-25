@@ -29,7 +29,7 @@ The model of the first rows:
 </dataTable>
 ```
 
-A cell is a `block`, so it holds text and inline elements, and the `Bold` button works in it. No cell can be outside a
+A cell is a `block`, so it holds text and inline elements. No cell can be outside a
 row, and no row outside a table. (A `container` still holds what CKEditor's containers hold, so a table accepts other
 blocks too, as a block quote does. `allowIn` restricts where an element goes, not what a container accepts.)
 
@@ -63,8 +63,8 @@ that holds a photo and a caption, and is not typable by itself.
 
 ## Inline elements: a mention and an abbreviation
 
-An `empty` inline element is like an inline image: an object in a line of text. A `block` inline element is like a text
-attribute, e.g. bold, but it is an element, so it has attributes of its own.
+An `empty` inline element is like an inline image: an object in a line of text. A `block` inline element is an element in
+a line of text that holds text, as a bold or a link, with attributes of its own.
 
 <EditorDemo name="schemaInline" />
 

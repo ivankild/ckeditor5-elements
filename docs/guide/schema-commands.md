@@ -1,8 +1,8 @@
 # Schema commands and buttons
 
-`ElementSchemaCommands` gives elements of the [schema](./schema) a command, a toolbar button and a keystroke, as CKEditor's
-features have for theirs. The command of an element is the one of its **kind**, and works as the CKEditor feature of that
-kind:
+`ElementSchemaCommands` gives every element of the [schema](./schema) its command, toolbar button and keystroke. The
+command of an element is the one of its **kind**: formatting wraps text in the element, a block renames blocks, a
+container wraps them, and the other elements are inserted. Each works as the CKEditor feature of that kind:
 
 | Element                       | Command                   | Works as CKEditor's | It                                        |
 | ----------------------------- | ------------------------- | ------------------- | ----------------------------------------- |
@@ -42,11 +42,11 @@ created when an element is unknown.
 
 ## Formatting: bold, italic, underline
 
-CKEditor's bold, italic and underline are **attributes of text**. The inline `block` elements of the schema make the same
-features with **elements**, with `ElementInlineCommand`. They work as elements do, not exactly as the attributes: an
-element can be empty, for one. Use them when the formatting must be an element in the model: to have attributes of its
-own, to be part of the [breadcrumbs](./breadcrumbs) and of the element features, or because the content is made of
-elements.
+Formatting is **elements** too. A bold, an italic or an underline is an inline `block` of the schema: an element in the
+line of text, with its own name and attributes, which nests in other elements and holds others, is part of the
+[breadcrumbs](./breadcrumbs) path and of the element features, and is what the data has. `ElementInlineCommand` toggles
+it on the selection, as CKEditor's bold toggles its mark on the text, and works as an element does: e.g. it can be
+empty.
 
 <EditorDemo name="schemaFormatting" />
 
@@ -66,8 +66,8 @@ elements.
 | the cursor in one    | moves the cursor out, before or after it, at its start or end; unwraps it in the middle, or removes it when empty |
 | an element           | unwraps the element it is in, or wraps it, e.g. a selected inline object                                          |
 
-It is "on" when the cursor or the element is in the element, or all the selected text is. The model has an element where
-CKEditor has an attribute, and the elements nest:
+It is "on" when the cursor or the element is in the element, or all the selected text is. The model is a tree of
+elements, down to the formatting:
 
 ```
 <paragraph>a <bold>b <italic>c</italic></bold> d</paragraph>

@@ -13,7 +13,9 @@ it has no editing-only classes or wrappers:
 | In an image caption                   | `figure.image › figcaption`              |
 | On a selected image (or other object) | `figure.image`                           |
 
-Text attributes such as `<strong>` or `<a>` are not part of the path.
+Inline elements are part of the path, as any element: a bold of the [element schema](./schema-commands#formatting-bold-italic-underline)
+gives `p › strong`. CKEditor's own text attributes, such as its bold or a link, are not: they are marks on the text, not
+elements.
 
 ```ts
 import { Breadcrumbs } from 'ckeditor5-elements';

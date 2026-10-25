@@ -1,4 +1,4 @@
-import { Bold, Essentials, Paragraph } from 'ckeditor5';
+import { Essentials, Paragraph } from 'ckeditor5';
 import {
 	Breadcrumbs,
 	ElementContextMenu,
@@ -15,7 +15,6 @@ export default {
 		plugins: [
 			Essentials,
 			Paragraph,
-			Bold,
 			ElementSchema,
 			// Selects the `empty` and `container` elements of the schema as a whole.
 			ElementSelectable,
@@ -26,7 +25,7 @@ export default {
 			Breadcrumbs
 		],
 		// `-` starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
-		toolbar: { items: ['undo', 'redo', '|', 'bold', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		toolbar: { items: ['undo', 'redo', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementSchema: marks,
 		// The elements are `div` and `span` in the data, and in the editor.
 		elementSchemaConverters: true,
@@ -42,7 +41,7 @@ export default {
 	},
 	data:
 		'<p>Ask <span class="mention" data-user="ada"></span> about the <span class="abbr" data-title="Content Management ' +
-		'System">CMS</span>: it is an inline element with text, and an attribute of its own. Press <b>Alt+Enter</b> after ' +
+		'System">CMS</span>: it is an inline element with text, and an attribute of its own. Press Alt+Enter after ' +
 		'a word to insert a mention, which is an empty inline element, or an abbreviation, and type in it.</p>' +
-		'<p>Select the abbreviation: <b>Bold</b> works inside it, as in any text.</p>'
+		'<p>Put the cursor in the abbreviation: the breadcrumbs show p › span.abbr, as for any element.</p>'
 } satisfies Demo;

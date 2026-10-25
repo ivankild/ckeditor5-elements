@@ -3,7 +3,7 @@
  *
  * * `empty`: has no content, like an image or a line break. It is an object: selected as a whole.
  * * `block`: can contain text and inline elements, like a paragraph or a heading. With `isInline`, it is an inline
- *   element with text, like a bold with an `id`.
+ *   element with text, like a bold, a link or a term.
  *
  * * `container`: cannot contain text; holds blocks, empty block elements and other containers, like a block quote or a
  *   note.
@@ -36,7 +36,7 @@ export interface ElementSchemaElement {
 	 * element is laid out in a line with its siblings, where a block-level one has a line of its own. Any type can be:
 	 *
 	 * * `empty`: like an inline image, or a line break;
-	 * * `block`: an element with text in a line of text, like a bold that is an element, with attributes;
+	 * * `block`: an element with text in a line of text, like a bold, a link or a term, with attributes of its own;
 	 * * `container`: a box that is not typable, in a line with other boxes, e.g. several in a block.
 	 *
 	 * Inline elements are allowed only in blocks: by default, where text is. A block holds text and any number of inline

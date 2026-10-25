@@ -48,7 +48,8 @@ interface DataView {
  * Shows the data view structure at the current selection (the elements of the editor data, as in `getData()`), e.g.
  * `aside.note › p`, `ul › li` or `figure.table › table › tbody › tr › td`.
  *
- * Text attributes such as `<strong>` are skipped. The selected element, e.g. an image, is the innermost item.
+ * Inline elements are items, as any element. CKEditor's text attributes, marks on the text such as its `<strong>`, are
+ * skipped. The selected element, e.g. an image, is the innermost item.
  *
  * Place them in a toolbar as the `breadcrumbs` component, or anywhere else using a view from {@link createView}.
  *

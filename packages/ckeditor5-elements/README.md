@@ -1,21 +1,22 @@
 # ckeditor5-elements
 
-Element-level features for CKEditor 5 v49, in one package:
+Element-first editing for CKEditor 5 v49, in one package. The content is a tree of named elements, each with its
+attributes, and every feature acts on an element:
 
-| Feature              | Exports                                                                                                                      |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand`, `ElementOrPositionButtonView`, `ElementButtonView`                             |
-| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                                     |
-| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                                        |
-| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter`                   |
-| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                                    |
-| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                                   |
-| Element schema       | `ElementSchema`: declare elements from a JSON file, with three types of elements and a validation; `validateElementSchema()` |
-| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                                           |
-| Selectable elements  | `ElementSelectable`: select an element as a whole, by a click or by the arrow keys, without widgets                          |
-| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked                           |
-| Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                                       |
-| Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu                               |
+| Feature              | Exports                                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand`, `ElementOrPositionButtonView`, `ElementButtonView`                                  |
+| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                                          |
+| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                                             |
+| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter`                        |
+| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                                         |
+| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                                        |
+| Element schema       | `ElementSchema`: declare the elements of the content from a JSON file, with a validation; `ElementSchemaCommands`: their commands |
+| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                                                |
+| Selectable elements  | `ElementSelectable`: select an element as a whole, by a click or by the arrow keys, without widgets                               |
+| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked                                |
+| Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                                            |
+| Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu                                    |
 
 ## Installation
 

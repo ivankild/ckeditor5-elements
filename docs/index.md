@@ -3,8 +3,8 @@ layout: home
 
 hero:
     name: CKEditor 5 Elements
-    text: Commands, menus and navigation for CKEditor 5 elements
-    tagline: Toggle elements, give them a context menu, copy and paste them, show where the cursor is, and declare them from a JSON file.
+    text: Element-first editing for CKEditor 5
+    tagline: The content is a tree of named elements, declared from a JSON file. Every feature acts on an element, formatting included.
     actions:
         - theme: brand
           text: Get started
@@ -48,6 +48,6 @@ features:
       details: A floating toolbar for the elements you choose, by name or filter, with buttons that act on the element.
       link: /guide/toolbar
     - title: Element schema
-      details: Declare the elements of the model schema from a JSON file, with three types of elements and a validation that rejects contradictions. Give them commands and buttons, as CKEditor's bold, headings, block quotes and horizontal lines have.
+      details: Declare the elements of the content from a JSON file, what each one holds and where it goes, with a validation that rejects contradictions. Give every element a command and a button, formatting included.
       link: /guide/schema
 ---

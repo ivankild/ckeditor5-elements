@@ -7,8 +7,9 @@ import type { ElementSchemaInput, ElementSchemaKind } from './definition/types.j
 import { validateElementSchema } from './definition/validateElementSchema.js';
 
 /**
- * Declares elements in the model schema of the editor from a simple definition, the `elementSchema` editor option: a
- * plain object, e.g. a JSON file.
+ * Declares the elements of the content in the model schema of the editor, from a simple definition, the `elementSchema`
+ * editor option: a plain object, e.g. a JSON file. It is the list of the elements the content is made of, formatting
+ * included: what each one holds, where it goes, and which attributes it has.
  *
  * ```json
  * {
@@ -22,7 +23,7 @@ import { validateElementSchema } from './definition/validateElementSchema.js';
  *
  * * `empty`: has no content, like an image. It is an object, selected as a whole. With `isInline`, it is in a line of text.
  * * `block`: can contain text and inline elements, like a paragraph. With `isInline`, it is an inline element with text,
- *   like a bold that is an element with attributes.
+ *   like a bold, a link or a term, with attributes of its own.
  * * `container`: cannot contain text, but blocks, containers and empty elements, like a block quote.
  *
  * `allowAttributes` and `allowChildren` work as in CKEditor's schema. `allowIn` too, but it replaces the default places.

@@ -1,7 +1,8 @@
 /**
- * Element schema: declare elements in the model schema from a simple definition, e.g. a JSON file, with three types of
- * elements (`empty`, `block`, `container`), and a validation that rejects contradictory definitions. `ElementSchemaCommands`
- * makes commands and buttons for its elements.
+ * Element schema: declare the elements of the content, formatting included, from a simple definition, e.g. a JSON file,
+ * with three types of elements (`empty`, `block`, `container`), and a validation that rejects contradictory definitions.
+ * The converters write the elements to the data one to one, and `ElementSchemaCommands` gives every element its command
+ * and button.
  *
  * @module ckeditor5-elements-schema
  */
