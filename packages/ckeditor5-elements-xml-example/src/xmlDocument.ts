@@ -1,5 +1,5 @@
-import { Paragraph, Plugin, type DowncastInsertEvent, type Editor, type ModelElement } from 'ckeditor5';
-import { ElementSchema, getVerbatimElements, type ElementSchemaElement } from 'ckeditor5-elements';
+import { Paragraph, Plugin, type DowncastInsertEvent, type ModelElement } from 'ckeditor5';
+import { ElementSchema, getVerbatimElements } from 'ckeditor5-elements';
 import XmlDocumentDataProcessor from './xmlDocumentDataProcessor.js';
 
 /**
@@ -33,9 +33,10 @@ export interface XmlDocumentConfig {
  * XML of the document (see {@link XmlDocumentDataProcessor}), and the content of the editor is the content of its root
  * element. It is configured by the `xmlDocument` option.
  *
- * * In the data, each element of the schema is the XML element of its name, with its attributes as they are, e.g.
- *   `<xref href="…">`, and CKEditor's paragraph is the paragraph of the document. The editing view is the one of the
- *   converters of the schema, so the browser edits HTML: `div` and `span`, or the `editingTag` of the element.
+ * * The converters of the schema write the elements with their names, and their attributes as they are, e.g.
+ *   `<xref href="…">`: the `elementSchemaConverters` option is `'names'`. The editing view stays HTML: `div` and `span`,
+ *   or the `editingTag` of the element.
+ * * CKEditor's paragraph is the paragraph of the document, e.g. `para`.
  * * The verbatim blocks of the schema keep their whitespace in the data.
  * * A soft break (Shift+Enter) of a paragraph is a new line in the data, as XML has no element for it.
  */
@@ -48,30 +49,21 @@ export default class XmlDocument extends Plugin {
 		return [Paragraph, ElementSchema] as const;
 	}
 
-	constructor(editor: Editor) {
-		super(editor);
-
-		const { root, prolog, paragraph } = this._getConfig();
-
-		// Before the data is loaded.
-		editor.data.processor = new XmlDocumentDataProcessor(editor.data.viewDocument, {
-			root,
-			prolog,
-			blockElements: [
-				paragraph,
-				...this._getElements()
-					.filter(([, element]) => !element.isInline)
-					.map(([name]) => name)
-			],
-			preElements: getVerbatimElements(editor.config.get('elementSchema') ?? {})
-		});
-	}
-
 	public init(): void {
 		const editor = this.editor;
-		const { className } = this._getConfig();
+		const { paragraph, className } = this._getConfig();
 
-		this._convertData();
+		if (editor.config.get('elementSchemaConverters') !== 'names') {
+			throw new Error(
+				"XmlDocument: set elementSchemaConverters to 'names', so the data has the names of the elements."
+			);
+		}
+
+		editor.conversion
+			.for('dataDowncast')
+			.elementToElement({ model: 'paragraph', view: paragraph, converterPriority: 'high' });
+		editor.conversion.for('upcast').elementToElement({ view: paragraph, model: 'paragraph' });
+		this._convertSoftBreak();
 
 		if (className) {
 			this.listenTo(editor.ui, 'ready', () => {
@@ -87,32 +79,31 @@ export default class XmlDocument extends Plugin {
 	}
 
 	/**
-	 * Declares the converters of the data: each element of the schema as the XML element of its name, over the
-	 * converters of the schema, and its attributes with their names.
+	 * Sets the data processor, once the element schema is registered, and before the data is loaded.
 	 */
-	private _convertData(): void {
-		const conversion = this.editor.conversion;
-		const { paragraph } = this._getConfig();
+	public afterInit(): void {
+		const editor = this.editor;
+		const { root, prolog, paragraph } = this._getConfig();
+		const definition = editor.plugins.get(ElementSchema).definition ?? {};
 
-		conversion
-			.for('dataDowncast')
-			.elementToElement({ model: 'paragraph', view: paragraph, converterPriority: 'high' });
-		conversion.for('upcast').elementToElement({ view: paragraph, model: 'paragraph' });
+		editor.data.processor = new XmlDocumentDataProcessor(editor.data.viewDocument, {
+			root,
+			prolog,
+			blockElements: [
+				paragraph,
+				...Object.entries(definition)
+					.filter(([, element]) => !element.isInline)
+					.map(([name]) => name)
+			],
+			preElements: getVerbatimElements(definition)
+		});
+	}
 
-		for (const [name, { allowAttributes = [] }] of this._getElements()) {
-			conversion.for('dataDowncast').elementToElement({ model: name, view: name, converterPriority: 'highest' });
-			conversion.for('upcast').elementToElement({ view: name, model: name });
-
-			for (const key of allowAttributes) {
-				conversion
-					.for('dataDowncast')
-					.attributeToAttribute({ model: { name, key }, view: key, converterPriority: 'high' });
-				conversion.for('upcast').attributeToAttribute({ view: { name, key }, model: key });
-			}
-		}
-
-		// A soft break is a new line of the text in the data, as XML has no element for it.
-		conversion.for('dataDowncast').add(dispatcher => {
+	/**
+	 * A soft break is a new line of the text in the data, as XML has no element for it.
+	 */
+	private _convertSoftBreak(): void {
+		this.editor.conversion.for('dataDowncast').add(dispatcher => {
 			dispatcher.on<DowncastInsertEvent<ModelElement>>(
 				'insert:softBreak',
 				(evt, data, { consumable, mapper, writer }) => {
@@ -133,13 +124,6 @@ export default class XmlDocument extends Plugin {
 		}
 
 		return config;
-	}
-
-	/**
-	 * Returns the elements of the element schema, by name.
-	 */
-	private _getElements(): [name: string, element: ElementSchemaElement][] {
-		return Object.entries(this.editor.config.get('elementSchema') ?? {}) as [string, ElementSchemaElement][];
 	}
 }
 

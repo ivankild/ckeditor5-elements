@@ -1,5 +1,5 @@
 import { Essentials, Heading, Paragraph, SourceEditing, type ClassicEditor } from 'ckeditor5';
-import { QuickInsert } from 'ckeditor5-elements';
+import { ElementQuickInsert } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 /**
@@ -47,9 +47,9 @@ function addControls(editor: ClassicEditor, container: HTMLElement): void {
 
 export default {
 	config: {
-		plugins: [Essentials, SourceEditing, Paragraph, Heading, QuickInsert],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, ElementQuickInsert],
 		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading'],
-		quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1', heading2: 'Heading 2' } }
+		elementQuickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1', heading2: 'Heading 2' } }
 	},
 	data: '<p>The first block.</p><p>The last block.</p>',
 	ready: addControls

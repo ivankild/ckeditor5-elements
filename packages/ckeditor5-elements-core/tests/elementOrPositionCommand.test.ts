@@ -8,7 +8,7 @@ import {
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlockObject, Container, createEditor } from '../../../testUtils/editor.js';
-import ElementCommand from '../src/elementCommand.js';
+import ElementContainerCommand from '../src/commands/elementContainerCommand.js';
 import ElementOrPositionCommand, { type ElementOrPosition } from '../src/elementOrPositionCommand.js';
 
 /**
@@ -66,7 +66,7 @@ describe('ElementOrPositionCommand', () => {
 	});
 
 	it('is the base of the element commands', () => {
-		expect(new ElementCommand(editor)).toBeInstanceOf(ElementOrPositionCommand);
+		expect(new ElementContainerCommand(editor, 'container')).toBeInstanceOf(ElementOrPositionCommand);
 	});
 
 	describe('refresh()', () => {
@@ -111,9 +111,7 @@ describe('ElementOrPositionCommand', () => {
 				'<container><paragraph>fo[]o</paragraph></container><paragraph>bar</paragraph>'
 			);
 
-			const toggle = new ElementCommand(editor);
-
-			toggle.elementName = 'container';
+			const toggle = new ElementContainerCommand(editor, 'container');
 			editor.commands.add('container', toggle);
 			toggle.refresh();
 
@@ -157,9 +155,7 @@ describe('ElementOrPositionCommand', () => {
 				'<container><containerItem>fo[]o</containerItem></container><paragraph>bar</paragraph>'
 			);
 
-			const toggle = new ElementCommand(editor);
-
-			toggle.elementName = 'container';
+			const toggle = new ElementContainerCommand(editor, 'container');
 			editor.commands.add('container', toggle);
 			toggle.refresh();
 
@@ -177,9 +173,7 @@ describe('ElementOrPositionCommand', () => {
 		it('executes for an editable target when the selection cannot be edited', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 
-			const toggle = new ElementCommand(editor);
-
-			toggle.elementName = 'container';
+			const toggle = new ElementContainerCommand(editor, 'container');
 			editor.commands.add('container', toggle);
 			editor.model.on(
 				'canEditAt',
@@ -284,9 +278,7 @@ describe('ElementOrPositionCommand', () => {
 		});
 
 		it('executeFor() does not change the document for them', () => {
-			const toggle = new ElementCommand(editor);
-
-			toggle.elementName = 'container';
+			const toggle = new ElementContainerCommand(editor, 'container');
 			editor.commands.add('container', toggle);
 			_setModelData(editor.model, '<paragraph>foo</paragraph><paragraph>b[]ar</paragraph>');
 
@@ -361,9 +353,7 @@ describe('ElementOrPositionCommand', () => {
 		});
 
 		it('makes executeFor() do nothing', () => {
-			const toggle = new ElementCommand(editor);
-
-			toggle.elementName = 'container';
+			const toggle = new ElementContainerCommand(editor, 'container');
 			editor.commands.add('container', toggle);
 			toggle.forceDisabled('a');
 
@@ -376,9 +366,9 @@ describe('ElementOrPositionCommand', () => {
 	});
 
 	describe('isToggleable', () => {
-		it('is false by default, and true for ElementCommand', () => {
+		it('is false by default, and true for ElementContainerCommand', () => {
 			expect(command.isToggleable).toBe(false);
-			expect(new ElementCommand(editor).isToggleable).toBe(true);
+			expect(new ElementContainerCommand(editor, 'container').isToggleable).toBe(true);
 		});
 	});
 });

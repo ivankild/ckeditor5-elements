@@ -175,7 +175,7 @@ describe('the DocBook example', () => {
 				'<section><itemizedlist><listitem><paragraph>a[]</paragraph></listitem></itemizedlist></section>'
 			);
 
-			expect(editor.plugins.get('Breadcrumbs').items.map(item => item.label)).toEqual([
+			expect(editor.plugins.get('ElementBreadcrumbs').items.map(item => item.label)).toEqual([
 				'section',
 				'itemizedlist',
 				'listitem',

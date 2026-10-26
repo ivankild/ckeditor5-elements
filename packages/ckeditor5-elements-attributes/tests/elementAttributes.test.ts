@@ -128,6 +128,14 @@ describe('ElementAttributes', () => {
 
 			expect(dialog().id).toBeNull();
 		});
+
+		it('does nothing without an element, e.g. for a position directly in the root', () => {
+			_setModelData(editor.model, '<paragraph>a[]</paragraph>');
+
+			command().execute(editor.model.createPositionAt(editor.model.document.getRoot()!, 0));
+
+			expect(dialog().id).toBeNull();
+		});
 	});
 
 	describe('state', () => {

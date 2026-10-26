@@ -70,6 +70,15 @@ describe('QuickInsertCommand', () => {
 			expect(names).not.toContain('heading1');
 			expect(names).not.toContain('element');
 		});
+
+		it('hasAllowedElements() tells whether there is one', () => {
+			_setModelData(editor.model, '<paragraph>foo</paragraph>');
+
+			const all = command.getAllowedElements(inRoot(0));
+
+			expect(command.hasAllowedElements(inRoot(0))).toBe(true);
+			expect(command.hasAllowedElements(inRoot(0), all)).toBe(false);
+		});
 	});
 
 	describe('isEnabled', () => {
@@ -180,6 +189,15 @@ describe('QuickInsertCommand', () => {
 
 			command.execute(inRoot(0), 'heading1');
 
+			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
+		});
+
+		it('does nothing without a name, when it has no quick insert plugin to open', () => {
+			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+
+			expect(() => {
+				command.execute();
+			}).not.toThrow();
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});
 	});

@@ -1,11 +1,12 @@
 import { Bold, Paragraph, _getModelData, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import ElementCommand from '../src/elementCommand.js';
-import { BlockObject, Container, createEditor } from '../../../testUtils/editor.js';
+import ElementCommand from '../../src/commands/elementCommand.js';
+import ElementContainerCommand from '../../src/commands/elementContainerCommand.js';
+import { BlockObject, Container, createEditor } from '../../../../testUtils/editor.js';
 
-describe('ElementCommand', () => {
+describe('ElementContainerCommand', () => {
 	let editor: ClassicEditor;
-	let command: ElementCommand;
+	let command: ElementContainerCommand;
 
 	const getData = (): string => _getModelData(editor.model);
 	const root = (): ModelElement => editor.model.document.getRoot()!;
@@ -14,8 +15,7 @@ describe('ElementCommand', () => {
 	beforeEach(async () => {
 		editor = await createEditor({ plugins: [Paragraph, Bold, Container, BlockObject] });
 
-		command = new ElementCommand(editor);
-		command.elementName = 'container';
+		command = new ElementContainerCommand(editor, 'container');
 		editor.commands.add('container', command);
 	});
 
@@ -23,14 +23,16 @@ describe('ElementCommand', () => {
 		await editor.destroy();
 	});
 
-	it('has default observable properties', () => {
-		const defaults = new ElementCommand(editor);
+	it('is an ElementCommand for its element, with default observable properties', () => {
+		const defaults = new ElementContainerCommand(editor, 'container');
 
+		expect(defaults).toBeInstanceOf(ElementCommand);
 		expect(defaults.isOn).toBe(false);
+		expect(defaults.isToggleable).toBe(true);
 		expect(defaults.icon).toBeUndefined();
 		expect(defaults.title).toBe('');
 		expect(defaults.tooltip).toBe(true);
-		expect(defaults.elementName).toBe('element');
+		expect(defaults.elementName).toBe('container');
 		expect(defaults.elementAttributes).toEqual({});
 	});
 
@@ -87,12 +89,12 @@ describe('ElementCommand', () => {
 		});
 
 		it('is disabled when the schema does not allow wrapping', () => {
-			command.elementName = 'element';
+			const object = new ElementContainerCommand(editor, 'element');
+
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
+			object.refresh();
 
-			command.refresh();
-
-			expect(command.isEnabled).toBe(false);
+			expect(object.isEnabled).toBe(false);
 		});
 
 		it('is disabled when the schema does not allow unwrapping', () => {
@@ -140,6 +142,30 @@ describe('ElementCommand', () => {
 			expect(command.isOn).toBe(false);
 		});
 
+		it('wraps the selected blocks with one element, and keeps the selection', () => {
+			_setModelData(
+				editor.model,
+				'<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph><paragraph>baz</paragraph>'
+			);
+
+			editor.execute('container');
+
+			expect(getData()).toBe(
+				'<container><paragraph>f[oo</paragraph><paragraph>ba]r</paragraph></container><paragraph>baz</paragraph>'
+			);
+		});
+
+		it('unwraps the whole element, not only the selected blocks', () => {
+			_setModelData(
+				editor.model,
+				'<container><paragraph>f[]oo</paragraph><paragraph>bar</paragraph></container><paragraph>baz</paragraph>'
+			);
+
+			editor.execute('container');
+
+			expect(getData()).toBe('<paragraph>f[]oo</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph>');
+		});
+
 		it('wraps the selected element', () => {
 			_setModelData(editor.model, '[<element></element>]');
 
@@ -151,7 +177,7 @@ describe('ElementCommand', () => {
 		it('wraps at the given position', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 
-			command.execute(editor.model.createPositionAt(child(1), 0));
+			command.executeFor(editor.model.createPositionAt(child(1), 0));
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph><container><paragraph>bar</paragraph></container>');
 		});
@@ -159,16 +185,15 @@ describe('ElementCommand', () => {
 		it('wraps the given element', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 
-			command.execute(child(1));
+			command.executeFor(child(1));
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph><container><paragraph>bar</paragraph></container>');
 		});
 
 		it('does nothing when the schema does not allow wrapping', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
-			command.elementName = 'element';
 
-			command.execute(child(0));
+			new ElementContainerCommand(editor, 'element').executeFor(child(0));
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});
@@ -176,7 +201,7 @@ describe('ElementCommand', () => {
 		it('does nothing when the schema does not allow unwrapping', () => {
 			_setModelData(editor.model, '<container><containerItem>fo[]o</containerItem></container>');
 
-			command.execute(child(0).getChild(0) as ModelElement);
+			command.executeFor(child(0).getChild(0) as ModelElement);
 
 			expect(getData()).toBe('<container><containerItem>fo[]o</containerItem></container>');
 		});
@@ -184,7 +209,7 @@ describe('ElementCommand', () => {
 		it('does nothing for a position directly in the root', () => {
 			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 
-			command.execute(editor.model.createPositionAt(root(), 0));
+			command.executeFor(editor.model.createPositionAt(root(), 0));
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});
@@ -201,7 +226,7 @@ describe('ElementCommand', () => {
 				{ priority: 'highest' }
 			);
 
-			command.execute(child(1));
+			command.executeFor(child(1));
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
 		});

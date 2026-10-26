@@ -4,14 +4,14 @@ import { type ElementMenuConfig } from '../../src/elementMenu.js';
 import ElementMenuView from '../../src/elementMenuView.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../../testUtils/editor.js';
-import QuickInsert from '../../src/quickInsert/quickInsert.js';
+import ElementQuickInsert from '../../src/quickInsert/elementQuickInsert.js';
 import { insertAfterIcon, insertBeforeIcon, insertIcon } from '../../src/quickInsert/icons.js';
 import QuickInsertPositionCommand from '../../src/quickInsert/quickInsertPositionCommand.js';
 import QuickInsertView from '../../src/quickInsert/quickInsertView.js';
 
 describe('QuickInsertPositionCommand', () => {
 	let editor: ClassicEditor;
-	let quickInsert: QuickInsert;
+	let quickInsert: ElementQuickInsert;
 	let menu: ElementMenu;
 
 	// The menu of an element, with the insert commands in a submenu.
@@ -25,8 +25,8 @@ describe('QuickInsertPositionCommand', () => {
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
 
 	beforeEach(async () => {
-		editor = await createEditor({ plugins: [Paragraph, Heading, Container, QuickInsert] });
-		quickInsert = editor.plugins.get('QuickInsert');
+		editor = await createEditor({ plugins: [Paragraph, Heading, Container, ElementQuickInsert] });
+		quickInsert = editor.plugins.get('ElementQuickInsert');
 		menu = editor.plugins.get('ElementMenu');
 		editor.editing.view.focus();
 		_setModelData(editor.model, '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>');
@@ -81,7 +81,7 @@ describe('QuickInsertPositionCommand', () => {
 
 	it('is enabled only when something can be inserted at the position', () => {
 		_setModelData(editor.model, '<container><containerItem>fo[]o</containerItem></container>');
-		editor.config.set('quickInsert.exclude', ['paragraph', 'heading1', 'heading2', 'heading3', 'container']);
+		editor.config.set('elementQuickInsert.exclude', ['paragraph', 'heading1', 'heading2', 'heading3', 'container']);
 
 		const command = editor.commands.get('quickInsertBefore')!;
 

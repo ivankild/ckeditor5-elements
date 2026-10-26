@@ -82,7 +82,7 @@ export default defineConfig({
 					text: 'Menus',
 					items: [
 						{ text: 'Context menu', link: '/guide/context-menu' },
-						{ text: 'Breadcrumbs', link: '/guide/breadcrumbs' },
+						{ text: 'ElementBreadcrumbs', link: '/guide/breadcrumbs' },
 						{ text: 'Quick insert', link: '/guide/quick-insert' }
 					]
 				},

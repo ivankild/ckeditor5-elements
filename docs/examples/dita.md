@@ -80,10 +80,11 @@ paragraph, so typing, Enter and an empty editor work as usual.
 ### The data: XML
 
 The data is the [XML of the DocBook example](./docbook#the-data-xml), configured for a topic: its root element is the
-`topic`, the paragraph is `p`, and the prolog has the document type of a Lightweight DITA topic. The attributes of the
-topic are kept, e.g. its `id`, which DITA requires.
+`topic`, the paragraph is `p`, and the prolog has the document type of a Lightweight DITA topic. The converters of the
+schema write the DITA names (`'names'`). The attributes of the topic are kept, e.g. its `id`, which DITA requires.
 
 ```ts
+elementSchemaConverters: 'names',
 xmlDocument: { root: 'topic', prolog: DITA_PROLOG, paragraph: 'p', className: 'dita' }
 ```
 

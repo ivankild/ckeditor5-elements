@@ -23,11 +23,11 @@ describe('ElementToolbar', () => {
 
 	const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'];
 
-	async function setUp(elementToolbars?: EditorConfig['elementToolbars']): Promise<void> {
+	async function setUp(elementToolbar?: EditorConfig['elementToolbar']): Promise<void> {
 		editor = await createEditor({
 			plugins: [Paragraph, Bold, Container, ElementActions, ElementToolbar],
 			toolbar: ['bold'],
-			...(elementToolbars ? { elementToolbars } : {})
+			...(elementToolbar ? { elementToolbar } : {})
 		});
 		balloon = editor.plugins.get(ContextualBalloon);
 
@@ -187,7 +187,7 @@ describe('ElementToolbar', () => {
 		it('a menu covers the toolbar, and the toolbar shows again when the menu closes', async () => {
 			editor = await createEditor({
 				plugins: [Paragraph, Container, ElementActions, ElementToolbar, ElementContextMenu],
-				elementToolbars: [{ element: 'container', items: ['deleteElement'] }]
+				elementToolbar: [{ element: 'container', items: ['deleteElement'] }]
 			});
 			balloon = editor.plugins.get(ContextualBalloon);
 			editor.editing.view.focus();
@@ -210,7 +210,7 @@ describe('ElementToolbar', () => {
 		it('a toolbar that shows while a menu is open does not cover the menu', async () => {
 			editor = await createEditor({
 				plugins: [Paragraph, Container, ElementActions, ElementToolbar, ElementContextMenu],
-				elementToolbars: [{ element: 'container', items: ['deleteElement'] }]
+				elementToolbar: [{ element: 'container', items: ['deleteElement'] }]
 			});
 			balloon = editor.plugins.get(ContextualBalloon);
 			editor.editing.view.focus();

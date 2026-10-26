@@ -1,6 +1,6 @@
-import type { Editor } from 'ckeditor5';
+import type { Editor, ViewDowncastWriter, ViewElement } from 'ckeditor5';
 import type { ElementSchemaElement, ElementSchemaInput } from '../definition/types.js';
-import { createInlineTextElement } from './inlineTextElement.js';
+import { withoutBlockFiller } from './inlineTextElement.js';
 import { createVerbatimElement } from './verbatimElement.js';
 
 /**
@@ -21,61 +21,90 @@ export function getViewTag({
 }
 
 /**
- * Declares the converters of the elements of a schema, one to one: an element is a `div` or a `span` in the data (see
- * {@link getViewTag}), with its name as the class. Its attributes are `data-*` attributes. The data is loaded as it is
- * saved. The editing view is the same, except for the tag, when the element has an `editingTag`.
+ * The HTML elements that have no content, e.g. `hr`: an `empty` element with one of these tags is an empty element in the
+ * editing view too.
+ */
+const VOID_TAGS = new Set(['area', 'br', 'col', 'embed', 'hr', 'img', 'input', 'source', 'track', 'wbr']);
+
+/**
+ * How the converters of the schema write the data (the `elementSchemaConverters` option): as HTML (`true`), or with the
+ * names of the elements and of their attributes (`'names'`).
+ */
+export type ElementSchemaConvertersMode = true | 'names';
+
+/**
+ * Declares the converters of the elements of a schema, one to one.
+ *
+ * * As HTML (`true`): an element is a `div` or a `span` in the data (see {@link getViewTag}), with its name as the
+ *   class, or the element of its `tag`, e.g. `<strong>`. Its attributes are `data-*` attributes.
+ * * With the names (`'names'`): an element is the element of its name in the data, e.g. `<calloutTitle>`, and its
+ *   attributes keep their names, e.g. `<link href="…">`: for a data processor of XML, which keeps the case of the names.
+ *
+ * The data is loaded as it is saved. The editing view is HTML either way, as the HTML data, except for the tag, when the
+ * element has an `editingTag`.
  *
  * The `empty` elements are empty in the data too: `<div class="divider"></div>`, with no filler. The inline elements with
  * text have no block filler, so the cursor can go in an empty one (see `withoutBlockFiller()`).
  */
-export function convertElementSchema(editor: Editor, input: ElementSchemaInput): void {
+export function convertElementSchema(
+	editor: Editor,
+	input: ElementSchemaInput,
+	mode: ElementSchemaConvertersMode = true
+): void {
 	const { conversion } = editor;
+	const keepsNames = mode === 'names';
 
 	for (const [name, element] of Object.entries(input)) {
-		const { type, isInline, editingTag, allowAttributes, verbatim } = element as ElementSchemaElement;
-		const tag = getViewTag(element as ElementSchemaElement);
-		const view = { name: tag, classes: name };
+		const { type, isInline, tag, editingTag, allowAttributes, verbatim } = element as ElementSchemaElement;
+		const htmlTag = tag ?? getViewTag(element as ElementSchemaElement);
+		// An element with a tag of its own is that tag; the others are named by their class.
+		const htmlAttributes: Record<string, string> = tag ? {} : { class: name };
 		const isInlineText = type === 'block' && !!isInline;
+
+		const createView = (
+			writer: ViewDowncastWriter,
+			viewTag: string,
+			attributes: Record<string, string>,
+			isEditing: boolean
+		): ViewElement => {
+			if (isInlineText) {
+				return withoutBlockFiller(writer.createContainerElement(viewTag, attributes));
+			}
+
+			if (type === 'empty' && (!isEditing || VOID_TAGS.has(viewTag))) {
+				return writer.createEmptyElement(viewTag, attributes);
+			}
+
+			// A verbatim block shows and takes an empty last line in the editor: see `createVerbatimElement()`.
+			return verbatim && isEditing
+				? createVerbatimElement(writer, viewTag, attributes)
+				: writer.createContainerElement(viewTag, attributes);
+		};
 
 		for (const key of allowAttributes ?? []) {
 			// The names of HTML attributes are lowercase, so the data has them in lowercase; the model keeps the key as it is.
-			conversion.attributeToAttribute({ model: { name, key }, view: `data-${key.toLowerCase()}` });
+			const htmlKey = `data-${key.toLowerCase()}`;
+			const dataKey = keepsNames ? key : htmlKey;
+
+			conversion
+				.for('upcast')
+				.attributeToAttribute({ view: { name: keepsNames ? name : htmlTag, key: dataKey }, model: key });
+			conversion.for('dataDowncast').attributeToAttribute({ model: { name, key }, view: dataKey });
+			conversion.for('editingDowncast').attributeToAttribute({ model: { name, key }, view: htmlKey });
 		}
 
-		// Upcast, data downcast and editing downcast at once; what differs is declared with a higher priority.
-		conversion.elementToElement({ model: name, view });
-
-		if (type === 'empty') {
-			conversion.for('dataDowncast').elementToElement({
-				model: name,
-				view: (_element, { writer }) => writer.createEmptyElement(tag, { class: name }),
-				converterPriority: 'high'
-			});
-		}
-
-		if (isInlineText) {
-			conversion.for('dataDowncast').elementToElement({
-				model: name,
-				view: (_element, { writer }) => createInlineTextElement(writer, tag, name),
-				converterPriority: 'high'
-			});
-		}
-
-		// A verbatim block shows and takes an empty last line in the editor: see `createVerbatimElement()`.
-		if (editingTag || isInlineText || verbatim) {
-			conversion.for('editingDowncast').elementToElement({
-				model: name,
-				view: (_element, { writer }) => {
-					if (isInlineText) {
-						return createInlineTextElement(writer, editingTag ?? tag, name);
-					}
-
-					return verbatim
-						? createVerbatimElement(writer, editingTag ?? tag, { class: name })
-						: writer.createContainerElement(editingTag ?? tag, { class: name });
-				},
-				converterPriority: 'high'
-			});
-		}
+		conversion.for('upcast').elementToElement({
+			view: keepsNames ? name : (tag ?? { name: htmlTag, classes: name }),
+			model: name
+		});
+		conversion.for('dataDowncast').elementToElement({
+			model: name,
+			view: (_element, { writer }) =>
+				keepsNames ? createView(writer, name, {}, false) : createView(writer, htmlTag, htmlAttributes, false)
+		});
+		conversion.for('editingDowncast').elementToElement({
+			model: name,
+			view: (_element, { writer }) => createView(writer, editingTag ?? htmlTag, htmlAttributes, true)
+		});
 	}
 }

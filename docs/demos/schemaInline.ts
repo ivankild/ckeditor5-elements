@@ -1,10 +1,10 @@
 import { Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementContextMenu,
 	ElementSchema,
 	ElementSelectable,
-	QuickInsert,
+	ElementQuickInsert,
 	insertIcon
 } from 'ckeditor5-elements';
 import marks from './shared/inlineMarks.json';
@@ -20,10 +20,10 @@ export default {
 			// Selects the `empty` and `container` elements of the schema as a whole.
 			ElementSelectable,
 			// Lists what the schema allows at a position, in the context menu.
-			QuickInsert,
+			ElementQuickInsert,
 			ElementContextMenu,
 			// Shows the path to the cursor: what holds what.
-			Breadcrumbs
+			ElementBreadcrumbs
 		],
 		// `-` starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
 		toolbar: { items: ['undo', 'redo', 'sourceEditing', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
@@ -38,7 +38,7 @@ export default {
 				items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
 			}
 		],
-		quickInsert: { labels: { paragraph: 'Paragraph', mention: 'Mention', abbr: 'Abbreviation' } }
+		elementQuickInsert: { labels: { paragraph: 'Paragraph', mention: 'Mention', abbr: 'Abbreviation' } }
 	},
 	data:
 		'<p>Ask <span class="mention" data-user="ada"></span> about the <span class="abbr" data-title="Content Management ' +

@@ -13,6 +13,7 @@ export const ELEMENT_KEYS = [
 	'allowChildren',
 	'allowIn',
 	'allowAttributes',
+	'tag',
 	'editingTag',
 	'verbatim',
 	'listItem'

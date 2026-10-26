@@ -24,8 +24,8 @@ import { ElementClickable, ElementSelectable } from 'ckeditor5-elements';
 
 // In the editor config:
 plugins: [..., ElementSelectable, ElementClickable],
-selectableElements: ['callout', 'divider', element => element.hasAttribute('card')],
-elementClickables: [
+elementSelectable: ['callout', 'divider', element => element.hasAttribute('card')],
+elementClickable: [
 	// By name. The default event is `click`.
 	{ element: 'imageBlock', callback: (element, editor) => console.log(element.getAttribute('src')) },
 	// By a filter, on double click.

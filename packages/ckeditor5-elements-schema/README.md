@@ -42,11 +42,11 @@ next item.
 `ElementSchemaCommands` gives elements of the schema a command, a toolbar button and a keystroke, by their kind: an
 inline `block` wraps text, as CKEditor's bold; a `block` renames blocks, as a heading; a `container` wraps blocks, as a
 block quote; a list wraps blocks in items; an `empty` element and an inline `container` are inserted, as a horizontal
-line. At the ends of inline
-elements with text, the arrow keys move in two steps, as CKEditor's two-step caret movement does.
+line. At the ends of inline elements with text, the arrow keys move in two steps, as CKEditor's two-step caret
+movement does.
 
 ```json
-{ "bold": { "type": "block", "isInline": true }, "divider": { "type": "empty" } }
+{ "bold": { "type": "block", "isInline": true, "tag": "strong" }, "divider": { "type": "empty", "tag": "hr" } }
 ```
 
 ```ts
@@ -57,9 +57,10 @@ import { ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
 plugins: [..., ElementSchema, ElementSchemaCommands],
 toolbar: ['bold', 'divider'],
 elementSchema: schema,
+elementSchemaConverters: true,
 elementSchemaCommands: {
-	bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
-	divider: { title: 'Divider', icon: IconHorizontalLine, view: 'hr' }
+	bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B' },
+	divider: { title: 'Divider', icon: IconHorizontalLine }
 }
 ```
 

@@ -1,4 +1,4 @@
-import type { ViewContainerElement, ViewDowncastWriter } from 'ckeditor5';
+import type { ViewContainerElement } from 'ckeditor5';
 
 /**
  * Makes a view element have no block filler, and returns it: for the view of an inline element with text, e.g. a bold
@@ -15,17 +15,10 @@ import type { ViewContainerElement, ViewDowncastWriter } from 'ckeditor5';
  * });
  * ```
  *
- * The converters of the element schema (`elementSchemaConverters`) and the `view` of `ElementSchemaCommands` do it already.
+ * The converters of the element schema (`elementSchemaConverters`) do it already.
  */
 export function withoutBlockFiller<T extends ViewContainerElement>(element: T): T {
 	element.getFillerOffset = () => null;
 
 	return element;
-}
-
-/**
- * Creates the view of an inline element with text: an element with no block filler (see {@link withoutBlockFiller}).
- */
-export function createInlineTextElement(writer: ViewDowncastWriter, tag: string, name?: string): ViewContainerElement {
-	return withoutBlockFiller(writer.createContainerElement(tag, name ? { class: name } : {}));
 }

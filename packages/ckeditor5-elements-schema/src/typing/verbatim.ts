@@ -1,5 +1,5 @@
 import type { ModelDocumentSelection, ModelElement, ModelWriter, Plugin, ViewDocumentEnterEvent } from 'ckeditor5';
-import { findBlock } from './findBlock.js';
+import { findBlock, keyboardPriorities } from 'ckeditor5-elements-core';
 
 /**
  * Makes Enter insert a new line in the verbatim blocks, whose whitespace is their content, instead of splitting them;
@@ -32,7 +32,7 @@ export function enableVerbatimTyping(plugin: Plugin, names: ReadonlySet<string>)
 			data.preventDefault();
 			evt.stop();
 		},
-		{ priority: 'high' }
+		{ priority: keyboardPriorities.verbatimEnter }
 	);
 }
 

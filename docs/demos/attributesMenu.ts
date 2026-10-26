@@ -35,7 +35,7 @@ export default {
 			editor.commands.get('deleteElement')
 		],
 		// ... and a button of a floating toolbar, which acts on the note, not on the paragraph with the cursor.
-		elementToolbars: [
+		elementToolbar: [
 			{
 				element: 'note',
 				items: ['showElementAttributes', '|', 'moveElementUp', 'moveElementDown', 'deleteElement']

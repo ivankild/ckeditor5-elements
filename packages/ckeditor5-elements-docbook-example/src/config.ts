@@ -13,7 +13,7 @@ import {
 	type EditorConfig
 } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementActions,
 	ElementAttributes,
 	ElementClickable,
@@ -23,7 +23,7 @@ import {
 	ElementSchemaCommands,
 	ElementSelectable,
 	ElementToolbar,
-	QuickInsert,
+	ElementQuickInsert,
 	insertIcon,
 	pasteIcon,
 	type ElementMenuConfig
@@ -88,8 +88,8 @@ export const docBookConfig: EditorConfig = {
 		ElementAttributes,
 		ElementClickable,
 		ElementToolbar,
-		QuickInsert,
-		Breadcrumbs
+		ElementQuickInsert,
+		ElementBreadcrumbs
 	],
 	toolbar: {
 		items: [
@@ -113,9 +113,9 @@ export const docBookConfig: EditorConfig = {
 		],
 		shouldNotGroupWhenFull: true
 	},
-	// The elements of DocBook. Their editing view is HTML, from the converters of the schema.
+	// The elements of DocBook, by their names in the data. Their editing view is HTML, from the converters of the schema.
 	elementSchema: schema,
-	elementSchemaConverters: true,
+	elementSchemaConverters: 'names',
 	// The data: the XML of the article, with the elements by their names, and CKEditor's paragraph as `para`.
 	xmlDocument: { root: 'article', prolog: DOCBOOK_PROLOG, paragraph: 'para', className: 'docbook' },
 	// A command and a button for each element, by its kind; the lists get the command of a list.
@@ -130,19 +130,19 @@ export const docBookConfig: EditorConfig = {
 		literal: { title: 'Literal', icon: IconCode }
 	},
 	elementContextMenu: docBookMenu,
-	breadcrumbs: { menu: docBookMenu },
+	elementBreadcrumbs: { menu: docBookMenu },
 	// Click a link: a modal with its attributes, the `url`.
-	elementClickables: [
+	elementClickable: [
 		{
 			element: 'ulink',
 			callback: (element, editor) => editor.commands.get('showElementAttributes')?.executeFor(element)
 		}
 	],
-	elementToolbars: [
+	elementToolbar: [
 		{ element: 'section', items: ['section', '|', ...ACTIONS], ariaLabel: 'Section toolbar' },
 		{ element: 'listitem', items: ACTIONS, ariaLabel: 'List item toolbar' }
 	],
-	quickInsert: {
+	elementQuickInsert: {
 		labels: {
 			paragraph: 'Paragraph',
 			title: 'Title',

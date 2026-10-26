@@ -9,7 +9,7 @@ export default {
 	config: {
 		plugins: [Essentials, SourceEditing, Paragraph, Heading, Note, ElementActions, ElementToolbar],
 		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', '|', 'note'],
-		elementToolbars: [
+		elementToolbar: [
 			// By name. The commands act on the note: "Note" unwraps it, "Move down" moves the whole note.
 			{ element: 'note', items: ['note', '|', ...ACTIONS], ariaLabel: 'Note toolbar' },
 			// By a filter. "heading" is a UI component (the heading dropdown), as in the main toolbar.

@@ -1,19 +1,18 @@
 import { Paragraph, _setModelData, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ElementButtonView from '../src/elementButtonView.js';
-import ElementCommand from '../src/elementCommand.js';
+import ElementContainerCommand from '../src/commands/elementContainerCommand.js';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 
 describe('ElementButtonView', () => {
 	let editor: ClassicEditor;
-	let command: ElementCommand;
+	let command: ElementContainerCommand;
 	let view: ElementButtonView;
 
 	beforeEach(async () => {
 		editor = await createEditor({ plugins: [Paragraph, Container] });
 
-		command = new ElementCommand(editor);
-		command.elementName = 'container';
+		command = new ElementContainerCommand(editor, 'container');
 		editor.commands.add('container', command);
 
 		view = new ElementButtonView(editor.locale, command);

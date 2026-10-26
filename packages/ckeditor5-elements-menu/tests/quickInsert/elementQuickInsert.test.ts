@@ -12,15 +12,15 @@ import {
 } from 'ckeditor5';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ElementMenu from '../../src/elementMenu.js';
-import QuickInsert from '../../src/quickInsert/quickInsert.js';
+import ElementQuickInsert from '../../src/quickInsert/elementQuickInsert.js';
 import QuickInsertCommand from '../../src/quickInsert/quickInsertCommand.js';
 import QuickInsertView from '../../src/quickInsert/quickInsertView.js';
 import { BlockObject, createEditor } from '../../../../testUtils/editor.js';
 import { press } from '../../../../testUtils/keyboard.js';
 
-describe('QuickInsert', () => {
+describe('ElementQuickInsert', () => {
 	let editor: ClassicEditor;
-	let plugin: QuickInsert;
+	let plugin: ElementQuickInsert;
 	let menu: ElementMenu;
 
 	const getView = (): QuickInsertView | null => {
@@ -33,11 +33,11 @@ describe('QuickInsert', () => {
 
 	beforeEach(async () => {
 		editor = await createEditor({
-			plugins: [Paragraph, Heading, ShiftEnter, BlockObject, QuickInsert],
-			quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' }, exclude: ['heading3'] }
+			plugins: [Paragraph, Heading, ShiftEnter, BlockObject, ElementQuickInsert],
+			elementQuickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' }, exclude: ['heading3'] }
 		});
 
-		plugin = editor.plugins.get('QuickInsert');
+		plugin = editor.plugins.get('ElementQuickInsert');
 		menu = editor.plugins.get(ElementMenu);
 		editor.editing.view.focus();
 		// The position before the selected object is between blocks.
@@ -49,7 +49,7 @@ describe('QuickInsert', () => {
 	});
 
 	it('has a plugin name, requires ElementMenu (not the context menu) and registers the command', () => {
-		expect(QuickInsert.pluginName).toBe('QuickInsert');
+		expect(ElementQuickInsert.pluginName).toBe('ElementQuickInsert');
 		expect(editor.plugins.has('ElementMenu')).toBe(true);
 		expect(editor.plugins.has('ElementContextMenu')).toBe(false);
 		expect(editor.commands.get('quickInsert')).toBeInstanceOf(QuickInsertCommand);
@@ -68,6 +68,17 @@ describe('QuickInsert', () => {
 		_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
 
 		expect(plugin.getItems()).toEqual([{ name: 'softBreak', label: 'softBreak' }]);
+	});
+
+	it('hasItems() tells whether getItems() lists an element, without the excluded ones', () => {
+		const root = editor.model.document.getRoot()!;
+
+		expect(plugin.hasItems()).toBe(true);
+
+		editor.config.set('elementQuickInsert.exclude', ['paragraph', 'heading1', 'heading2', 'heading3', 'element']);
+
+		expect(plugin.hasItems(editor.model.createPositionAt(root, 0))).toBe(false);
+		expect(plugin.getItems(editor.model.createPositionAt(root, 0))).toEqual([]);
 	});
 
 	it('opens the menu on Alt+Enter', () => {
@@ -245,7 +256,7 @@ describe('QuickInsert', () => {
 	});
 });
 
-describe('QuickInsert keystroke config', () => {
+describe('ElementQuickInsert keystroke config', () => {
 	let editor: ClassicEditor;
 
 	const accessibilityKeystrokes = (): unknown[] =>
@@ -258,7 +269,10 @@ describe('QuickInsert keystroke config', () => {
 	});
 
 	it('uses the configured keystroke', async () => {
-		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: 'Ctrl+Space' } });
+		editor = await createEditor({
+			plugins: [Paragraph, ElementQuickInsert],
+			elementQuickInsert: { keystroke: 'Ctrl+Space' }
+		});
 		editor.editing.view.focus();
 
 		expect(press(editor.keystrokes, keyCodes.enter, { altKey: true })).toBe(false);
@@ -267,13 +281,19 @@ describe('QuickInsert keystroke config', () => {
 	});
 
 	it('registers no keystroke with `false`', async () => {
-		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: false } });
+		editor = await createEditor({
+			plugins: [Paragraph, ElementQuickInsert],
+			elementQuickInsert: { keystroke: false }
+		});
 
 		expect(press(editor.keystrokes, keyCodes.enter, { altKey: true })).toBe(false);
 	});
 
 	it('lists the keystroke in the accessibility help', async () => {
-		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: 'Ctrl+Space' } });
+		editor = await createEditor({
+			plugins: [Paragraph, ElementQuickInsert],
+			elementQuickInsert: { keystroke: 'Ctrl+Space' }
+		});
 
 		expect(accessibilityKeystrokes()).toContainEqual(
 			expect.objectContaining({ label: 'Insert an element at the cursor', keystroke: 'Ctrl+Space' })
@@ -281,7 +301,10 @@ describe('QuickInsert keystroke config', () => {
 	});
 
 	it('lists no keystroke with `false`', async () => {
-		editor = await createEditor({ plugins: [Paragraph, QuickInsert], quickInsert: { keystroke: false } });
+		editor = await createEditor({
+			plugins: [Paragraph, ElementQuickInsert],
+			elementQuickInsert: { keystroke: false }
+		});
 
 		expect(accessibilityKeystrokes()).not.toContainEqual(
 			expect.objectContaining({ label: 'Insert an element at the cursor' })

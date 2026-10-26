@@ -16,8 +16,8 @@ export {
 	type ElementSubmenu
 } from './elementMenu.js';
 export { default as ElementContextMenu } from './contextMenu/elementContextMenu.js';
-export { default as Breadcrumbs, type BreadcrumbsConfig } from './breadcrumbs/breadcrumbs.js';
-export { default as QuickInsert, type QuickInsertConfig } from './quickInsert/quickInsert.js';
+export { default as ElementBreadcrumbs, type ElementBreadcrumbsConfig } from './breadcrumbs/elementBreadcrumbs.js';
+export { default as ElementQuickInsert, type ElementQuickInsertConfig } from './quickInsert/elementQuickInsert.js';
 
 // Commands.
 export { default as QuickInsertCommand } from './quickInsert/quickInsertCommand.js';

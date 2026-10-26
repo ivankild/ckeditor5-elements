@@ -5,14 +5,14 @@ description: 'Alt+Enter in CKEditor 5 opens a searchable list of the elements th
 
 # Quick insert
 
-`QuickInsert` opens a menu with a search field and the elements that can be inserted at a position. Type to filter, press Enter to insert the first match, or use the arrow keys to pick one.
+`ElementQuickInsert` opens a menu with a search field and the elements that can be inserted at a position. Type to filter, press Enter to insert the first match, or use the arrow keys to pick one.
 
 ```ts
-import { QuickInsert } from 'ckeditor5-elements';
+import { ElementQuickInsert } from 'ckeditor5-elements';
 import 'ckeditor5-elements/index.css';
 ```
 
-The menu is shown by the `ElementMenu` plugin, which `QuickInsert` loads. It does not add
+The menu is shown by the `ElementMenu` plugin, which `ElementQuickInsert` loads. It does not add
 a right-click menu; that needs [`ElementContextMenu`](./context-menu).
 
 ## Which elements are listed
@@ -70,12 +70,12 @@ blocks gets a paragraph with the cursor.
 <<< @/demos/quickInsertCommand.ts
 :::
 
-`editor.plugins.get('QuickInsert')` also has `open(target?, domTarget?)` and `getItems(target?)`.
+`editor.plugins.get('ElementQuickInsert')` also has `open(target?, domTarget?)` and `getItems(target?)`.
 
 ## Configuration
 
 ```ts
-quickInsert: {
+elementQuickInsert: {
 	// Labels by model name. Elements without a label are listed by their model name.
 	labels: { paragraph: 'Paragraph', heading1: 'Heading 1' },
 

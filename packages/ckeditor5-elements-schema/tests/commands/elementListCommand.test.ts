@@ -1,6 +1,6 @@
 import { _setModelData } from 'ckeditor5';
 import { describe, expect, it } from 'vitest';
-import ElementListCommand from '../../src/commands/elementListCommand.js';
+import { ElementListCommand } from 'ckeditor5-elements-core';
 import { useSchemaCommandsEditor } from '../schemaCommandsEditor.js';
 
 describe('ElementListCommand', () => {

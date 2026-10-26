@@ -1,13 +1,15 @@
-import { ModelLivePosition, type ModelElement, type ModelRange, type ModelWriter } from 'ckeditor5';
-import type { ElementOrPosition } from 'ckeditor5-elements-core';
-import { getLists } from '../definition/queries.js';
+import type { Editor, ModelElement, ModelRange } from 'ckeditor5';
+import type { ElementOrPosition } from '../elementOrPositionCommand.js';
 import ElementContainerCommand from './elementContainerCommand.js';
 
 /**
- * Makes a list of the blocks, as CKEditor's list commands do, for a list of the element schema (a `container` with a
- * `listItem`), e.g. a bulleted list: the selected blocks go in the list, each one in an item.
+ * Makes a list of the blocks, as CKEditor's list commands do, for a list of the element of its items, e.g. a bulleted
+ * list: the selected blocks go in the list, each one in an item.
  *
  * ```ts
+ * const command = new ElementListCommand(editor, 'bullets', 'item', ['numbers']);
+ *
+ * editor.commands.add('bulletedList', command);
  * editor.execute('bulletedList'); // The blocks of the selection.
  * ```
  *
@@ -21,15 +23,20 @@ export default class ElementListCommand extends ElementContainerCommand {
 	public readonly itemName: string;
 
 	/**
-	 * The lists of the schema, by name, with the names of their items.
+	 * The names of the other lists with the same items, which the command turns into its own.
 	 */
-	private readonly _lists: ReadonlyMap<string, string>;
+	public readonly otherLists: ReadonlySet<string>;
 
-	constructor(...args: ConstructorParameters<typeof ElementContainerCommand>) {
-		super(...args);
+	/**
+	 * @param elementName The name of the element of the list.
+	 * @param itemName The name of the element of its items.
+	 * @param otherLists The names of the other lists with the same items, e.g. a numbered list for a bulleted one.
+	 */
+	constructor(editor: Editor, elementName: string, itemName: string, otherLists: Iterable<string> = []) {
+		super(editor, elementName);
 
-		this._lists = getLists(this.editor.config.get('elementSchema') ?? {});
-		this.itemName = this._lists.get(this.elementName) ?? '';
+		this.itemName = itemName;
+		this.otherLists = new Set(otherLists);
 	}
 
 	/**
@@ -37,10 +44,11 @@ export default class ElementListCommand extends ElementContainerCommand {
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const list = this._findList(elementOrPosition);
+		const isOn = this._isOnFor(elementOrPosition);
 		const range = list ? null : this._getWrapRange(elementOrPosition);
 
 		this.editor.model.change(writer => {
-			if (list?.name === this.elementName) {
+			if (list && isOn) {
 				this._keepSelection(writer, () => {
 					for (const item of Array.from(list.getChildren())) {
 						if (item.is('element', this.itemName)) {
@@ -51,12 +59,16 @@ export default class ElementListCommand extends ElementContainerCommand {
 					writer.unwrap(list);
 				});
 			} else if (list) {
-				writer.rename(list, this.elementName);
+				if (list.name !== this.elementName) {
+					writer.rename(list, this.elementName);
+				}
+
+				writer.setAttributes(this.elementAttributes, list);
 			} else if (range) {
 				const blocks = Array.from(range.getItems({ shallow: true }));
 
 				this._keepSelection(writer, () => {
-					writer.wrap(range, this.elementName);
+					writer.wrap(range, this._createElement(writer));
 
 					for (const block of blocks) {
 						writer.wrap(writer.createRangeOn(block), this.itemName);
@@ -83,7 +95,7 @@ export default class ElementListCommand extends ElementContainerCommand {
 	 * "On" in a list of its own.
 	 */
 	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		return this._findList(elementOrPosition)?.name === this.elementName;
+		return this.isElement(this._findList(elementOrPosition));
 	}
 
 	/**
@@ -108,36 +120,13 @@ export default class ElementListCommand extends ElementContainerCommand {
 	}
 
 	/**
-	 * Changes the blocks of the list, and selects the same content then: wrapping or unwrapping each block moves it,
-	 * which the selection does not follow, but its ends do, in the text.
-	 */
-	private _keepSelection(writer: ModelWriter, change: () => void): void {
-		const selection = this.editor.model.document.selection;
-		const backward = selection.isBackward;
-		const ends = Array.from(selection.getRanges(), range => ({
-			start: ModelLivePosition.fromPosition(range.start, 'toNext'),
-			end: ModelLivePosition.fromPosition(range.end, 'toPrevious')
-		}));
-
-		change();
-		writer.setSelection(
-			ends.map(({ start, end }) => writer.createRange(start, end)),
-			{ backward }
-		);
-
-		for (const { start, end } of ends) {
-			start.detach();
-			end.detach();
-		}
-	}
-
-	/**
 	 * Returns the closest list that the target is in, of this one or of another with the same items.
 	 */
 	private _findList(elementOrPosition?: ElementOrPosition): ModelElement | null {
 		return (
-			this._getAncestors(elementOrPosition).find(element => this._lists.get(element.name) === this.itemName) ??
-			null
+			this._getAncestors(elementOrPosition).find(
+				element => element.name === this.elementName || this.otherLists.has(element.name)
+			) ?? null
 		);
 	}
 }

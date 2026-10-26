@@ -40,7 +40,7 @@ export interface ElementToolbarDefinition {
 }
 
 /**
- * Shows floating toolbars for elements, configured by the `elementToolbars` editor config option (see
+ * Shows floating toolbars for elements, configured by the `elementToolbar` editor config option (see
  * {@link ElementToolbarDefinition}): the toolbar of the closest element at the selection that matches, next to it,
  * while the editor is focused. When toolbars match nested elements, the toolbar of the innermost one shows.
  *
@@ -65,7 +65,7 @@ export default class ElementToolbar extends Plugin {
 		const editor = this.editor;
 		const repository = editor.plugins.get(WidgetToolbarRepository);
 
-		(editor.config.get('elementToolbars') ?? []).forEach((definition, index) => {
+		(editor.config.get('elementToolbar') ?? []).forEach((definition, index) => {
 			const toolbarId = `elementToolbar${String(index)}`;
 			const getElement = (): ModelElement | null => this.getElement(definition.element);
 

@@ -45,6 +45,22 @@ elementSchemaConverters: true
 
 All the [examples](./schema-examples) use these converters, with CSS for the layout.
 
+## A tag of its own: `tag`
+
+`tag` of an element makes it that tag, in the data and in the editor, with no class: e.g. a bold as `<strong>`, or a
+divider as `<hr>`. Its attributes are `data-*` attributes, as for the others. Two elements cannot have the same tag, as
+the data could not tell them apart.
+
+```json
+{
+	"bold": { "type": "block", "isInline": true, "tag": "strong" },
+	"divider": { "type": "empty", "tag": "hr" }
+}
+```
+
+An `empty` element with the tag of an HTML element that has no content, e.g. `hr` or `img`, is an empty element in the
+editor too.
+
 ## Another tag in the editor: `editingTag`
 
 `editingTag` of an element sets another tag for the **editing view** only, e.g. `"editingTag": "figure"`. The data keeps
@@ -71,6 +87,28 @@ elementSchema: schema,
 elementSchemaConverters: true
 ```
 
+## The names of the elements in the data: `'names'`
+
+With `elementSchemaConverters: 'names'`, the data has each element as the element of its **name**, and its attributes
+by their names: a `calloutTitle` is `<calloutTitle>`, and a `link` with an `href` is `<link href="…">`. The editing view
+stays the HTML above, with `div`, `span`, `tag` and `editingTag`, which the browser edits well.
+
+```ts
+elementSchema: schema,
+elementSchemaConverters: 'names'
+```
+
+```xml
+<callout tone="info">
+	<calloutTitle>A callout</calloutTitle>
+	<p>Text with a <badge color="red"/>.</p>
+</callout>
+```
+
+It is for a data processor that keeps the case of the names, e.g. of XML, as in the
+[DocBook](../examples/docbook) and [DITA](../examples/dita) examples. CKEditor's HTML data processor makes the names
+lowercase.
+
 ## Converters of your own
 
 When the data must have other tags, or other attributes, leave the option off and declare the converters yourself, in a
@@ -93,8 +131,8 @@ plugins: [..., ElementSchema, CalloutConverters],
 elementSchema: schema
 ```
 
-For only another tag, the `view` of an element of [`ElementSchemaCommands`](./schema-commands) declares it, over the
-converters of the schema: `divider: { title: 'Divider', view: 'hr' }`.
+For only another tag, the [`tag`](#a-tag-of-its-own-tag) of the element is enough: `"divider": { "type": "empty",
+"tag": "hr" }`.
 
 ## Typing in an empty inline element
 
@@ -103,7 +141,7 @@ container element of the view, as an element of the model becomes, gets a block 
 an empty paragraph has a height. In a `<span>`, the cursor is then before the `<br>`, and the browser puts the text out of
 the `<span>`.
 
-The converters of the schema, and the `view` of `ElementSchemaCommands`, make the view of an inline element with text
+The converters of the schema make the view of an inline element with text
 without a block filler. Then CKEditor puts its _inline_ filler where the cursor is, as in the empty `<strong>` of its own
 bold, and the text goes in the element, e.g. after it is inserted with [quick insert](./quick-insert), or by the
 [bold command](./schema-commands#formatting-bold-italic-underline). For converters of your own, `withoutBlockFiller()`

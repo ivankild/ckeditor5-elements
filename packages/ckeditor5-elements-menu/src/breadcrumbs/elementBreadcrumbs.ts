@@ -24,9 +24,9 @@ const SLOW_CONVERSION_TIME = 10;
 const THROTTLE_TIME = 250;
 
 /**
- * The configuration of the {@link Breadcrumbs} plugin.
+ * The configuration of the {@link ElementBreadcrumbs} plugin.
  */
-export interface BreadcrumbsConfig {
+export interface ElementBreadcrumbsConfig {
 	/**
 	 * Returns the items of the menu that opens when a breadcrumb is clicked, for the element of the breadcrumb: the
 	 * same items as in the `elementContextMenu` option (commands, submenus and `'|'` separators), so one callback can
@@ -53,14 +53,14 @@ interface DataView {
  *
  * Place them in a toolbar as the `breadcrumbs` component, or anywhere else using a view from {@link createView}.
  *
- * Clicking is configured only by the `breadcrumbs.menu` editor config option (see {@link BreadcrumbsConfig}): with it,
+ * Clicking is configured only by the `elementBreadcrumbs.menu` editor config option (see {@link ElementBreadcrumbsConfig}): with it,
  * the items are buttons that open the menu of their element, with `ElementMenu`, as the context menu does; without it,
  * they are labels.
  *
  * The data view is converted again only when elements change, not when typing or moving the cursor. For a large
  * document, that happens at most every 250 ms.
  */
-export default class Breadcrumbs extends Plugin {
+export default class ElementBreadcrumbs extends Plugin {
 	/**
 	 * The elements at the current selection, from the outermost to the innermost one.
 	 *
@@ -73,8 +73,8 @@ export default class Breadcrumbs extends Plugin {
 	private _isConversionSlow = false;
 	private _conversionTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	public static get pluginName(): 'Breadcrumbs' {
-		return 'Breadcrumbs' as const;
+	public static get pluginName(): 'ElementBreadcrumbs' {
+		return 'ElementBreadcrumbs' as const;
 	}
 
 	public static get requires(): readonly [typeof ElementMenu] {
@@ -110,7 +110,7 @@ export default class Breadcrumbs extends Plugin {
 	 * Creates a breadcrumbs view that follows {@link items}.
 	 */
 	public createView(locale: Locale = this.editor.locale): BreadcrumbsView {
-		const isClickable = typeof this.editor.config.get('breadcrumbs')?.menu === 'function';
+		const isClickable = typeof this.editor.config.get('elementBreadcrumbs')?.menu === 'function';
 		const view = new BreadcrumbsView(locale, { isClickable });
 
 		view.setItems(this.items);
@@ -235,7 +235,7 @@ export default class Breadcrumbs extends Plugin {
 	}
 
 	private _openMenu(item: BreadcrumbItemView): void {
-		const menuItems = this.editor.config.get('breadcrumbs')?.menu;
+		const menuItems = this.editor.config.get('elementBreadcrumbs')?.menu;
 		const element = item.modelElement;
 
 		if (!menuItems || !item.element || !element || !isInDocument(element)) {

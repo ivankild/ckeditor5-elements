@@ -1,6 +1,6 @@
 import { Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementActions,
 	ElementClipboard,
 	ElementContextMenu,
@@ -31,7 +31,7 @@ export default {
 			SourceEditing,
 			Paragraph,
 			Note,
-			Breadcrumbs,
+			ElementBreadcrumbs,
 			ElementContextMenu,
 			ElementClipboard,
 			ElementActions
@@ -42,7 +42,7 @@ export default {
 		},
 		elementContextMenu: menu,
 		// With a menu, the breadcrumbs are buttons that open it, with the `ElementMenu` plugin, as the context menu does.
-		breadcrumbs: { menu }
+		elementBreadcrumbs: { menu }
 	},
 	data:
 		'<aside class="note"><p>Put the cursor here, then click <code>aside.note</code> in the breadcrumbs: ' +

@@ -72,4 +72,26 @@ describe('verbatim blocks', () => {
 
 		expect(await press('abcd', '{Enter}', 1, 3)).toBe('<code>a\n[]d</code>');
 	});
+
+	it('insert a new line in a list item too: Enter of a verbatim block goes before Enter of a list', async () => {
+		const editor = await setUp();
+
+		editor.model.change(writer => {
+			const root = editor.model.document.getRoot()!;
+			const list = writer.createElement('bullets');
+			const item = writer.createElement('item');
+			const code = writer.createElement('code');
+
+			writer.remove(writer.createRangeIn(root));
+			writer.insertText('ab', code);
+			writer.append(code, item);
+			writer.append(item, list);
+			writer.insert(list, root);
+			writer.setSelection(code, 1);
+		});
+		editor.editing.view.focus();
+		await userEvent.keyboard('{Enter}');
+
+		expect(model()).toBe('<bullets><item><code>a\n[]b</code></item></bullets>');
+	});
 });

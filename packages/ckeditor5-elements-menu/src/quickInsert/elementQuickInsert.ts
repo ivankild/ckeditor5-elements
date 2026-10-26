@@ -7,9 +7,9 @@ import { type QuickInsertItem } from './quickInsertListView.js';
 import QuickInsertView from './quickInsertView.js';
 
 /**
- * The configuration of the {@link QuickInsert} plugin.
+ * The configuration of the {@link ElementQuickInsert} plugin.
  */
-export interface QuickInsertConfig {
+export interface ElementQuickInsertConfig {
 	/**
 	 * Labels of the elements, by model name. Elements without a label are listed by their model name.
 	 */
@@ -29,7 +29,7 @@ export interface QuickInsertConfig {
 
 /**
  * Opens a menu with a search field and the elements allowed at the selection, on Alt+Enter (Option+Enter on macOS; see
- * {@link QuickInsertConfig.keystroke}). Choosing an element inserts it with the `quickInsert` command.
+ * {@link ElementQuickInsertConfig.keystroke}). Choosing an element inserts it with the `quickInsert` command.
  *
  * The menu is shown by the `ElementMenu` plugin. The `quickInsertBefore` and `quickInsertAfter` commands (see
  * {@link QuickInsertPositionCommand}) open it for the position before or after an element; list them in the
@@ -37,28 +37,28 @@ export interface QuickInsertConfig {
  *
  * The menu closes when the document changes while it is open, so it never inserts at an outdated position.
  */
-export default class QuickInsert extends Plugin {
+export default class ElementQuickInsert extends Plugin {
 	public static get requires(): readonly [typeof ElementMenu] {
 		return [ElementMenu] as const;
 	}
 
-	public static get pluginName(): 'QuickInsert' {
-		return 'QuickInsert' as const;
+	public static get pluginName(): 'ElementQuickInsert' {
+		return 'ElementQuickInsert' as const;
 	}
 
 	constructor(editor: Editor) {
 		super(editor);
 
-		editor.config.define('quickInsert', { labels: {}, exclude: [], keystroke: 'Alt+Enter' });
+		editor.config.define('elementQuickInsert', { labels: {}, exclude: [], keystroke: 'Alt+Enter' });
 	}
 
 	public init(): void {
 		const editor = this.editor;
-		const keystroke = editor.config.get('quickInsert')?.keystroke;
+		const keystroke = editor.config.get('elementQuickInsert')?.keystroke;
 
-		editor.commands.add('quickInsert', new QuickInsertCommand(editor));
-		editor.commands.add('quickInsertBefore', new QuickInsertPositionCommand(editor, 'before'));
-		editor.commands.add('quickInsertAfter', new QuickInsertPositionCommand(editor, 'after'));
+		editor.commands.add('quickInsert', new QuickInsertCommand(editor, this));
+		editor.commands.add('quickInsertBefore', new QuickInsertPositionCommand(editor, 'before', this));
+		editor.commands.add('quickInsertAfter', new QuickInsertPositionCommand(editor, 'after', this));
 
 		if (keystroke) {
 			editor.keystrokes.set(keystroke, (data, cancel) => {
@@ -78,7 +78,7 @@ export default class QuickInsert extends Plugin {
 	 * selection), with their labels.
 	 */
 	public getItems(elementOrPosition?: ElementOrPosition): QuickInsertItem[] {
-		const config = this.editor.config.get('quickInsert');
+		const config = this.editor.config.get('elementQuickInsert');
 		const labels = config?.labels ?? {};
 		const command = this.editor.commands.get('quickInsert');
 
@@ -86,6 +86,16 @@ export default class QuickInsert extends Plugin {
 			name,
 			label: labels[name] ?? name
 		}));
+	}
+
+	/**
+	 * Whether an element can be inserted at the target (a position, the position before an element, or the selection),
+	 * as {@link getItems} lists them: it stops at the first one, e.g. for whether a command is enabled.
+	 */
+	public hasItems(elementOrPosition?: ElementOrPosition): boolean {
+		const command = this.editor.commands.get('quickInsert');
+
+		return !!command?.hasAllowedElements(elementOrPosition, this.editor.config.get('elementQuickInsert')?.exclude);
 	}
 
 	/**

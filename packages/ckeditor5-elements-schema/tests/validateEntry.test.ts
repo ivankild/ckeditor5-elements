@@ -20,6 +20,7 @@ describe('the entry without an editor (validate)', () => {
 		expect(Object.keys(validate).sort()).toEqual([
 			'ElementSchemaError',
 			'compileElementSchema',
+			'getInlineTextElements',
 			'getLists',
 			'getVerbatimElements',
 			'validateElementSchema'

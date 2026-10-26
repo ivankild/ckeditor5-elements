@@ -69,8 +69,15 @@ export interface ElementSchemaElement {
 	allowAttributes?: string[];
 
 	/**
-	 * The tag of the element in the editing view, e.g. `'section'`, when the converters of the schema are on (the
-	 * `elementSchemaConverters` option). The data has `div` or `span`, whatever it is. Default: the tag of the data.
+	 * The tag of the element, in the data and in the editing view, e.g. `'strong'` or `'hr'`, when the converters of the
+	 * schema are on (the `elementSchemaConverters` option): the element is that tag, with no class. Two elements cannot
+	 * have the same tag. Default: a `div` or a `span`, with the name of the element as its class.
+	 */
+	tag?: string;
+
+	/**
+	 * The tag of the element in the editing view only, e.g. `'section'`, when the converters of the schema are on (the
+	 * `elementSchemaConverters` option). Default: the tag of the data.
 	 */
 	editingTag?: string;
 

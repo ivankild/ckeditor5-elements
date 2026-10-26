@@ -41,11 +41,11 @@ describe('ckeditor5-elements', () => {
 				elements.ElementSelectable,
 				elements.ElementToolbar,
 				elements.ElementClickable,
-				elements.QuickInsert,
-				elements.Breadcrumbs
+				elements.ElementQuickInsert,
+				elements.ElementBreadcrumbs
 			],
 			elementContextMenu: (element, editor) => [editor.commands.get('copyElement')],
-			breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
+			elementBreadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
 		});
 
 		expect(editor.plugins.get('ElementMenu')).toBeInstanceOf(elements.ElementMenu);

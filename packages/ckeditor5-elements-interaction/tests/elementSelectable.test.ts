@@ -21,7 +21,7 @@ describe('ElementSelectable', () => {
 	async function setUp(selectable: ElementSelectableMatcher[], data: string): Promise<void> {
 		editor = await createEditor({
 			plugins: [Paragraph, Typing, Delete, Container, BlockObject, ElementSelectable],
-			selectableElements: selectable
+			elementSelectable: selectable
 		});
 
 		// `container` is the element of the test utils, converted to `<section class="container">`.
@@ -309,7 +309,7 @@ describe('ElementSelectable', () => {
 		it('selects the next element from a selected object, which the widgets handle for every object', async () => {
 			editor = await createEditor({
 				plugins: [Paragraph, Widget, Container, BlockObject, ElementSelectable],
-				selectableElements: ['container', 'element']
+				elementSelectable: ['container', 'element']
 			});
 			_setModelData(editor.model, '[<element></element>]<container><paragraph>b</paragraph></container>');
 

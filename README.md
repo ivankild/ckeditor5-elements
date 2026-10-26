@@ -13,7 +13,7 @@ npm install ckeditor5 ckeditor5-elements
 ```
 
 ```ts
-import { Breadcrumbs, ElementClipboard, ElementContextMenu, QuickInsert } from 'ckeditor5-elements';
+import { ElementBreadcrumbs, ElementClipboard, ElementContextMenu, ElementQuickInsert } from 'ckeditor5-elements';
 import 'ckeditor5-elements/index.css';
 ```
 
@@ -54,8 +54,8 @@ pnpm example:docbook # the DocBook example, as a page of its own (Vite)
 pnpm example:dita    # the DITA example, as a page of its own (Vite)
 pnpm docs:build      # the static documentation site, in docs/.vitepress/dist
 pnpm test            # tests, in headless Chrome
-pnpm test:coverage   # tests with a coverage report in coverage/
-pnpm check           # type check, lint, package consistency, format check and tests
+pnpm test:coverage   # tests with a coverage report in coverage/, and its thresholds, for each package
+pnpm check           # type check, lint, package consistency, format check, tests with coverage, docs build
 pnpm smoke           # installs the packed packages into a new app, builds it and runs it in Chrome
 pnpm version:set 49.0.0-alpha.4   # the version of all packages, which have the same one
 ```

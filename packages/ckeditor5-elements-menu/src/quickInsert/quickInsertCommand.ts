@@ -1,5 +1,6 @@
 import { type Editor, type ModelPosition } from 'ckeditor5';
 import { ElementOrPositionCommand, selectNewElement, type ElementOrPosition } from 'ckeditor5-elements-core';
+import type ElementQuickInsert from './elementQuickInsert.js';
 import { insertIcon } from './icons.js';
 
 /**
@@ -20,9 +21,18 @@ import { insertIcon } from './icons.js';
  * can hold blocks.
  */
 export default class QuickInsertCommand extends ElementOrPositionCommand {
-	constructor(editor: Editor) {
+	/**
+	 * The plugin whose menu the command opens, when it is executed without a name.
+	 */
+	private readonly _quickInsert: ElementQuickInsert | null;
+
+	/**
+	 * @param quickInsert The plugin whose menu the command opens. Without it, the command only inserts.
+	 */
+	constructor(editor: Editor, quickInsert: ElementQuickInsert | null = null) {
 		super(editor);
 
+		this._quickInsert = quickInsert;
 		this.title = editor.t('Insert element');
 		this.icon = insertIcon;
 	}
@@ -32,17 +42,15 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 	 * were registered. Generic items (such as `$text` or `$block`) and the excluded names are skipped.
 	 */
 	public getAllowedElements(elementOrPosition?: ElementOrPosition, exclude: readonly string[] = []): string[] {
-		const target = this._getPosition(elementOrPosition);
+		return Array.from(this._getAllowedElements(elementOrPosition, exclude));
+	}
 
-		if (!target) {
-			return [];
-		}
-
-		const schema = this.editor.model.schema;
-
-		return Object.keys(schema.getDefinitions()).filter(
-			name => !name.startsWith('$') && !exclude.includes(name) && schema.checkChild(target, name)
-		);
+	/**
+	 * Whether an element is allowed at exactly the position (or the selection), as {@link getAllowedElements} returns
+	 * them: it stops at the first one.
+	 */
+	public hasAllowedElements(elementOrPosition?: ElementOrPosition, exclude: readonly string[] = []): boolean {
+		return !this._getAllowedElements(elementOrPosition, exclude).next().done;
 	}
 
 	/**
@@ -55,15 +63,11 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 
 	/**
 	 * Inserts the element named `name` at the target, when the schema allows it there. Without a name, opens the quick
-	 * insert menu for the target (requires the `QuickInsert` plugin).
+	 * insert menu for the target, of the `ElementQuickInsert` plugin given to the constructor.
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition, name?: string): void {
 		if (name === undefined) {
-			const plugins = this.editor.plugins;
-
-			if (plugins.has('QuickInsert')) {
-				plugins.get('QuickInsert').open(elementOrPosition);
-			}
+			this._quickInsert?.open(elementOrPosition);
 
 			return;
 		}
@@ -81,5 +85,28 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 			writer.insert(element, target);
 			selectNewElement(writer, element);
 		});
+	}
+
+	/**
+	 * Yields the names of the elements allowed at exactly the position (or the selection), one by one.
+	 */
+	private *_getAllowedElements(
+		elementOrPosition: ElementOrPosition | undefined,
+		exclude: readonly string[]
+	): Generator<string> {
+		const target = this._getPosition(elementOrPosition);
+
+		if (!target) {
+			return;
+		}
+
+		const schema = this.editor.model.schema;
+		const excluded = new Set(exclude);
+
+		for (const name of Object.keys(schema.getDefinitions())) {
+			if (!name.startsWith('$') && !excluded.has(name) && schema.checkChild(target, name)) {
+				yield name;
+			}
+		}
 	}
 }

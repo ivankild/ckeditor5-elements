@@ -104,6 +104,8 @@ as a bold. It is an element as any other: it has its name and attributes of its 
 
 - It holds text and other inline elements, e.g. a bold in a term.
 - By default, it is allowed where text is: in blocks, and in other inline elements. Not in the root or in containers.
+- At its ends, the left and right arrow keys move in two steps: into the element, then in the text. See
+  [Two-step caret movement](./schema-commands#two-step-caret-movement).
 
 To give one a command and a button that wrap the selected text with it, as CKEditor's bold has, see
 [Formatting](./schema-commands#formatting-bold-italic-underline). An empty one takes the cursor, e.g. after it is inserted
@@ -129,14 +131,15 @@ out in a line (cards, columns, chips). Each one holds blocks, as a container doe
 
 ## What an element can have
 
-| Key               | Does                                                                                                        |
-| ----------------- | ----------------------------------------------------------------------------------------------------------- |
-| `allowAttributes` | The attributes the element can have, as in CKEditor.                                                        |
-| `allowChildren`   | More elements allowed inside, as in CKEditor: it **adds** to what the type holds. `'$text'` is allowed too. |
-| `allowIn`         | The parents the element is allowed in: element names, and `'$root'`.                                        |
-| `editingTag`      | The tag in the editing view, with the [converters](./schema-converters) of the plugin. Not in the data.     |
-| `verbatim`        | A block whose whitespace is its content, e.g. code: see [Verbatim blocks](#verbatim-blocks).                |
-| `listItem`        | Makes a container a list of the items of that name: see [Lists](#lists).                                    |
+| Key               | Does                                                                                                                   |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `allowAttributes` | The attributes the element can have, as in CKEditor.                                                                   |
+| `allowChildren`   | More elements allowed inside, as in CKEditor: it **adds** to what the type holds. `'$text'` is allowed too.            |
+| `allowIn`         | The parents the element is allowed in: element names, and `'$root'`.                                                   |
+| `tag`             | The tag in the data and in the editor, e.g. `strong`, with the [converters](./schema-converters#a-tag-of-its-own-tag). |
+| `editingTag`      | The tag in the editing view, with the [converters](./schema-converters) of the plugin. Not in the data.                |
+| `verbatim`        | A block whose whitespace is its content, e.g. code: see [Verbatim blocks](#verbatim-blocks).                           |
+| `listItem`        | Makes a container a list of the items of that name: see [Lists](#lists).                                               |
 
 `allowIn` differs from CKEditor in one way, on purpose: when it is given, it **replaces** the default places of the type
 (the root and containers for block-level elements, where text is for inline ones). Otherwise an element could never be

@@ -98,12 +98,16 @@ view back into XML.
 
 ### The converters: DocBook names in the data
 
-The `XmlDocument` plugin sets the data processor, and declares the converters of the data: each element of the schema
-is the element of its name in the data, over the [converters of the schema](../guide/schema-converters), and its
-attributes keep their names (`<ulink url="…">`). The editing view stays the one of the converters of the schema. It is
-configured by the `xmlDocument` option of the editor: the root element, the prolog, and the name of the paragraph.
+The [converters of the schema](../guide/schema-converters#the-names-of-the-elements-in-the-data-names) write each
+element with its name, and its attributes with theirs (`<ulink url="…">`): `elementSchemaConverters: 'names'`. The
+editing view stays HTML, from the same converters.
+
+The `XmlDocument` plugin sets the data processor, with the block-level elements and the verbatim blocks of the schema,
+and makes CKEditor's paragraph the `para` of the data. It is configured by the `xmlDocument` option of the editor: the
+root element, the prolog, and the name of the paragraph.
 
 ```ts
+elementSchemaConverters: 'names',
 xmlDocument: { root: 'article', prolog: DOCBOOK_PROLOG, paragraph: 'para', className: 'docbook' }
 ```
 

@@ -7,7 +7,7 @@ import {
 	type ClassicEditor,
 	type ModelElement
 } from 'ckeditor5';
-import { ElementCommand } from 'ckeditor5-elements-core';
+import { ElementContainerCommand } from 'ckeditor5-elements-core';
 import ElementMenu, { type ElementMenuConfig } from '../../src/elementMenu.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../../testUtils/editor.js';
@@ -18,7 +18,7 @@ describe('ElementContextMenu', () => {
 	let editor: ClassicEditor;
 	let plugin: ElementContextMenu;
 	let menu: ElementMenu;
-	let containerCommand: ElementCommand;
+	let containerCommand: ElementContainerCommand;
 
 	/**
 	 * Creates the editor with a `container` toggle command (titled "Container"). The menu config defaults to just that
@@ -33,8 +33,7 @@ describe('ElementContextMenu', () => {
 		plugin = editor.plugins.get('ElementContextMenu');
 		menu = editor.plugins.get('ElementMenu');
 
-		containerCommand = new ElementCommand(editor);
-		containerCommand.elementName = 'container';
+		containerCommand = new ElementContainerCommand(editor, 'container');
 		containerCommand.set({ title: 'Container', icon: '<svg></svg>' });
 		editor.commands.add('container', containerCommand);
 

@@ -1,15 +1,16 @@
-import { Plugin, type ModelSchema, type ViewDowncastWriter, type ViewElement } from 'ckeditor5';
-import { ElementOrPositionButtonView } from 'ckeditor5-elements-core';
-import { createInlineTextElement } from './conversion/inlineTextElement.js';
-import ElementBlockCommand from './commands/elementBlockCommand.js';
-import ElementContainerCommand from './commands/elementContainerCommand.js';
-import ElementInlineCommand from './commands/elementInlineCommand.js';
-import ElementInsertCommand from './commands/elementInsertCommand.js';
-import ElementListCommand from './commands/elementListCommand.js';
+import { Plugin, type Editor } from 'ckeditor5';
+import {
+	ElementBlockCommand,
+	ElementButtonView,
+	ElementContainerCommand,
+	ElementInlineCommand,
+	ElementInsertCommand,
+	ElementListCommand,
+	type ElementCommand
+} from 'ckeditor5-elements-core';
+import { getModelKind } from './definition/modelKind.js';
 import { getLists } from './definition/queries.js';
 import ElementSchema from './elementSchema.js';
-import type ElementSchemaCommand from './commands/elementSchemaCommand.js';
-import { enableTwoStepCaretMovement } from './typing/twoStepCaretMovement.js';
 
 /**
  * An element of {@link ElementSchemaCommands}: its command and its button.
@@ -34,13 +35,6 @@ export interface ElementSchemaCommandDefinition {
 	 * The keystroke that executes the command, e.g. `'Ctrl+B'`.
 	 */
 	keystroke?: string;
-
-	/**
-	 * The tag of the element in the data and in the editing view, e.g. `'strong'` or `'hr'`. The converters of the plugin
-	 * replace the ones of the element schema (`elementSchemaConverters`) in the downcast, and the upcast takes both.
-	 * Without it, the element is converted by the schema, or by your converters.
-	 */
-	view?: string;
 }
 
 /**
@@ -50,7 +44,7 @@ export type ElementSchemaCommandsConfig = Record<string, ElementSchemaCommandDef
 
 /**
  * A command, a toolbar button and a keystroke for every element of the element schema, formatting included: the command
- * of an element is the one of its kind (see {@link ElementSchemaCommand}), and works as the CKEditor feature of that
+ * of an element is the one of its kind (see {@link ElementCommand}), and works as the CKEditor feature of that
  * kind.
  *
  * | Element                       | Command                     | Works as CKEditor's           |
@@ -64,18 +58,15 @@ export type ElementSchemaCommandsConfig = Record<string, ElementSchemaCommandDef
  * ```ts
  * elementSchema: schema,
  * elementSchemaCommands: {
- *   bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
+ *   bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B' },
  *   callout: { title: 'Callout', icon: IconQuote },
- *   divider: { title: 'Divider', icon: IconHorizontalLine, view: 'hr' }
+ *   divider: { title: 'Divider', icon: IconHorizontalLine }
  * },
  * toolbar: ['bold', 'callout', 'divider']
  * ```
  *
  * Each key is the name of the command and of its toolbar button. The commands have titles and icons, so they can be
  * menu items too, e.g. of the context menu.
- *
- * At the ends of the inline elements with text, the left and right arrow keys move in two steps, as CKEditor's two-step
- * caret movement does at the ends of a bold: in the element, then in the text.
  *
  * The commands are made when the elements are registered, after `ElementSchema` and the other plugins are initialized.
  * The editor is not created when an element is unknown.
@@ -92,7 +83,7 @@ export default class ElementSchemaCommands extends Plugin {
 	/**
 	 * The commands, by their name.
 	 */
-	private readonly _commands = new Map<string, ElementSchemaCommand>();
+	private readonly _commands = new Map<string, ElementCommand>();
 
 	public init(): void {
 		const editor = this.editor;
@@ -111,9 +102,8 @@ export default class ElementSchemaCommands extends Plugin {
 					throw new Error(`elementSchemaCommands.${name}: the button is created before the command.`);
 				}
 
-				const button = new ElementOrPositionButtonView(locale, command);
+				const button = new ElementButtonView(locale, command);
 
-				button.bind('isOn').to(command, 'isOn');
 				button.keystroke = keystroke;
 
 				return button;
@@ -122,86 +112,63 @@ export default class ElementSchemaCommands extends Plugin {
 	}
 
 	/**
-	 * Makes the commands of the elements, which are registered then, and their converters.
+	 * Makes the commands of the elements, which are registered then.
 	 */
 	public afterInit(): void {
 		const editor = this.editor;
-		const schema = editor.model.schema;
-		const lists = getLists(editor.config.get('elementSchema') ?? {});
-		const inlineNames = new Set<string>();
+		const lists = getLists(editor.plugins.get(ElementSchema).definition ?? {});
 
-		for (const [name, { element, title, icon, view }] of this._getDefinitions()) {
+		for (const [name, { element, title, icon }] of this._getDefinitions()) {
 			const elementName = element ?? name;
 
-			if (!schema.isRegistered(elementName)) {
+			if (!editor.model.schema.isRegistered(elementName)) {
 				throw new Error(
 					`elementSchemaCommands.${name}: unknown element "${elementName}". Declare it in the element schema, or ` +
 						`set "element" to an element of another plugin.`
 				);
 			}
 
-			const CommandClass = lists.has(elementName) ? ElementListCommand : getCommandClass(schema, elementName);
-			const command = new CommandClass(editor, elementName);
+			const command = createCommand(editor, elementName, lists);
 
 			command.set({ title, icon });
 			editor.commands.add(name, command);
 			this._commands.set(name, command);
-
-			if (command instanceof ElementInlineCommand) {
-				inlineNames.add(elementName);
-			}
-
-			if (view) {
-				this._convert(elementName, view, (writer: ViewDowncastWriter) => {
-					if (command instanceof ElementInlineCommand) {
-						return createInlineTextElement(writer, view);
-					}
-
-					return schema.isObject(elementName)
-						? writer.createEmptyElement(view)
-						: writer.createContainerElement(view);
-				});
-			}
 		}
-
-		enableTwoStepCaretMovement(this, inlineNames);
 	}
 
 	private _getDefinitions(): [name: string, definition: ElementSchemaCommandDefinition][] {
 		return Object.entries(this.editor.config.get('elementSchemaCommands') ?? {});
 	}
-
-	/**
-	 * Declares the converters of an element with the tag of its `view`: the downcast with the highest priority, so it
-	 * replaces the ones of the element schema, and the upcast.
-	 */
-	private _convert(elementName: string, tag: string, createView: (writer: ViewDowncastWriter) => ViewElement): void {
-		const conversion = this.editor.conversion;
-
-		conversion.for('upcast').elementToElement({ view: tag, model: elementName });
-		conversion.for('downcast').elementToElement({
-			model: elementName,
-			view: (_element, { writer }) => createView(writer),
-			// Over the ones of the schema, some of which are `high` already.
-			converterPriority: 'highest'
-		});
-	}
 }
 
 /**
- * Returns the command of an element, by its kind: an object, or an inline element with no text, is inserted; an inline
- * element with text wraps text; a block-level one with text is a block; the others are containers.
+ * Returns the command of an element, by its kind (see {@link getModelKind}): a list of the element schema is a list; an
+ * `empty` element, or an inline container, is inserted; an inline element with text wraps text; a block-level one is a
+ * block; the others are containers.
  */
-function getCommandClass(schema: ModelSchema, name: string): typeof ElementSchemaCommand {
-	const holdsText = schema.checkChild(name, '$text');
+function createCommand(editor: Editor, name: string, lists: ReadonlyMap<string, string>): ElementCommand {
+	const itemName = lists.get(name);
 
-	if (schema.isObject(name) || (schema.isInline(name) && !holdsText)) {
-		return ElementInsertCommand;
+	if (itemName) {
+		const otherLists = Array.from(lists).filter(([list, item]) => item === itemName && list !== name);
+
+		return new ElementListCommand(
+			editor,
+			name,
+			itemName,
+			otherLists.map(([list]) => list)
+		);
 	}
 
-	if (schema.isInline(name)) {
-		return ElementInlineCommand;
+	const { type, isInline } = getModelKind(editor.model.schema, name);
+
+	if (type === 'empty' || (isInline && type === 'container')) {
+		return new ElementInsertCommand(editor, name);
 	}
 
-	return holdsText ? ElementBlockCommand : ElementContainerCommand;
+	if (type === 'block') {
+		return isInline ? new ElementInlineCommand(editor, name) : new ElementBlockCommand(editor, name);
+	}
+
+	return new ElementContainerCommand(editor, name);
 }

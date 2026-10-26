@@ -1,12 +1,12 @@
 import type {
-	Breadcrumbs,
-	BreadcrumbsConfig,
+	ElementBreadcrumbs,
+	ElementBreadcrumbsConfig,
 	ElementContextMenu,
 	ElementMenu,
 	ElementMenuConfig,
-	QuickInsert,
+	ElementQuickInsert,
 	QuickInsertCommand,
-	QuickInsertConfig,
+	ElementQuickInsertConfig,
 	QuickInsertPositionCommand
 } from './index.js';
 
@@ -14,8 +14,8 @@ declare module 'ckeditor5' {
 	interface PluginsMap {
 		[ElementMenu.pluginName]: ElementMenu;
 		[ElementContextMenu.pluginName]: ElementContextMenu;
-		[Breadcrumbs.pluginName]: Breadcrumbs;
-		[QuickInsert.pluginName]: QuickInsert;
+		[ElementBreadcrumbs.pluginName]: ElementBreadcrumbs;
+		[ElementQuickInsert.pluginName]: ElementQuickInsert;
 	}
 
 	interface CommandsMap {
@@ -32,13 +32,13 @@ declare module 'ckeditor5' {
 		elementContextMenu?: ElementMenuConfig;
 
 		/**
-		 * The configuration of the {@link Breadcrumbs} plugin.
+		 * The configuration of the {@link ElementBreadcrumbs} plugin.
 		 */
-		breadcrumbs?: BreadcrumbsConfig;
+		elementBreadcrumbs?: ElementBreadcrumbsConfig;
 
 		/**
-		 * The configuration of the {@link QuickInsert} plugin.
+		 * The configuration of the {@link ElementQuickInsert} plugin.
 		 */
-		quickInsert?: QuickInsertConfig;
+		elementQuickInsert?: ElementQuickInsertConfig;
 	}
 }

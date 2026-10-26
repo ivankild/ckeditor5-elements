@@ -30,7 +30,7 @@ export default {
 			ElementClickable
 		],
 		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'link', 'note'],
-		elementClickables: [
+		elementClickable: [
 			// By a filter function: images, and anything with a link (a linked image). Called on click.
 			{
 				element: element => element.name === 'imageBlock' || element.hasAttribute('linkHref'),

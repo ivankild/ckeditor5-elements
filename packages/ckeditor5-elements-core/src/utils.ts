@@ -1,4 +1,6 @@
 import type {
+	Model,
+	ModelDocumentFragment,
 	ModelDocumentSelection,
 	ModelElement,
 	ModelPosition,
@@ -56,4 +58,22 @@ export function selectNewElement(writer: ModelWriter, element: ModelElement): vo
 		// Only objects can be selected as a whole. The selection post-fixer moves it to the closest valid place.
 		writer.setSelection(element, 'after');
 	}
+}
+
+/**
+ * Returns the block of a position: its parent, or the closest ancestor of it that is not inline, e.g. the paragraph of
+ * the text in an inline element. `null` in the root.
+ */
+export function findBlock(model: Model, position: ModelPosition | null): ModelElement | null {
+	for (
+		let node: ModelElement | ModelDocumentFragment | null = position?.parent ?? null;
+		node?.is('element') && !node.is('rootElement');
+		node = node.parent
+	) {
+		if (!model.schema.isInline(node)) {
+			return node;
+		}
+	}
+
+	return null;
 }

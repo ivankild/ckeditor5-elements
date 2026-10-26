@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import { keystroke } from '../../../testUtils/keyboard.js';
 import { describeItems } from '../../../testUtils/menu.js';
-import { ElementCommand, ElementOrPositionCommand } from 'ckeditor5-elements-core';
+import { ElementContainerCommand, ElementOrPositionCommand } from 'ckeditor5-elements-core';
 import { type ElementMenuItem } from '../src/elementMenu.js';
 import ElementMenuView from '../src/elementMenuView.js';
 
@@ -35,7 +35,7 @@ class AlwaysEnabledCommand extends ElementOrPositionCommand {
 
 describe('ElementMenuView', () => {
 	let editor: ClassicEditor;
-	let container: ElementCommand;
+	let container: ElementContainerCommand;
 	let plain: ElementOrPositionCommand;
 	let view: ElementMenuView | undefined;
 
@@ -56,8 +56,7 @@ describe('ElementMenuView', () => {
 	beforeEach(async () => {
 		editor = await createEditor({ plugins: [Paragraph, Container] });
 
-		container = new ElementCommand(editor);
-		container.elementName = 'container';
+		container = new ElementContainerCommand(editor, 'container');
 		container.set({ title: 'Container', icon: '<svg id="container"></svg>' });
 		editor.commands.add('container', container);
 
@@ -160,6 +159,13 @@ describe('ElementMenuView', () => {
 			]);
 		});
 
+		it('are disabled when they have only separators and disabled items', () => {
+			editor.enableReadOnlyMode('test');
+			createView([{ title: 'Separated', items: ['|', container] }]);
+
+			expect(view!.menus[0].isEnabled).toBe(false);
+		});
+
 		it('open on hover, next to their item, in a panel in the body collection', () => {
 			createView([plain, { title: 'More', items: [container] }]);
 
@@ -185,6 +191,13 @@ describe('ElementMenuView', () => {
 			expect(paragraph.parent?.is('element', 'container')).toBe(true);
 			expect(executeSpy).toHaveBeenCalled();
 		});
+	});
+
+	it('skips the items that are not there, e.g. a command of a plugin that is not loaded', () => {
+		view = new ElementMenuView(editor.locale, editor.ui.view.body, [null, plain, undefined, container], child(1));
+		view.render();
+
+		expect(describeItems(view)).toEqual(['Plain', 'Container']);
 	});
 
 	describe('separators', () => {

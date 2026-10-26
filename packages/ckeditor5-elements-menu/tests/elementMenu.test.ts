@@ -11,7 +11,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import { press, pressIn } from '../../../testUtils/keyboard.js';
 import { describeItems } from '../../../testUtils/menu.js';
-import { ElementCommand } from 'ckeditor5-elements-core';
+import { ElementContainerCommand } from 'ckeditor5-elements-core';
 import ElementMenu, { type ElementMenuConfig } from '../src/elementMenu.js';
 import ElementMenuView from '../src/elementMenuView.js';
 
@@ -19,7 +19,7 @@ describe('ElementMenu', () => {
 	let editor: ClassicEditor;
 	let menu: ElementMenu;
 	let balloon: ContextualBalloon;
-	let containerCommand: ElementCommand;
+	let containerCommand: ElementContainerCommand;
 	let config: ElementMenuConfig;
 
 	/**
@@ -33,8 +33,7 @@ describe('ElementMenu', () => {
 		balloon = editor.plugins.get(ContextualBalloon);
 		config = menuConfig;
 
-		containerCommand = new ElementCommand(editor);
-		containerCommand.elementName = 'container';
+		containerCommand = new ElementContainerCommand(editor, 'container');
 		containerCommand.set({ title: 'Container', icon: '<svg></svg>' });
 		editor.commands.add('container', containerCommand);
 

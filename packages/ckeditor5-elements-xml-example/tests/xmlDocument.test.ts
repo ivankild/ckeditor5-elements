@@ -29,7 +29,7 @@ describe('XmlDocument', () => {
 				code: { type: 'block', verbatim: true },
 				link: { type: 'block', isInline: true, allowAttributes: ['href'] }
 			},
-			elementSchemaConverters: true,
+			elementSchemaConverters: 'names',
 			xmlDocument: { root: 'doc', prolog: PROLOG, paragraph: 'p', className: 'doc' }
 		});
 	});
@@ -111,5 +111,16 @@ describe('XmlDocument', () => {
 		await expect(createEditor({ plugins: [Paragraph, XmlDocument] })).rejects.toThrow(
 			'XmlDocument: the xmlDocument option is required'
 		);
+	});
+
+	it('needs the converters of the schema with the names of the elements', async () => {
+		await expect(
+			createEditor({
+				plugins: [Paragraph, XmlDocument],
+				elementSchema: { part: { type: 'container' } },
+				elementSchemaConverters: true,
+				xmlDocument: { root: 'doc', prolog: PROLOG, paragraph: 'p' }
+			})
+		).rejects.toThrow("XmlDocument: set elementSchemaConverters to 'names'");
 	});
 });

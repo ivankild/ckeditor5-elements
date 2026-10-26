@@ -24,8 +24,8 @@ describe('the full example', () => {
 			'ElementSchema',
 			'ElementSelectable',
 			'ElementToolbar',
-			'QuickInsert',
-			'Breadcrumbs'
+			'ElementQuickInsert',
+			'ElementBreadcrumbs'
 		] as const) {
 			expect([name, editor.plugins.has(name)]).toEqual([name, true]);
 		}
@@ -65,7 +65,7 @@ describe('the full example', () => {
 			const tip = [...root.getChildren()].find(node => node.is('element', 'tip')) as ModelElement;
 			const labels = (position: ModelPosition): string[] =>
 				editor.plugins
-					.get('QuickInsert')
+					.get('ElementQuickInsert')
 					.getItems(position)
 					.map(item => item.label);
 
@@ -138,7 +138,7 @@ describe('the full example', () => {
 
 		const position = editor.model.createPositionAt(editor.model.document.getRoot()!, 1);
 		const labels = editor.plugins
-			.get('QuickInsert')
+			.get('ElementQuickInsert')
 			.getItems(position)
 			.map(item => item.label);
 

@@ -39,7 +39,7 @@ export interface ElementSubmenu {
 export type ElementMenuItem = ElementOrPositionCommand | ElementSubmenu | '|';
 
 /**
- * Returns the items of the menu of the given element, e.g. as the `elementContextMenu` or `breadcrumbs.menu` editor
+ * Returns the items of the menu of the given element, e.g. as the `elementContextMenu` or `elementBreadcrumbs.menu` editor
  * config option. Missing items (e.g. commands that are not registered) are skipped. No items means no menu.
  */
 export type ElementMenuConfig = (element: ModelElement, editor: Editor) => (ElementMenuItem | null | undefined)[];

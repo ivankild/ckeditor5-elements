@@ -11,7 +11,7 @@ const items = [
 	{ name: 'heading2', label: 'Heading 2' }
 ];
 
-describe('QuickInsert views', () => {
+describe('ElementQuickInsert views', () => {
 	let editor: ClassicEditor;
 	let locale: Locale;
 

@@ -5,7 +5,7 @@ description: "Show the element path at the cursor in CKEditor 5, e.g. section \u
 
 # Breadcrumbs
 
-`Breadcrumbs` shows the element path at the cursor, e.g. `aside.note › p`, as
+`ElementBreadcrumbs` shows the element path at the cursor, e.g. `aside.note › p`, as
 the `breadcrumbs` toolbar component.
 
 The path is made of the elements of the editor **data** (as `editor.getData()` outputs it), not of the editing view, so
@@ -23,7 +23,7 @@ gives `p › strong`. CKEditor's own text attributes, such as its bold or a link
 elements.
 
 ```ts
-import { Breadcrumbs } from 'ckeditor5-elements';
+import { ElementBreadcrumbs } from 'ckeditor5-elements';
 import 'ckeditor5-elements/index.css';
 ```
 
@@ -32,7 +32,7 @@ The path is a list in a `nav` landmark ("Element path"), and the element with th
 
 To build the path, the plugin converts the document to the data view. It does that again only when elements change,
 not when typing or moving the cursor. When converting takes long (in a large document), it happens at most every
-250 ms, so the path can lag behind briefly. `editor.plugins.get('Breadcrumbs').refresh()` updates it right away.
+250 ms, so the path can lag behind briefly. `editor.plugins.get('ElementBreadcrumbs').refresh()` updates it right away.
 
 ## Labels
 
@@ -46,10 +46,10 @@ By default, the breadcrumbs are labels. CKEditor's `-` toolbar item (a line brea
 
 ## With a menu
 
-The `breadcrumbs.menu` option makes the breadcrumbs buttons that open a menu of their element. It takes the same items as
+The `elementBreadcrumbs.menu` option makes the breadcrumbs buttons that open a menu of their element. It takes the same items as
 [`elementContextMenu`](./context-menu), so one callback can serve both. The parts of a structure open the menu of the
 structure (`tbody` opens the menu of the table). List items (`ul`, `li`) stay labels: lists are attributes of the
-blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, which `Breadcrumbs` loads, as the context
+blocks in them, not elements. The menu is shown by the `ElementMenu` plugin, which `ElementBreadcrumbs` loads, as the context
 menu and quick insert do: it is the same menu as the context menu's. Without the option, the breadcrumbs are labels.
 
 <EditorDemo name="breadcrumbsMenu" />
@@ -69,7 +69,7 @@ goes to the outermost breadcrumb; from the next one, to the innermost.
 
 ## Anywhere on the page
 
-`editor.plugins.get('Breadcrumbs').createView()` returns breadcrumbs that follow the cursor, to place anywhere. Here,
+`editor.plugins.get('ElementBreadcrumbs').createView()` returns breadcrumbs that follow the cursor, to place anywhere. Here,
 below the editor:
 
 <EditorDemo name="breadcrumbsOutside" />

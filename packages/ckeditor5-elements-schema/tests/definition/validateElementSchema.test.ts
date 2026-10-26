@@ -124,6 +124,30 @@ describe('validateElementSchema()', () => {
 		});
 	});
 
+	describe('tag', () => {
+		it('accepts the name of a tag, in lowercase, with an editingTag too', () => {
+			expect(
+				problems({
+					a: { type: 'empty', tag: 'hr' },
+					b: { type: 'container', tag: 'aside', editingTag: 'section' }
+				})
+			).toEqual([]);
+		});
+
+		it('rejects what is not the name of a tag, and the tag of another element', () => {
+			expect(
+				problems({
+					a: { type: 'block', tag: 'Strong' },
+					b: { type: 'block', isInline: true, tag: 'strong' },
+					c: { type: 'block', isInline: true, tag: 'strong' }
+				})
+			).toEqual([
+				'a.tag: must be the name of an HTML tag, in lowercase, e.g. "section", not "Strong".',
+				'c.tag: "strong" is the tag of "b" already: the data could not tell them apart. Give one of them another tag.'
+			]);
+		});
+	});
+
 	describe('names', () => {
 		it('rejects names that are not camelCase, and generic names', () => {
 			expect(

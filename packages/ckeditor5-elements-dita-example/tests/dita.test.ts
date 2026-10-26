@@ -101,7 +101,7 @@ describe('the DITA example', () => {
 		it('show the path of the DITA elements in the breadcrumbs', () => {
 			_setModelData(editor.model, '<body><section><ul><li><paragraph>a[]</paragraph></li></ul></section></body>');
 
-			expect(editor.plugins.get('Breadcrumbs').items.map(item => item.label)).toEqual([
+			expect(editor.plugins.get('ElementBreadcrumbs').items.map(item => item.label)).toEqual([
 				'body',
 				'section',
 				'ul',

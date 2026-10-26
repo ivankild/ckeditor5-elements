@@ -1,5 +1,5 @@
 import { Bold, Essentials, Paragraph, SourceEditing } from 'ckeditor5';
-import { Breadcrumbs, ElementSchema, ElementSelectable } from 'ckeditor5-elements';
+import { ElementBreadcrumbs, ElementSchema, ElementSelectable } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 // The model elements of the demo: a callout (a container), a divider and a badge (empty elements).
@@ -11,7 +11,7 @@ const schema = {
 
 export default {
 	config: {
-		plugins: [Essentials, SourceEditing, Paragraph, Bold, ElementSchema, ElementSelectable, Breadcrumbs],
+		plugins: [Essentials, SourceEditing, Paragraph, Bold, ElementSchema, ElementSelectable, ElementBreadcrumbs],
 		toolbar: {
 			items: ['undo', 'redo', 'sourceEditing', '|', 'bold', '-', 'breadcrumbs'],
 			shouldNotGroupWhenFull: true
@@ -20,7 +20,7 @@ export default {
 		elementSchema: schema,
 		elementSchemaConverters: true
 		// `ElementSchema` makes its `empty` and `container` elements selectable. For other elements, by name or by a
-		// filter function, use the option: `selectableElements: ['imageBlock', element => element.hasAttribute('x')]`.
+		// filter function, use the option: `elementSelectable: ['imageBlock', element => element.hasAttribute('x')]`.
 	},
 	data:
 		'<p>Click the divider below, or put the cursor at the end of this line and press <b>→</b>: the next element is ' +

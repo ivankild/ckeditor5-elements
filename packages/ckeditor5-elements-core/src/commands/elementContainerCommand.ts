@@ -1,10 +1,10 @@
 import type { ModelElement, ModelRange } from 'ckeditor5';
-import type { ElementOrPosition } from 'ckeditor5-elements-core';
-import ElementSchemaCommand from './elementSchemaCommand.js';
+import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import ElementCommand from './elementCommand.js';
 
 /**
- * Wraps blocks with the element, as CKEditor's block quote command does, e.g. a `callout` that is a `container` of the
- * element schema: the selected blocks, or the block-level element of the target, go in a new element.
+ * Wraps blocks with the element, as CKEditor's block quote command does, e.g. a `callout` that holds blocks: the
+ * selected blocks, or the block-level element of the target, go in a new element.
  *
  * ```ts
  * editor.execute('callout'); // The blocks of the selection.
@@ -15,7 +15,7 @@ import ElementSchemaCommand from './elementSchemaCommand.js';
  *
  * It is "on" when the target is in the element.
  */
-export default class ElementContainerCommand extends ElementSchemaCommand {
+export default class ElementContainerCommand extends ElementCommand {
 	public override isToggleable = true;
 
 	/**
@@ -29,7 +29,7 @@ export default class ElementContainerCommand extends ElementSchemaCommand {
 			if (element) {
 				writer.unwrap(element);
 			} else if (range) {
-				writer.wrap(range, this.elementName);
+				writer.wrap(range, this._createElement(writer));
 			}
 		});
 	}

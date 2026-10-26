@@ -15,15 +15,8 @@ export {
 	type ElementSchemaCommandsConfig
 } from './elementSchemaCommands.js';
 
-// Commands.
-export { default as ElementSchemaCommand } from './commands/elementSchemaCommand.js';
-export { default as ElementInlineCommand } from './commands/elementInlineCommand.js';
-export { default as ElementBlockCommand } from './commands/elementBlockCommand.js';
-export { default as ElementContainerCommand } from './commands/elementContainerCommand.js';
-export { default as ElementInsertCommand } from './commands/elementInsertCommand.js';
-export { default as ElementListCommand } from './commands/elementListCommand.js';
-
-// Utils.
+// Converters.
+export { type ElementSchemaConvertersMode } from './conversion/convertElementSchema.js';
 export { withoutBlockFiller } from './conversion/inlineTextElement.js';
 export { VERBATIM_CLASS, createVerbatimElement } from './conversion/verbatimElement.js';
 

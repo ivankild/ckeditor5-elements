@@ -11,7 +11,7 @@ import {
 	SourceEditing,
 	_getModelData
 } from 'ckeditor5';
-import { Breadcrumbs, ElementSchema, ElementSchemaCommands, ElementSelectable } from 'ckeditor5-elements';
+import { ElementBreadcrumbs, ElementSchema, ElementSchemaCommands, ElementSelectable } from 'ckeditor5-elements';
 import commands from './shared/commands.json';
 import type { Demo } from './shared/demo';
 
@@ -24,7 +24,7 @@ export default {
 			ElementSchema,
 			ElementSelectable,
 			ElementSchemaCommands,
-			Breadcrumbs
+			ElementBreadcrumbs
 		],
 		toolbar: {
 			items: [

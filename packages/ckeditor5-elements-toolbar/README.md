@@ -18,7 +18,7 @@ import { ElementActions, ElementToolbar } from 'ckeditor5-elements';
 
 // In the editor config:
 plugins: [..., ElementActions, ElementToolbar],
-elementToolbars: [
+elementToolbar: [
 	{ element: 'note', items: ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'] },
 	{ element: element => element.name.startsWith('heading'), items: ['heading', '|', 'deleteElement'] }
 ]

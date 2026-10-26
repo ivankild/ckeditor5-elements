@@ -1,11 +1,11 @@
 import { Bold, Essentials, List, Paragraph, SourceEditing, Table } from 'ckeditor5';
-import { Breadcrumbs } from 'ckeditor5-elements';
+import { ElementBreadcrumbs } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, SourceEditing, Paragraph, Bold, List, Table, Note, Breadcrumbs],
+		plugins: [Essentials, SourceEditing, Paragraph, Bold, List, Table, Note, ElementBreadcrumbs],
 		// `-` (CKEditor's line break) starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
 		toolbar: {
 			items: [

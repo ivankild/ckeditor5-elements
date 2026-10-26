@@ -18,7 +18,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BreadcrumbItemView from '../../src/breadcrumbs/breadcrumbItemView.js';
 import BreadcrumbLabelView from '../../src/breadcrumbs/breadcrumbLabelView.js';
-import Breadcrumbs from '../../src/breadcrumbs/breadcrumbs.js';
+import ElementBreadcrumbs from '../../src/breadcrumbs/elementBreadcrumbs.js';
 import BreadcrumbsView from '../../src/breadcrumbs/breadcrumbsView.js';
 import { ElementClipboard, type ElementCopyCommand } from 'ckeditor5-elements-actions';
 import ElementMenu from '../../src/elementMenu.js';
@@ -27,9 +27,9 @@ import { pressIn } from '../../../../testUtils/keyboard.js';
 import { describeItems } from '../../../../testUtils/menu.js';
 import { Container, createEditor } from '../../../../testUtils/editor.js';
 
-describe('Breadcrumbs', () => {
+describe('ElementBreadcrumbs', () => {
 	let editor: ClassicEditor;
-	let plugin: Breadcrumbs;
+	let plugin: ElementBreadcrumbs;
 
 	const labels = (): string[] => plugin.items.map(item => item.label);
 	const child = (...path: number[]): ModelElement =>
@@ -62,11 +62,11 @@ describe('Breadcrumbs', () => {
 	}
 
 	async function setUp(
-		plugins: EditorConfig['plugins'] = [Paragraph, Bold, Container, Breadcrumbs],
+		plugins: EditorConfig['plugins'] = [Paragraph, Bold, Container, ElementBreadcrumbs],
 		config: EditorConfig = {}
 	): Promise<void> {
 		editor = await createEditor({ plugins, ...config });
-		plugin = editor.plugins.get('Breadcrumbs');
+		plugin = editor.plugins.get('ElementBreadcrumbs');
 	}
 
 	// Converting the data view takes no time, so the tests do not depend on the speed of the machine: a slow conversion
@@ -86,7 +86,7 @@ describe('Breadcrumbs', () => {
 		});
 
 		it('has a plugin name', () => {
-			expect(Breadcrumbs.pluginName).toBe('Breadcrumbs');
+			expect(ElementBreadcrumbs.pluginName).toBe('ElementBreadcrumbs');
 		});
 
 		it('lists the data view elements at the selection, outermost first', () => {
@@ -139,7 +139,7 @@ describe('Breadcrumbs', () => {
 	describe('data view', () => {
 		beforeEach(async () => {
 			await setUp(
-				[Paragraph, Bold, Link, LinkImage, List, Table, ImageBlock, ImageInline, Container, Breadcrumbs],
+				[Paragraph, Bold, Link, LinkImage, List, Table, ImageBlock, ImageInline, Container, ElementBreadcrumbs],
 				{
 					placeholder: 'Type here'
 				}
@@ -396,8 +396,8 @@ describe('Breadcrumbs', () => {
 		let copy: ElementCopyCommand;
 
 		beforeEach(async () => {
-			await setUp([Paragraph, List, Container, Breadcrumbs, ElementMenu, ElementClipboard], {
-				breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
+			await setUp([Paragraph, List, Container, ElementBreadcrumbs, ElementMenu, ElementClipboard], {
+				elementBreadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
 			});
 
 			menu = editor.plugins.get('ElementMenu');
@@ -533,7 +533,7 @@ describe('Breadcrumbs', () => {
 		it('is opened by ElementMenu, with the configured items', async () => {
 			const menu = vi.fn(() => []);
 
-			await setUp([Paragraph, Breadcrumbs], { breadcrumbs: { menu } });
+			await setUp([Paragraph, ElementBreadcrumbs], { elementBreadcrumbs: { menu } });
 
 			const open = vi.spyOn(editor.plugins.get(ElementMenu), 'open').mockReturnValue(true);
 
@@ -558,7 +558,7 @@ describe('Breadcrumbs', () => {
 
 	describe('in a toolbar', () => {
 		it('labels: the arrow keys move through them, and on to the next toolbar item', async () => {
-			await setUp([Paragraph, Bold, Italic, Container, Breadcrumbs], {
+			await setUp([Paragraph, Bold, Italic, Container, ElementBreadcrumbs], {
 				toolbar: ['bold', 'breadcrumbs', 'italic']
 			});
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
@@ -575,9 +575,9 @@ describe('Breadcrumbs', () => {
 		});
 
 		it('buttons: the arrow keys move through them, in both directions', async () => {
-			await setUp([Paragraph, Bold, Italic, Container, Breadcrumbs, ElementMenu, ElementClipboard], {
+			await setUp([Paragraph, Bold, Italic, Container, ElementBreadcrumbs, ElementMenu, ElementClipboard], {
 				toolbar: ['bold', 'breadcrumbs', 'italic'],
-				breadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
+				elementBreadcrumbs: { menu: (element, editor) => [editor.commands.get('copyElement')] }
 			});
 			_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 

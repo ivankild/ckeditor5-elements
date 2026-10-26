@@ -23,7 +23,7 @@ import type { ElementSchemaIssue, ElementSchemaKind, ValidateElementSchemaOption
  *   it (typos are problems), or has values of the wrong type;
  * * declares an element with an unknown `type`, or an `empty` element with `allowChildren`;
  * * has attribute names that are not valid, or that differ only in case (HTML attribute names are not case sensitive),
- *   or an `editingTag` that is not the name of a tag;
+ *   or a `tag` or an `editingTag` that is not the name of a tag, or the `tag` of another element;
  * * refers to elements that do not exist (a name that is neither declared in the schema, nor in `external`), or lists the
  *   same name twice;
  * * allows what its type cannot hold: text or an inline element in a container or in the root, a block-level (not inline)
@@ -78,6 +78,8 @@ export function validateElementSchema(
 	const kinds = new Map<string, ElementSchemaKind>();
 	const lists = new Map<string, { allowChildren: string[]; allowIn: string[] }>();
 	const listItems = new Map<string, string>();
+	// The elements, by their `tag`.
+	const tags = new Map<string, string>();
 
 	for (const [name, definition] of Object.entries(elements)) {
 		const path = name;
@@ -138,14 +140,26 @@ export function validateElementSchema(
 			}
 		}
 
-		if (
-			definition.editingTag !== undefined &&
-			(typeof definition.editingTag !== 'string' || !TAG_NAME.test(definition.editingTag))
-		) {
-			report(
-				`${path}.editingTag`,
-				`must be the name of an HTML tag, in lowercase, e.g. "section", not ${JSON.stringify(definition.editingTag)}.`
-			);
+		for (const key of ['tag', 'editingTag'] as const) {
+			const value = definition[key];
+
+			if (value !== undefined && (typeof value !== 'string' || !TAG_NAME.test(value))) {
+				report(
+					`${path}.${key}`,
+					`must be the name of an HTML tag, in lowercase, e.g. "section", not ${JSON.stringify(value)}.`
+				);
+			} else if (key === 'tag' && typeof value === 'string') {
+				const other = tags.get(value);
+
+				if (other === undefined) {
+					tags.set(value, name);
+				} else {
+					report(
+						`${path}.tag`,
+						`"${value}" is the tag of "${other}" already: the data could not tell them apart. Give one of them another tag.`
+					);
+				}
+			}
 		}
 
 		if (kind?.type === 'empty' && allowChildren?.length) {

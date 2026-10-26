@@ -21,7 +21,7 @@ import {
 	type EditorConfig
 } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementActions,
 	ElementAttributes,
 	ElementClickable,
@@ -30,7 +30,7 @@ import {
 	ElementSchema,
 	ElementSelectable,
 	ElementToolbar,
-	QuickInsert,
+	ElementQuickInsert,
 	insertIcon,
 	pasteIcon,
 	type ElementClickableDefinition,
@@ -117,8 +117,8 @@ export const exampleConfig: EditorConfig = {
 		ElementAttributes,
 		ElementToolbar,
 		ElementClickable,
-		QuickInsert,
-		Breadcrumbs
+		ElementQuickInsert,
+		ElementBreadcrumbs
 	],
 	toolbar: {
 		items: [
@@ -164,10 +164,10 @@ export const exampleConfig: EditorConfig = {
 	elementSchema: schema,
 	elementSchemaConverters: true,
 	// Its containers and empty elements are selectable; the notes too.
-	selectableElements: ['note'],
+	elementSelectable: ['note'],
 	elementContextMenu: elementMenu,
-	breadcrumbs: { menu: elementMenu },
-	elementClickables: [
+	elementBreadcrumbs: { menu: elementMenu },
+	elementClickable: [
 		// Click an image, a medium, or anything with a link (a linked image): a modal with its attributes.
 		{
 			element: element =>
@@ -177,7 +177,7 @@ export const exampleConfig: EditorConfig = {
 		// Double-click a note: the same modal.
 		{ element: 'note', event: 'dblclick', callback: showAttributes }
 	],
-	elementToolbars: [
+	elementToolbar: [
 		// "Note" unwraps the note; the actions act on the whole note.
 		{ element: 'note', items: ['note', '|', ...ACTIONS], ariaLabel: 'Note toolbar' },
 		{ element: 'tip', items: ACTIONS, ariaLabel: 'Tip toolbar' },
@@ -187,7 +187,7 @@ export const exampleConfig: EditorConfig = {
 			ariaLabel: 'Heading toolbar'
 		}
 	],
-	quickInsert: {
+	elementQuickInsert: {
 		labels: {
 			paragraph: 'Paragraph',
 			heading1: 'Heading 1',

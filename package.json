@@ -13,7 +13,7 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"check": "pnpm typecheck && pnpm lint && pnpm lint:css && pnpm lint:packages && pnpm format:check && pnpm test",
+		"check": "pnpm typecheck && pnpm lint && pnpm lint:css && pnpm lint:packages && pnpm format:check && pnpm test:coverage && pnpm docs:build",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",

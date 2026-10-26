@@ -1,10 +1,10 @@
 import type { ModelElement } from 'ckeditor5';
-import type { ElementOrPosition } from 'ckeditor5-elements-core';
-import ElementSchemaCommand from './elementSchemaCommand.js';
+import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import ElementCommand from './elementCommand.js';
 
 /**
- * Turns blocks into the element, as CKEditor's heading command does, e.g. a `title` that is a `block` of the element
- * schema: the selected blocks, or the block of the target, are renamed, and keep their content.
+ * Turns blocks into the element, as CKEditor's heading command does, e.g. a `title` that holds text: the selected
+ * blocks, or the block of the target, are renamed, and keep their content.
  *
  * ```ts
  * editor.execute('title'); // The blocks of the selection.
@@ -16,7 +16,7 @@ import ElementSchemaCommand from './elementSchemaCommand.js';
  *
  * It is "on" when all the blocks are the element.
  */
-export default class ElementBlockCommand extends ElementSchemaCommand {
+export default class ElementBlockCommand extends ElementCommand {
 	public override isToggleable = true;
 
 	/**
@@ -35,7 +35,14 @@ export default class ElementBlockCommand extends ElementSchemaCommand {
 		this.editor.model.change(writer => {
 			for (const block of this._getBlocks(elementOrPosition)) {
 				if (this._canRename(block, name)) {
-					writer.rename(block, name);
+					if (block.name !== name) {
+						writer.rename(block, name);
+					}
+
+					if (name === this.elementName) {
+						writer.setAttributes(this.elementAttributes, block);
+					}
+
 					schema.removeDisallowedAttributes([block], writer);
 				}
 			}
@@ -71,14 +78,14 @@ export default class ElementBlockCommand extends ElementSchemaCommand {
 	}
 
 	/**
-	 * Whether a block can be renamed: it is not an object, nor the name already, and the schema allows it with its
+	 * Whether a block can be renamed: it is not an object, nor the element already, and the schema allows it with its
 	 * content.
 	 */
 	private _canRename(block: ModelElement, name: string): boolean {
 		const schema = this.editor.model.schema;
 
 		return (
-			block.name !== name &&
+			(name === this.elementName ? !this.isElement(block) : block.name !== name) &&
 			!schema.isObject(block) &&
 			schema.isRegistered(name) &&
 			this._canHold(this.editor.model.createPositionBefore(block), block.getChildren(), name)

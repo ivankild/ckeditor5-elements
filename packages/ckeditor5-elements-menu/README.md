@@ -5,9 +5,9 @@ separators, in a balloon. The features that open it are in this package too:
 
 - `ElementContextMenu`: right-clicking an element (or Shift+F10, or the menu key) opens its menu, configured by the
   `elementContextMenu` option.
-- `Breadcrumbs`: the element path at the selection, e.g. `aside.note › p`, as labels, or as buttons that open the menu of
-  their element with the `breadcrumbs.menu` option.
-- `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor, and the `quickInsertBefore`
+- `ElementBreadcrumbs`: the element path at the selection, e.g. `aside.note › p`, as labels, or as buttons that open the menu of
+  their element with the `elementBreadcrumbs.menu` option.
+- `ElementQuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor, and the `quickInsertBefore`
   and `quickInsertAfter` commands are menu items that insert next to an element.
 
 ## Installation
@@ -23,7 +23,7 @@ Import the stylesheet of the package (`ckeditor5-elements/index.css` has the sty
 ## Usage
 
 ```ts
-import { Breadcrumbs, ElementClipboard, ElementContextMenu, QuickInsert } from 'ckeditor5-elements';
+import { ElementBreadcrumbs, ElementClipboard, ElementContextMenu, ElementQuickInsert } from 'ckeditor5-elements';
 import 'ckeditor5-elements/index.css';
 
 // One menu for both: right-clicking an element, and clicking its breadcrumb.
@@ -35,11 +35,11 @@ const menu = (element, editor) => [
 ];
 
 // In the editor config:
-plugins: [..., ElementContextMenu, Breadcrumbs, QuickInsert, ElementClipboard],
+plugins: [..., ElementContextMenu, ElementBreadcrumbs, ElementQuickInsert, ElementClipboard],
 toolbar: ['bold', 'italic', '|', 'breadcrumbs'],
 elementContextMenu: menu,
-breadcrumbs: { menu },
-quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' } }
+elementBreadcrumbs: { menu },
+elementQuickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1' } }
 ```
 
 See the [Context menu](https://ivankild.github.io/ckeditor5-elements/guide/context-menu),

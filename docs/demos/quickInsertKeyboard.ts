@@ -1,13 +1,13 @@
 import { Essentials, Heading, Paragraph, SourceEditing } from 'ckeditor5';
-import { QuickInsert } from 'ckeditor5-elements';
+import { ElementQuickInsert } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, SourceEditing, Paragraph, Heading, QuickInsert],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, ElementQuickInsert],
 		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading'],
 		// Elements without a label are listed by their model name.
-		quickInsert: { labels: { softBreak: 'Line break' } }
+		elementQuickInsert: { labels: { softBreak: 'Line break' } }
 	},
 	data:
 		'<p>Put the cursor in the middle of this sentence and press Alt+Enter (Option+Enter on macOS). ' +

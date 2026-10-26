@@ -1,6 +1,6 @@
 import { _setModelData } from 'ckeditor5';
 import { describe, expect, it } from 'vitest';
-import type ElementBlockCommand from '../../src/commands/elementBlockCommand.js';
+import type { ElementBlockCommand } from 'ckeditor5-elements-core';
 import { useSchemaCommandsEditor } from '../schemaCommandsEditor.js';
 
 describe('ElementBlockCommand', () => {

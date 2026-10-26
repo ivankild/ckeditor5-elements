@@ -1,5 +1,5 @@
 import type { ModelElement, ModelPosition, ModelWriter, Plugin, ViewDocumentEnterEvent } from 'ckeditor5';
-import { findBlock } from './findBlock.js';
+import { findBlock, keyboardPriorities } from 'ckeditor5-elements-core';
 
 /**
  * Makes Enter in the item of a list make the next item: the item is split at the cursor, with what follows it in the
@@ -45,7 +45,7 @@ export function enableListTyping(plugin: Plugin, lists: ReadonlyMap<string, stri
 			data.preventDefault();
 			evt.stop();
 		},
-		{ priority: 'high' }
+		{ priority: keyboardPriorities.listEnter }
 	);
 }
 
