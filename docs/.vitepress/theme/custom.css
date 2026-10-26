@@ -52,6 +52,16 @@
 	word-break: break-word;
 }
 
+.editor-demo__xml {
+	max-height: 480px;
+	overflow: auto;
+	font-family: var(--vp-font-family-mono);
+	font-size: 13px;
+	line-height: 1.5;
+	tab-size: 4;
+	white-space: pre;
+}
+
 .editor-demo__error {
 	color: var(--vp-c-danger-1);
 }

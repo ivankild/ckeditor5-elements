@@ -1,6 +1,9 @@
 {
 	"title": { "type": "block" },
 	"callout": { "type": "container" },
+	"code": { "type": "block", "verbatim": true },
+	"steps": { "type": "container", "listItem": "step", "editingTag": "ol" },
+	"step": { "type": "container", "editingTag": "li" },
 	"divider": { "type": "empty" },
 	"badge": { "type": "empty", "isInline": true },
 	"chip": { "type": "container", "isInline": true }

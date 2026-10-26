@@ -1,3 +1,8 @@
+---
+title: 'Select elements as a whole in CKEditor 5, without widgets'
+description: 'Select a CKEditor 5 element as a whole, by a click on its frame or by the arrow keys, as widgets are selected, without the Widget plugin and without changing its view.'
+---
+
 # Selectable elements
 
 `ElementSelectable` selects an element **as a whole**, by a click or by the arrow keys. It is what CKEditor's widgets do

@@ -15,6 +15,7 @@ import {
 	List,
 	MediaEmbed,
 	Paragraph,
+	SourceEditing,
 	Table,
 	TableToolbar,
 	type EditorConfig
@@ -89,6 +90,7 @@ const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'd
 export const exampleConfig: EditorConfig = {
 	plugins: [
 		Essentials,
+		SourceEditing,
 		Paragraph,
 		Heading,
 		Bold,
@@ -122,6 +124,7 @@ export const exampleConfig: EditorConfig = {
 		items: [
 			'undo',
 			'redo',
+			'sourceEditing',
 			'|',
 			'heading',
 			'|',

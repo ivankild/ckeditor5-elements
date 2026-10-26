@@ -1,4 +1,4 @@
-import { Essentials, Paragraph } from 'ckeditor5';
+import { Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import {
 	Breadcrumbs,
 	ElementContextMenu,
@@ -17,6 +17,7 @@ export default {
 	config: {
 		plugins: [
 			Essentials,
+			SourceEditing,
 			Paragraph,
 			ElementSchema,
 			// Selects the `empty` and `container` elements of the schema as a whole.
@@ -28,7 +29,7 @@ export default {
 			Breadcrumbs
 		],
 		// `-` starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
-		toolbar: { items: ['undo', 'redo', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		toolbar: { items: ['undo', 'redo', 'sourceEditing', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementSchema: gallery,
 		// The elements are `div` and `span` in the data, and in the editor.
 		elementSchemaConverters: true,

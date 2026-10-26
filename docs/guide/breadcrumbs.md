@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 breadcrumbs: the element path'
+description: "Show the element path at the cursor in CKEditor 5, e.g. section \u203a ul \u203a li \u203a p, as labels or as buttons that open the menu of the element."
+---
+
 # Breadcrumbs
 
 `Breadcrumbs` shows the element path at the cursor, e.g. `aside.note › p`, as

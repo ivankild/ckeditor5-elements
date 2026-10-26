@@ -1,12 +1,22 @@
 import type { Editor } from 'ckeditor5';
 import type { ElementSchemaElement, ElementSchemaInput } from '../definition/types.js';
 import { createInlineTextElement } from './inlineTextElement.js';
+import { createVerbatimElement } from './verbatimElement.js';
 
 /**
  * Returns the tag of an element in the data: a `span` for what is in a line of text (an inline element that is empty or
- * has text), a `div` for the rest. An inline container is a `div`: it holds blocks, which a `span` cannot hold.
+ * has text), a `pre` for a verbatim block, whose whitespace is its content, a `div` for the rest. An inline container
+ * is a `div`: it holds blocks, which a `span` cannot hold.
  */
-export function getViewTag({ type, isInline }: Pick<ElementSchemaElement, 'type' | 'isInline'>): 'div' | 'span' {
+export function getViewTag({
+	type,
+	isInline,
+	verbatim
+}: Pick<ElementSchemaElement, 'type' | 'isInline' | 'verbatim'>): 'div' | 'pre' | 'span' {
+	if (verbatim) {
+		return 'pre';
+	}
+
 	return isInline && type !== 'container' ? 'span' : 'div';
 }
 
@@ -22,7 +32,7 @@ export function convertElementSchema(editor: Editor, input: ElementSchemaInput):
 	const { conversion } = editor;
 
 	for (const [name, element] of Object.entries(input)) {
-		const { type, isInline, editingTag, allowAttributes } = element as ElementSchemaElement;
+		const { type, isInline, editingTag, allowAttributes, verbatim } = element as ElementSchemaElement;
 		const tag = getViewTag(element as ElementSchemaElement);
 		const view = { name: tag, classes: name };
 		const isInlineText = type === 'block' && !!isInline;
@@ -51,13 +61,19 @@ export function convertElementSchema(editor: Editor, input: ElementSchemaInput):
 			});
 		}
 
-		if (editingTag || isInlineText) {
+		// A verbatim block shows and takes an empty last line in the editor: see `createVerbatimElement()`.
+		if (editingTag || isInlineText || verbatim) {
 			conversion.for('editingDowncast').elementToElement({
 				model: name,
-				view: (_element, { writer }) =>
-					isInlineText
-						? createInlineTextElement(writer, editingTag ?? tag, name)
-						: writer.createContainerElement(editingTag ?? tag, { class: name }),
+				view: (_element, { writer }) => {
+					if (isInlineText) {
+						return createInlineTextElement(writer, editingTag ?? tag, name);
+					}
+
+					return verbatim
+						? createVerbatimElement(writer, editingTag ?? tag, { class: name })
+						: writer.createContainerElement(editingTag ?? tag, { class: name });
+				},
 				converterPriority: 'high'
 			});
 		}

@@ -16,10 +16,12 @@ describe('the entry without an editor (validate)', () => {
 		}
 	});
 
-	it('exports the validation, the compiling and the error', () => {
+	it('exports the validation, the compiling, the error and the queries', () => {
 		expect(Object.keys(validate).sort()).toEqual([
 			'ElementSchemaError',
 			'compileElementSchema',
+			'getLists',
+			'getVerbatimElements',
 			'validateElementSchema'
 		]);
 	});

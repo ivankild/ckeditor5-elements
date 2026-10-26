@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN" "http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
+<article>
+	<title>An article in Simplified DocBook</title>
+	<para>This article is <emphasis>DocBook XML</emphasis>: the editor loads it, and saves it as it is. Each part of it is an element of the editor, with its DocBook name.</para>
+	<section>
+		<title>Elements, all the way down</title>
+		<para>A <literal>section</literal> holds its <literal>title</literal>, its paragraphs, its lists and its sections. An <emphasis>emphasis</emphasis> is an element too, in a line of text.</para>
+		<itemizedlist>
+			<listitem>
+				<para>Put the cursor here: the breadcrumbs show the path of the DocBook elements.</para>
+			</listitem>
+			<listitem>
+				<para>Right-click an element for its menu, or press Alt+Enter to insert an element where the cursor is.</para>
+			</listitem>
+		</itemizedlist>
+	</section>
+	<section>
+		<title>Code, quotes and links</title>
+		<programlisting>const article = editor.getData();
+// The article, as DocBook XML.</programlisting>
+		<blockquote>
+			<para>Press <emphasis>Source</emphasis> to see the XML, and to edit it.</para>
+		</blockquote>
+		<para>A link keeps its address: <ulink url="https://docbook.org/">DocBook</ulink>. Click it to see its attributes.</para>
+	</section>
+</article>

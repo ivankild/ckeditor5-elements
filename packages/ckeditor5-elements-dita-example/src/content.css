@@ -1,0 +1,63 @@
+/*
+ * The content of the DITA example: the elements of the topic, in the editing view. The editable has the `dita` class,
+ * so the styles do not reach other editors.
+ */
+.ck.ck-content.dita > .title {
+	margin: 0.4em 0 0.4em;
+	font-size: 1.8em;
+	font-weight: 700;
+}
+
+.ck.ck-content.dita > .shortdesc {
+	margin: 0 0 1em;
+	color: #4b5563;
+	font-size: 1.1em;
+	font-style: italic;
+}
+
+.ck.ck-content.dita .section {
+	margin: 1em 0;
+}
+
+.ck.ck-content.dita .section > .title {
+	margin: 0.6em 0 0.4em;
+	font-size: 1.3em;
+	font-weight: 700;
+}
+
+.ck.ck-content.dita .note {
+	margin: 0.8em 0;
+	padding: 0.2em 1em;
+	border-left: 4px solid #6366f1;
+	border-radius: 4px;
+	background: #eef2ff;
+}
+
+.ck.ck-content.dita .note::before {
+	content: 'Note: ' attr(data-type);
+	display: block;
+	margin-top: 0.4em;
+	color: #4338ca;
+	font-size: 0.8em;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.ck.ck-content.dita .pre {
+	padding: 0.6em 0.8em;
+	border-radius: 6px;
+	background: #f3f4f6;
+	font-family: ui-monospace, monospace;
+	font-size: 0.9em;
+}
+
+.ck.ck-content.dita .ph {
+	padding: 0 0.15em;
+	border-bottom: 1px dotted #6366f1;
+}
+
+.ck.ck-content.dita .xref {
+	color: #4f46e5;
+	text-decoration: underline;
+	cursor: pointer;
+}

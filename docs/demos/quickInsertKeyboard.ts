@@ -1,11 +1,11 @@
-import { Essentials, Heading, Paragraph } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, SourceEditing } from 'ckeditor5';
 import { QuickInsert } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, QuickInsert],
-		toolbar: ['undo', 'redo', '|', 'heading'],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, QuickInsert],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading'],
 		// Elements without a label are listed by their model name.
 		quickInsert: { labels: { softBreak: 'Line break' } }
 	},

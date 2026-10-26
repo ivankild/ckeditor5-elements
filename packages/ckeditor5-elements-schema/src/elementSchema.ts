@@ -3,8 +3,11 @@ import { findPlugin } from 'ckeditor5-elements-core';
 import { compileElementSchema } from './definition/compileElementSchema.js';
 import { convertElementSchema } from './conversion/convertElementSchema.js';
 import ElementSchemaError from './definition/elementSchemaError.js';
+import { getLists, getVerbatimElements } from './definition/queries.js';
 import type { ElementSchemaInput, ElementSchemaKind } from './definition/types.js';
 import { validateElementSchema } from './definition/validateElementSchema.js';
+import { enableListTyping } from './typing/lists.js';
+import { enableVerbatimTyping } from './typing/verbatim.js';
 
 /**
  * Declares the elements of the content in the model schema of the editor, from a simple definition, the `elementSchema`
@@ -28,6 +31,12 @@ import { validateElementSchema } from './definition/validateElementSchema.js';
  *
  * `allowAttributes` and `allowChildren` work as in CKEditor's schema. `allowIn` too, but it replaces the default places.
  * See {@link ElementSchemaElement}.
+ *
+ * Two keys make a kind of their own of a type, with its typing:
+ *
+ * * `verbatim` makes a block keep its whitespace, e.g. code: Enter inserts a new line in it.
+ * * `listItem` makes a container a list of its items, e.g. `"listItem": "listitem"`: it holds only its items, and Enter
+ *   in an item makes the next one.
  *
  * The schema is validated first, and a schema that is contradictory or refers to unknown elements is not accepted: the
  * editor is not created, and the {@link ElementSchemaError} lists all the problems (see {@link validateElementSchema}).
@@ -76,6 +85,24 @@ export default class ElementSchema extends Plugin {
 
 		if (this.editor.config.get('elementSchemaConverters')) {
 			convertElementSchema(this.editor, input);
+		}
+
+		this._enableTyping(input);
+	}
+
+	/**
+	 * Makes Enter work as the verbatim blocks and the lists need: a new line in a verbatim block, the next item in a list.
+	 */
+	private _enableTyping(input: ElementSchemaInput): void {
+		const verbatim = new Set(getVerbatimElements(input));
+		const lists = getLists(input);
+
+		if (verbatim.size) {
+			enableVerbatimTyping(this, verbatim);
+		}
+
+		if (lists.size) {
+			enableListTyping(this, lists);
 		}
 	}
 

@@ -1,3 +1,8 @@
+---
+title: 'Show element attributes in CKEditor 5'
+description: 'Show the attributes of an element of CKEditor 5 content, as key-value pairs, in a modal: from a menu, a toolbar, a click or code.'
+---
+
 # Element attributes
 
 `ElementAttributes` registers the `showElementAttributes` command: it shows the attributes of an element, as key-value

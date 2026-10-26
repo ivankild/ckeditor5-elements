@@ -1,0 +1,79 @@
+/* The page of the DocBook example. */
+:root {
+	color-scheme: light;
+	font-family: system-ui, sans-serif;
+	line-height: 1.5;
+	color: #1f2937;
+	background: #f9fafb;
+}
+
+body {
+	margin: 0;
+}
+
+.page {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 24px 16px 48px;
+}
+
+.page header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px 24px;
+	margin-bottom: 16px;
+}
+
+.page h1 {
+	margin: 0;
+	font-size: 1.5rem;
+}
+
+.page nav {
+	display: flex;
+	gap: 16px;
+}
+
+.page a {
+	color: #4f46e5;
+}
+
+.tips {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 4px 24px;
+	margin: 0 0 16px;
+	padding-left: 1.2em;
+	font-size: 0.95rem;
+}
+
+kbd {
+	padding: 0 4px;
+	border: 1px solid #d1d5db;
+	border-radius: 4px;
+	background: #fff;
+	font-size: 0.85em;
+}
+
+.page .ck-editor__editable_inline {
+	min-height: 320px;
+}
+
+.page .ck-content {
+	line-height: 1.6;
+}
+
+/* The DocBook XML of the editor, below it. */
+.output {
+	max-height: 480px;
+	margin: 16px 0 0;
+	padding: 12px 16px;
+	overflow: auto;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #fff;
+	font-size: 13px;
+	tab-size: 4;
+}

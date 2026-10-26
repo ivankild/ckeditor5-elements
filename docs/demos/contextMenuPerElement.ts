@@ -1,11 +1,11 @@
-import { Essentials, Heading, Paragraph } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, SourceEditing } from 'ckeditor5';
 import { ElementClipboard, ElementContextMenu } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, ElementContextMenu, ElementClipboard],
-		toolbar: ['undo', 'redo', '|', 'heading'],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, ElementContextMenu, ElementClipboard],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading'],
 		// The items depend on the element. No items: the native context menu.
 		elementContextMenu: (element, editor) => {
 			if (element.name.startsWith('heading')) {

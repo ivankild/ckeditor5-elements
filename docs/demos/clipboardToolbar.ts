@@ -1,4 +1,4 @@
-import { Essentials, Heading, Paragraph, Plugin } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, Plugin, SourceEditing } from 'ckeditor5';
 import { ElementClipboard, ElementOrPositionButtonView } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
@@ -28,10 +28,11 @@ class ClipboardButtons extends Plugin {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, ClipboardButtons],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, ClipboardButtons],
 		toolbar: [
 			'undo',
 			'redo',
+			'sourceEditing',
 			'|',
 			'heading',
 			'|',

@@ -55,9 +55,9 @@ export default class ElementContainerCommand extends ElementSchemaCommand {
 
 	/**
 	 * Returns the range to wrap: from the first block of the target to the last, as siblings: the blocks themselves, or
-	 * their ancestors in the parent they share. `null` when the schema does not allow the element there.
+	 * their ancestors in the parent they share. `null` when the element cannot wrap them (see {@link _canWrap}).
 	 */
-	private _getWrapRange(elementOrPosition?: ElementOrPosition): ModelRange | null {
+	protected _getWrapRange(elementOrPosition?: ElementOrPosition): ModelRange | null {
 		const model = this.editor.model;
 		const blocks = this._getBlocks(elementOrPosition);
 		const first = blocks[0] as ModelElement | undefined;
@@ -78,6 +78,14 @@ export default class ElementContainerCommand extends ElementSchemaCommand {
 
 		const range = model.createRange(model.createPositionBefore(start), model.createPositionAfter(end));
 
-		return this._canHold(range.start, range.getItems({ shallow: true })) ? range : null;
+		return this._canWrap(range) ? range : null;
+	}
+
+	/**
+	 * Whether the element can wrap the nodes of a range: be in its place, and hold them. A list overrides it: it holds
+	 * the nodes in its items.
+	 */
+	protected _canWrap(range: ModelRange): boolean {
+		return this._canHold(range.start, range.getItems({ shallow: true }));
 	}
 }

@@ -32,14 +32,18 @@
 			"types": "./dist/validate.d.ts",
 			"import": "./dist/validate.js"
 		},
+		"./index.css": "./theme/schema.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
 		"dist",
 		"src",
+		"theme",
 		"README.md"
 	],
-	"sideEffects": false,
+	"sideEffects": [
+		"*.css"
+	],
 	"dependencies": {
 		"ckeditor5-elements-core": "workspace:*"
 	},

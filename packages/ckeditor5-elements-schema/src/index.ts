@@ -21,9 +21,11 @@ export { default as ElementInlineCommand } from './commands/elementInlineCommand
 export { default as ElementBlockCommand } from './commands/elementBlockCommand.js';
 export { default as ElementContainerCommand } from './commands/elementContainerCommand.js';
 export { default as ElementInsertCommand } from './commands/elementInsertCommand.js';
+export { default as ElementListCommand } from './commands/elementListCommand.js';
 
 // Utils.
 export { withoutBlockFiller } from './conversion/inlineTextElement.js';
+export { VERBATIM_CLASS, createVerbatimElement } from './conversion/verbatimElement.js';
 
 // Validation and compiling, which do not need an editor (also in `validate.ts`, for Node.js).
 export * from './validate.js';

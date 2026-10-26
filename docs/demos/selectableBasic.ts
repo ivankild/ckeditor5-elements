@@ -1,4 +1,4 @@
-import { Bold, Essentials, Paragraph } from 'ckeditor5';
+import { Bold, Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import { Breadcrumbs, ElementSchema, ElementSelectable } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
@@ -11,8 +11,11 @@ const schema = {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Bold, ElementSchema, ElementSelectable, Breadcrumbs],
-		toolbar: { items: ['undo', 'redo', '|', 'bold', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		plugins: [Essentials, SourceEditing, Paragraph, Bold, ElementSchema, ElementSelectable, Breadcrumbs],
+		toolbar: {
+			items: ['undo', 'redo', 'sourceEditing', '|', 'bold', '-', 'breadcrumbs'],
+			shouldNotGroupWhenFull: true
+		},
 		// The elements come from the schema (converted one to one: `div` and `span`).
 		elementSchema: schema,
 		elementSchemaConverters: true

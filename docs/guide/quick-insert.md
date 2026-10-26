@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 quick insert: the elements allowed at the cursor'
+description: 'Alt+Enter in CKEditor 5 opens a searchable list of the elements that the schema allows at the cursor, and menu items insert one before or after an element.'
+---
+
 # Quick insert
 
 `QuickInsert` opens a menu with a search field and the elements that can be inserted at a position. Type to filter, press Enter to insert the first match, or use the arrow keys to pick one.

@@ -1,0 +1,53 @@
+/*
+ * The content of the DocBook example: the elements of the article, in the editing view. The editable has the `docbook`
+ * class, so the styles do not reach other editors.
+ */
+.ck.ck-content.docbook > .title {
+	margin: 0.4em 0 0.6em;
+	font-size: 1.8em;
+	font-weight: 700;
+}
+
+.ck.ck-content.docbook .section {
+	margin: 1em 0;
+}
+
+.ck.ck-content.docbook .section > .title {
+	margin: 0.6em 0 0.4em;
+	font-size: 1.4em;
+	font-weight: 700;
+}
+
+.ck.ck-content.docbook .section .section > .title {
+	font-size: 1.15em;
+}
+
+.ck.ck-content.docbook .blockquote {
+	margin: 0.8em 0;
+	padding: 0 1em;
+	border-left: 4px solid #c7d2fe;
+	color: #4b5563;
+}
+
+.ck.ck-content.docbook .programlisting {
+	padding: 0.6em 0.8em;
+	border-radius: 6px;
+	background: #f3f4f6;
+	font-family: ui-monospace, monospace;
+	font-size: 0.9em;
+	white-space: pre-wrap;
+}
+
+.ck.ck-content.docbook .literal {
+	padding: 0 0.2em;
+	border-radius: 3px;
+	background: #f3f4f6;
+	font-family: ui-monospace, monospace;
+	font-size: 0.9em;
+}
+
+.ck.ck-content.docbook .ulink {
+	color: #4f46e5;
+	text-decoration: underline;
+	cursor: pointer;
+}

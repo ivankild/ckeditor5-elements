@@ -6,6 +6,7 @@ import ElementBlockCommand from '../src/commands/elementBlockCommand.js';
 import ElementContainerCommand from '../src/commands/elementContainerCommand.js';
 import ElementInlineCommand from '../src/commands/elementInlineCommand.js';
 import ElementInsertCommand from '../src/commands/elementInsertCommand.js';
+import ElementListCommand from '../src/commands/elementListCommand.js';
 import ElementSchema from '../src/elementSchema.js';
 import ElementSchemaCommands from '../src/elementSchemaCommands.js';
 import { useSchemaCommandsEditor } from './schemaCommandsEditor.js';
@@ -32,6 +33,8 @@ describe('ElementSchemaCommands', () => {
 		expect(command('divider')).toBeInstanceOf(ElementInsertCommand);
 		expect(command('mention')).toBeInstanceOf(ElementInsertCommand);
 		expect(command('chip')).toBeInstanceOf(ElementInsertCommand);
+		expect(command('code')).toBeInstanceOf(ElementBlockCommand);
+		expect(command('bullets')).toBeInstanceOf(ElementListCommand);
 		expect(command('bold').isToggleable).toBe(true);
 		expect(command('title').isToggleable).toBe(true);
 		expect(command('callout').isToggleable).toBe(true);

@@ -1,4 +1,4 @@
-import { Essentials, Heading, Paragraph } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, SourceEditing } from 'ckeditor5';
 import { ElementActions, ElementToolbar } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
@@ -7,8 +7,8 @@ const ACTIONS = ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'd
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, Note, ElementActions, ElementToolbar],
-		toolbar: ['undo', 'redo', '|', 'heading', '|', 'note'],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, Note, ElementActions, ElementToolbar],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', '|', 'note'],
 		elementToolbars: [
 			// By name. The commands act on the note: "Note" unwraps it, "Move down" moves the whole note.
 			{ element: 'note', items: ['note', '|', ...ACTIONS], ariaLabel: 'Note toolbar' },

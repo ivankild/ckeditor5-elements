@@ -1,4 +1,4 @@
-import { Essentials, Paragraph } from 'ckeditor5';
+import { Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import {
 	Breadcrumbs,
 	ElementActions,
@@ -26,8 +26,20 @@ const menu: ElementMenuConfig = (element, editor) => [
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Note, Breadcrumbs, ElementContextMenu, ElementClipboard, ElementActions],
-		toolbar: { items: ['undo', 'redo', '|', 'note', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		plugins: [
+			Essentials,
+			SourceEditing,
+			Paragraph,
+			Note,
+			Breadcrumbs,
+			ElementContextMenu,
+			ElementClipboard,
+			ElementActions
+		],
+		toolbar: {
+			items: ['undo', 'redo', 'sourceEditing', '|', 'note', '-', 'breadcrumbs'],
+			shouldNotGroupWhenFull: true
+		},
 		elementContextMenu: menu,
 		// With a menu, the breadcrumbs are buttons that open it, with the `ElementMenu` plugin, as the context menu does.
 		breadcrumbs: { menu }

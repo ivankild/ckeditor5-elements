@@ -73,6 +73,21 @@ export interface ElementSchemaElement {
 	 * `elementSchemaConverters` option). The data has `div` or `span`, whatever it is. Default: the tag of the data.
 	 */
 	editingTag?: string;
+
+	/**
+	 * Whether the block is verbatim: its whitespace is its content, e.g. code, a literal layout or a poem. It keeps its
+	 * spaces and its new lines; Enter inserts a new line in it, and leaves it on an empty last line. Only a block-level
+	 * `block` can be verbatim. With the converters of the schema, it is a `pre`. Default: `false`.
+	 */
+	verbatim?: boolean;
+
+	/**
+	 * Makes the container a list: the name of the element of its items, a block-level `container` of the schema, e.g.
+	 * `"listItem": "listitem"`. The list holds only its items, and the item is allowed only in its lists, so it has no
+	 * `allowIn`, and the list no `allowChildren`. Enter in an item makes the next item, and leaves the list in an empty
+	 * one. Several lists can have the same item, e.g. a bulleted and a numbered list.
+	 */
+	listItem?: string;
 }
 
 /**

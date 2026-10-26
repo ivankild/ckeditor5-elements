@@ -65,7 +65,7 @@ versions of them would be loaded, which fails.
 
 [CKEditor 5 Elements documentation](https://ivankild.github.io/ckeditor5-elements/): guides with live examples, and the API reference.
 
-The [full example](https://ivankild.github.io/ckeditor5-elements/example) shows all the features together in one editor.
+The [full example](https://ivankild.github.io/ckeditor5-elements/examples/) shows all the features together in one editor.
 
 ## License
 

@@ -1,15 +1,21 @@
+---
+title: 'CKEditor 5 commands and buttons for the element schema'
+description: 'Give every element of a CKEditor 5 schema a command, a toolbar button and a keystroke: formatting as elements, blocks, containers, lists and inserted elements, with two-step caret movement.'
+---
+
 # Schema commands and buttons
 
 `ElementSchemaCommands` gives every element of the [schema](./schema) its command, toolbar button and keystroke. The
 command of an element is the one of its **kind**: formatting wraps text in the element, a block renames blocks, a
 container wraps them, and the other elements are inserted. Each works as the CKEditor feature of that kind:
 
-| Element                       | Command                   | Works as CKEditor's | It                                        |
-| ----------------------------- | ------------------------- | ------------------- | ----------------------------------------- |
-| inline `block`                | `ElementInlineCommand`    | bold                | wraps the selected text, or unwraps it    |
-| `block`                       | `ElementBlockCommand`     | heading             | renames the blocks, or back to paragraphs |
-| `container`                   | `ElementContainerCommand` | block quote         | wraps the blocks, or unwraps them         |
-| `empty`, and inline container | `ElementInsertCommand`    | horizontal line     | inserts the element, and selects it       |
+| Element                       | Command                   | Works as CKEditor's | It                                         |
+| ----------------------------- | ------------------------- | ------------------- | ------------------------------------------ |
+| inline `block`                | `ElementInlineCommand`    | bold                | wraps the selected text, or unwraps it     |
+| `block`                       | `ElementBlockCommand`     | heading             | renames the blocks, or back to paragraphs  |
+| `container`                   | `ElementContainerCommand` | block quote         | wraps the blocks, or unwraps them          |
+| `container` with `listItem`   | `ElementListCommand`      | lists               | puts the blocks in a list, each in an item |
+| `empty`, and inline container | `ElementInsertCommand`    | horizontal line     | inserts the element, and selects it        |
 
 ```ts
 import { IconBold, IconHorizontalLine, IconQuote } from 'ckeditor5';
@@ -91,7 +97,7 @@ What is typed goes where the cursor is, in the element or out of it, and the bol
 type at a place of its own, the end of the text before the boundary: there, the plugin types instead of it.) Nested
 elements take one step each. Pressing the keystroke at the end of an element moves the cursor out too.
 
-## Blocks, containers and inserted elements
+## Blocks, containers, lists and inserted elements
 
 <EditorDemo name="schemaCommands" />
 
@@ -110,11 +116,21 @@ their content. When they all are titles, they are turned back into paragraphs: t
 can be changed. Blocks that cannot be renamed, as a divider, or a block where a title is not allowed, are left as they
 are. It is "on" when all the blocks are titles.
 
+A [verbatim](./schema#verbatim-blocks) block (the `code`) is a block too: its command works as a code block's does,
+renaming the blocks. In it, Enter inserts a new line.
+
 ### Containers
 
 A `container` (the `callout`) works as a block quote, with `ElementContainerCommand`: the selected blocks go in a new
 callout. With blocks at different levels, it wraps their ancestors in the parent they share. In a callout, it unwraps the
 whole callout. It is "on" in a callout.
+
+### Lists
+
+A [list](./schema#lists) (the `steps`, a container with `listItem`) works as CKEditor's lists, with `ElementListCommand`:
+the selected blocks go in a new list, each one in an item. In a list, it unwraps the list and its items; in another list
+with the same items, it turns that list into its own, e.g. a bulleted list into a numbered one. It is "on" in its list.
+In an item, Enter makes the next item, and leaves the list in an empty one.
 
 ### Inserted elements
 

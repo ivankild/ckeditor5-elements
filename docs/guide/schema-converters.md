@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 element schema converters'
+description: 'Convert the elements of a CKEditor 5 element schema one to one: the data mirrors the model, element for element, as HTML, or with converters of your own, e.g. for XML.'
+---
+
 # Schema converters
 
 The [element schema](./schema) declares the elements of the content. How they look in the editor and in the data is
@@ -17,6 +22,7 @@ elementSchemaConverters: true
 | Element                               | In the data and in the editor              |
 | ------------------------------------- | ------------------------------------------ |
 | inline `empty`, inline `block`        | `<span class="name">`                      |
+| a verbatim `block`                    | `<pre class="name">`                       |
 | any other, also an inline `container` | `<div class="name">`                       |
 | attribute `colorKey`                  | `data-colorkey` (HTML names are lowercase) |
 
@@ -32,6 +38,9 @@ elementSchemaConverters: true
 - The `empty` elements are empty in the data too (`<div class="divider"></div>`, with no filler).
 - An inline `block` has no block filler, so the cursor can go in an empty one: see
   [Typing in an empty inline element](#typing-in-an-empty-inline-element).
+- A [verbatim](./schema#verbatim-blocks) block keeps its whitespace in the `pre`. In the editor, a `<br>` after its text
+  makes its last line a line when it is empty, after a new line at its end: a browser shows no line there, and does
+  not type there. For converters of your own, `createVerbatimElement()` makes such a view.
 - The data is loaded as it is saved, so the same attributes come back, in their case from the schema.
 
 All the [examples](./schema-examples) use these converters, with CSS for the layout.

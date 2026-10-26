@@ -1,17 +1,23 @@
 ---
 layout: home
+title: 'Element-first WYSIWYG editing and CKEditor 5 customization'
+description: 'Customize CKEditor 5 for structured content: a WYSIWYG editor whose content is a tree of named elements, declared from a JSON file, with element commands, menus and toolbars, saved as HTML or XML, e.g. DocBook XML and DITA XML.'
+head:
+    - - script
+      - type: application/ld+json
+      - '{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "CKEditor 5 Elements", "description": "Element-first WYSIWYG editing for CKEditor 5: element commands, menus, toolbars and a JSON element schema to customize CKEditor 5, for structured content and XML such as DocBook XML and DITA XML.", "url": "https://ivankild.github.io/ckeditor5-elements/", "codeRepository": "https://github.com/ivankild/ckeditor5-elements", "programmingLanguage": "TypeScript", "runtimePlatform": "CKEditor 5", "license": "https://opensource.org/licenses/MIT", "keywords": "CKEditor 5, CKEditor 5 customization, WYSIWYG editor, XML editor, DocBook XML, DITA XML, structured content"}'
 
 hero:
     name: CKEditor 5 Elements
-    text: Element-first editing for CKEditor 5
-    tagline: The content is a tree of named elements, declared from a JSON file. Every feature acts on an element, formatting included.
+    text: Element-first WYSIWYG editing for CKEditor 5
+    tagline: Customize CKEditor 5 for structured content. The content is a tree of named elements, declared from a JSON file, and every feature acts on an element, formatting included. Save it as HTML, or as XML, such as DocBook XML and DITA XML.
     actions:
         - theme: brand
           text: Get started
           link: /guide/getting-started
         - theme: alt
-          text: Try the full example
-          link: /example
+          text: Try the examples
+          link: /examples/
         - theme: alt
           text: API reference
           link: /api/
@@ -47,6 +53,9 @@ features:
     - title: Element toolbar
       details: A floating toolbar for the elements you choose, by name or filter, with buttons that act on the element.
       link: /guide/toolbar
+    - title: DocBook XML and DITA XML editors
+      details: Two WYSIWYG XML editors built with CKEditor 5 Elements, live, with their source. A Simplified DocBook article and a Lightweight DITA topic are edited visually, and saved as XML, element for element.
+      link: /examples/docbook
     - title: Element schema
       details: Declare the elements of the content from a JSON file, what each one holds and where it goes, with a validation that rejects contradictions. Give every element a command and a button, formatting included.
       link: /guide/schema

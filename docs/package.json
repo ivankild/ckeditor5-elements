@@ -12,6 +12,8 @@
 	"dependencies": {
 		"ckeditor5": "^49.0.0",
 		"ckeditor5-elements": "workspace:*",
+		"ckeditor5-elements-dita-example": "workspace:*",
+		"ckeditor5-elements-docbook-example": "workspace:*",
 		"ckeditor5-elements-example": "workspace:*"
 	},
 	"devDependencies": {

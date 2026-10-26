@@ -1,3 +1,8 @@
+---
+title: 'Move, duplicate and delete elements in CKEditor 5'
+description: 'CKEditor 5 commands that move an element up or down, duplicate it or delete it, as menu items and toolbar buttons.'
+---
+
 # Actions
 
 `ElementActions` registers commands that move, duplicate and delete a whole element:

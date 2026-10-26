@@ -1,4 +1,4 @@
-import { Essentials, Heading, Paragraph, Plugin } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, Plugin, SourceEditing } from 'ckeditor5';
 import { ElementContextMenu, ElementOrPositionButtonView, insertIcon, QuickInsert } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
@@ -30,8 +30,8 @@ class InsertButtons extends Plugin {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, Note, ElementContextMenu, InsertButtons],
-		toolbar: ['undo', 'redo', '|', 'heading', '|', 'quickInsertBefore', 'quickInsertAfter'],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, Note, ElementContextMenu, InsertButtons],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', '|', 'quickInsertBefore', 'quickInsertAfter'],
 		// The same commands in the context menu.
 		elementContextMenu: (element, editor) => [
 			{

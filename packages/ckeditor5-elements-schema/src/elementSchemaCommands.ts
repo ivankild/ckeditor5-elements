@@ -5,6 +5,8 @@ import ElementBlockCommand from './commands/elementBlockCommand.js';
 import ElementContainerCommand from './commands/elementContainerCommand.js';
 import ElementInlineCommand from './commands/elementInlineCommand.js';
 import ElementInsertCommand from './commands/elementInsertCommand.js';
+import ElementListCommand from './commands/elementListCommand.js';
+import { getLists } from './definition/queries.js';
 import ElementSchema from './elementSchema.js';
 import type ElementSchemaCommand from './commands/elementSchemaCommand.js';
 import { enableTwoStepCaretMovement } from './typing/twoStepCaretMovement.js';
@@ -57,6 +59,7 @@ export type ElementSchemaCommandsConfig = Record<string, ElementSchemaCommandDef
  * | `block`                       | {@link ElementBlockCommand}     | heading: renames blocks       |
  * | `container`                   | {@link ElementContainerCommand} | block quote: wraps blocks     |
  * | `empty`, inline `container`   | {@link ElementInsertCommand}    | horizontal line: inserts      |
+ * | `container` with `listItem`   | {@link ElementListCommand}      | lists: wraps blocks in items  |
  *
  * ```ts
  * elementSchema: schema,
@@ -124,6 +127,7 @@ export default class ElementSchemaCommands extends Plugin {
 	public afterInit(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const lists = getLists(editor.config.get('elementSchema') ?? {});
 		const inlineNames = new Set<string>();
 
 		for (const [name, { element, title, icon, view }] of this._getDefinitions()) {
@@ -136,7 +140,7 @@ export default class ElementSchemaCommands extends Plugin {
 				);
 			}
 
-			const CommandClass = getCommandClass(schema, elementName);
+			const CommandClass = lists.has(elementName) ? ElementListCommand : getCommandClass(schema, elementName);
 			const command = new CommandClass(editor, elementName);
 
 			command.set({ title, icon });

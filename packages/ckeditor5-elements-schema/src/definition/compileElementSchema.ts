@@ -1,4 +1,5 @@
 import type { ModelSchemaItemDefinition } from 'ckeditor5';
+import { getListsOfItems } from './queries.js';
 import type { ElementSchemaElement, ElementSchemaInput } from './types.js';
 
 /**
@@ -36,13 +37,20 @@ export interface CompiledElementSchema {
  *
  * `allowAttributes` is passed as it is. `allowIn` replaces the default places of the type. `allowChildren` adds to what
  * the type holds, as in CKEditor.
+ *
+ * A list (`listItem`) holds only its items, not what a container holds, and an item is allowed only in its lists. A
+ * verbatim block is a block: its whitespace is kept by its converters and its typing, not by the schema.
  */
 export function compileElementSchema(input: ElementSchemaInput): CompiledElementSchema {
 	const items: CompiledElementSchema['items'] = [];
 	const children: CompiledElementSchema['children'] = [];
+	const listsOfItems = getListsOfItems(input);
 
 	for (const [name, element] of Object.entries(input)) {
-		items.push([name, compileElement(element as ElementSchemaElement)]);
+		const lists = listsOfItems.get(name);
+
+		// An item is allowed in its lists, which are its places.
+		items.push([name, compileElement({ ...(element as ElementSchemaElement), ...(lists && { allowIn: lists }) })]);
 
 		for (const child of element.allowChildren ?? []) {
 			children.push({ parent: name, child });
@@ -52,7 +60,13 @@ export function compileElementSchema(input: ElementSchemaInput): CompiledElement
 	return { items, children };
 }
 
-function compileElement({ type, isInline, allowIn, allowAttributes }: ElementSchemaElement): ModelSchemaItemDefinition {
+function compileElement({
+	type,
+	isInline,
+	allowIn,
+	allowAttributes,
+	listItem
+}: ElementSchemaElement): ModelSchemaItemDefinition {
 	// Where the element is allowed: the places of its type, or the given ones.
 	const places = (defaultPlaces: string): Pick<ModelSchemaItemDefinition, 'allowIn' | 'allowWhere'> =>
 		allowIn ? { allowIn } : { allowWhere: defaultPlaces };
@@ -78,6 +92,11 @@ function compileElement({ type, isInline, allowIn, allowAttributes }: ElementSch
 
 	if (type === 'block') {
 		return { inheritTypesFrom: '$block', allowContentOf: '$block', ...places('$block'), ...attributes };
+	}
+
+	// A list holds only its items, which are allowed in it.
+	if (listItem) {
+		return { ...places('$block'), ...attributes };
 	}
 
 	return {

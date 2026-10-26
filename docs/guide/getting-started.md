@@ -1,3 +1,8 @@
+---
+title: 'Getting started: install and customize CKEditor 5'
+description: 'Install CKEditor 5 Elements next to CKEditor 5, and customize the WYSIWYG editor with element-first features: commands, menus, toolbars and an element schema.'
+---
+
 # Getting started
 
 CKEditor 5 Elements is **element first**: the content is a tree of named elements, each with its attributes, and every
@@ -65,13 +70,15 @@ loaded, which fails. The menus of the context menu, the breadcrumbs and quick in
 :::
 
 ::: tip See it all at work
-The [full example](../example) is an editor with all the features together. Its source is in the
+The [full example](../examples/) is an editor with all the features together, and the
+[DocBook XML](../examples/docbook) and [DITA XML](../examples/dita) editors are WYSIWYG editors of XML documents. Its source is in the
 [`ckeditor5-elements-example`](https://github.com/ivankild/ckeditor5-elements/tree/main/packages/ckeditor5-elements-example)
 package; run it with `pnpm example`.
 :::
 
-All the examples in this guide are live editors, and their source is shown below them. They use the `note` element
-(`<aside class="note">`) of the full example:
+All the examples in this guide are live editors, and their source is shown below them. Each one has a **Source** button
+(CKEditor's `SourceEditing`): it shows the data of the editor, the elements with their attributes as they are saved, and
+loads it back when you edit it. They use the `note` element (`<aside class="note">`) of the full example:
 
 ::: details `note.ts`
 <<< ../../packages/ckeditor5-elements-example/src/note.ts

@@ -8,6 +8,7 @@ import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elem
  * * {@link ElementInlineCommand}: an inline element with text, as bold (an inline `block`);
  * * {@link ElementBlockCommand}: a block, as a heading (a `block`);
  * * {@link ElementContainerCommand}: a container of blocks, as a block quote (a `container`);
+ * * {@link ElementListCommand}: a list of blocks, as a bulleted list (a `container` with a `listItem`);
  * * {@link ElementInsertCommand}: an element that is inserted, as a horizontal line, an inline image, or a card (an
  *   `empty` element, and an inline `container`).
  *

@@ -1,0 +1,26 @@
+{
+	"name": "ckeditor5-elements-dita-example",
+	"private": true,
+	"version": "49.0.0-alpha.4",
+	"description": "The DITA example of CKEditor 5 Elements: an editor of a Lightweight DITA topic, whose data is XDITA. Not published.",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./content.css": "./src/content.css",
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"dev": "node ../../scripts/buildUmbrellaStyles.js && vite",
+		"build": "node ../../scripts/buildUmbrellaStyles.js && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"ckeditor5": "^49.0.0",
+		"ckeditor5-elements": "workspace:*",
+		"ckeditor5-elements-xml-example": "workspace:*"
+	},
+	"devDependencies": {
+		"vite": "^8.3.5"
+	}
+}

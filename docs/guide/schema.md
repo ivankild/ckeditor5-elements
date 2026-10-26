@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 element schema from JSON'
+description: 'Customize the CKEditor 5 schema from a JSON file: elements of three types, inline elements, lists and verbatim blocks, with a validation. Structured content for WYSIWYG editing and XML.'
+---
+
 # Element schema
 
 `ElementSchema` declares the **elements of the content** from a **simple definition**: a plain object, such as a JSON
@@ -130,6 +135,8 @@ out in a line (cards, columns, chips). Each one holds blocks, as a container doe
 | `allowChildren`   | More elements allowed inside, as in CKEditor: it **adds** to what the type holds. `'$text'` is allowed too. |
 | `allowIn`         | The parents the element is allowed in: element names, and `'$root'`.                                        |
 | `editingTag`      | The tag in the editing view, with the [converters](./schema-converters) of the plugin. Not in the data.     |
+| `verbatim`        | A block whose whitespace is its content, e.g. code: see [Verbatim blocks](#verbatim-blocks).                |
+| `listItem`        | Makes a container a list of the items of that name: see [Lists](#lists).                                    |
 
 `allowIn` differs from CKEditor in one way, on purpose: when it is given, it **replaces** the default places of the type
 (the root and containers for block-level elements, where text is for inline ones). Otherwise an element could never be
@@ -157,6 +164,58 @@ The editor looks the names up when it starts, after the other plugins are initia
 [When the elements are registered](#when-the-elements-are-registered). For the check without an editor, pass them as
 `external`: see [Without an editor](#without-an-editor-in-node-js).
 
+## Verbatim blocks
+
+A **verbatim** block keeps its whitespace: its spaces, its tabs and its new lines are its content, as in code, a literal
+layout or a poem. Only a block-level `block` can be verbatim.
+
+```json
+{ "code": { "type": "block", "verbatim": true } }
+```
+
+```
+<code>if (a) {
+  b();
+}</code>
+```
+
+- **Enter** inserts a new line, as Shift+Enter does, instead of splitting the block. On an empty last line, at the end
+  of the block, Enter leaves it: the empty line goes away, and a paragraph follows.
+- With the [converters](./schema-converters) of the plugin, it is a `pre` in the data and in the editor, which keeps the
+  whitespace. A data processor of your own gets the verbatim blocks from `getVerbatimElements(schema)`, e.g. for the
+  elements whose whitespace it keeps.
+- It holds text and inline elements, as any block.
+
+## Lists
+
+A **list** is a block-level `container` that holds only its **items**: `listItem` names the element of its items, a
+block-level `container` of the file. Several lists can have the same items, e.g. a bulleted and a numbered list.
+
+```json
+{
+	"bullets": { "type": "container", "listItem": "item" },
+	"numbers": { "type": "container", "listItem": "item" },
+	"item": { "type": "container" }
+}
+```
+
+```
+<bullets>
+  <item><paragraph>One</paragraph></item>
+  <item><paragraph>Two</paragraph><numbers><item><paragraph>Two and a half</paragraph></item></numbers></item>
+</bullets>
+```
+
+- A list holds only its items, and an item is allowed only in its lists: the item has no `allowIn`, the list no
+  `allowChildren`, and no other element can be allowed in a list. An item holds what a container holds, lists too, so
+  lists nest.
+- **Enter** in an item makes the next item, with what follows the cursor. In the only block of an empty item, Enter
+  leaves the list: the block goes after the list, which is split when the item was in the middle of it. Shift+Enter is
+  as in any block.
+- [`ElementSchemaCommands`](./schema-commands#lists) gives a list the command of a list, which makes a list of the
+  selected blocks.
+- `getLists(schema)` returns the lists of a schema, with their items.
+
 ## Validation
 
 The definition is checked when the editor is created, and the editor is **not created** when it has problems. The
@@ -183,7 +242,10 @@ A definition is rejected when it:
   twice, or declares an element that another plugin declared already;
 - allows what the type cannot hold, whichever side says it, `allowChildren` of the parent or `allowIn` of the child:
   text or an inline element in a container or in the root, a block-level (not inline) element in a block, or anything in
-  an `empty` element. Inline elements of every type are fine in a block.
+  an `empty` element. Inline elements of every type are fine in a block;
+- makes verbatim what is not a block-level `block`, or a list of what is not a block-level `container`; names a list
+  item that is not a block-level container of the file, or gives the item `allowIn`, the list `allowChildren`, or
+  allows another element in a list or an item elsewhere.
 
 Nesting is fine: a container can allow itself, and elements can refer to each other.
 
@@ -233,7 +295,8 @@ if (issues.length) {
 }
 ```
 
-The entry also exports `ElementSchemaError`, which formats the list as above, and `compileElementSchema()`.
+The entry also exports `ElementSchemaError`, which formats the list as above, `compileElementSchema()`, and the
+queries of a schema, `getVerbatimElements()` and `getLists()`.
 
 ## When the elements are registered
 

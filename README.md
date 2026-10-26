@@ -5,7 +5,7 @@ from a JSON schema, formatting included; the data mirrors the model, element for
 element: commands and their buttons, the element menu and context menu, actions (move, duplicate, delete) and the
 clipboard, attributes, selection and clicks, element toolbars, quick insert and breadcrumbs.
 
-**[Try the full example](https://ivankild.github.io/ckeditor5-elements/example)**: an editor with all the features
+**[Try the full example](https://ivankild.github.io/ckeditor5-elements/examples/)**: an editor with all the features
 together. Its source is in [`packages/ckeditor5-elements-example`](packages/ckeditor5-elements-example).
 
 ```sh
@@ -25,18 +25,21 @@ reference (its source is in [`docs`](docs)).
 As `ckeditor5` is for CKEditor, [`ckeditor5-elements`](packages/ckeditor5-elements) is the package to install: it
 re-exports the feature packages, which are published too, all in the same version, and combines their styles.
 
-| Package                                                                     | Contents                                                                   | Depends on                     |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------ |
-| [`ckeditor5-elements`](packages/ckeditor5-elements)                         | Everything below, and one stylesheet                                       | all below, in the same version |
-| [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)               | Element commands and their button views                                    | –                              |
-| [`ckeditor5-elements-actions`](packages/ckeditor5-elements-actions)         | Move, duplicate and delete, copy, cut and paste commands for an element    | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-attributes`](packages/ckeditor5-elements-attributes)   | Show the attributes of an element in a modal                               | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-schema`](packages/ckeditor5-elements-schema)           | Declare elements from a JSON file, with validation, and their commands     | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-toolbar`](packages/ckeditor5-elements-toolbar)         | Floating toolbars for elements, by name or filter                          | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-interaction`](packages/ckeditor5-elements-interaction) | Select elements as a whole, react to clicks on them; no widgets            | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-menu`](packages/ckeditor5-elements-menu)               | Element menu; context menu, breadcrumbs and Alt+Enter quick insert         | `ckeditor5-elements-core`      |
-| [`ckeditor5-elements-example`](packages/ckeditor5-elements-example)         | The full example: an editor with all the features (private, not published) | `ckeditor5-elements`           |
-| [`docs`](docs)                                                              | Documentation: guides with live examples, and the API reference            |                                |
+| Package                                                                             | Contents                                                                   | Depends on                     |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------ |
+| [`ckeditor5-elements`](packages/ckeditor5-elements)                                 | Everything below, and one stylesheet                                       | all below, in the same version |
+| [`ckeditor5-elements-core`](packages/ckeditor5-elements-core)                       | Element commands and their button views                                    | –                              |
+| [`ckeditor5-elements-actions`](packages/ckeditor5-elements-actions)                 | Move, duplicate and delete, copy, cut and paste commands for an element    | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-attributes`](packages/ckeditor5-elements-attributes)           | Show the attributes of an element in a modal                               | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-schema`](packages/ckeditor5-elements-schema)                   | Declare elements from a JSON file, with validation, and their commands     | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-toolbar`](packages/ckeditor5-elements-toolbar)                 | Floating toolbars for elements, by name or filter                          | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-interaction`](packages/ckeditor5-elements-interaction)         | Select elements as a whole, react to clicks on them; no widgets            | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-menu`](packages/ckeditor5-elements-menu)                       | Element menu; context menu, breadcrumbs and Alt+Enter quick insert         | `ckeditor5-elements-core`      |
+| [`ckeditor5-elements-example`](packages/ckeditor5-elements-example)                 | The full example: an editor with all the features (private, not published) | `ckeditor5-elements`           |
+| [`ckeditor5-elements-docbook-example`](packages/ckeditor5-elements-docbook-example) | The DocBook example: Simplified DocBook XML data (private, not published)  | `ckeditor5-elements`           |
+| [`ckeditor5-elements-dita-example`](packages/ckeditor5-elements-dita-example)       | The DITA example: Lightweight DITA XML data (private, not published)       | `ckeditor5-elements`           |
+| [`ckeditor5-elements-xml-example`](packages/ckeditor5-elements-xml-example)         | The XML of the DocBook and DITA examples (private, not published)          | `ckeditor5-elements`           |
+| [`docs`](docs)                                                                      | Documentation: guides with live examples, and the API reference            |                                |
 
 The feature packages depend on each other in exact versions. Core fails to load twice, as CKEditor does
 (`ckeditor-duplicated-modules`): two copies of it would mean two versions installed.
@@ -47,6 +50,8 @@ The feature packages depend on each other in exact versions. Core fails to load 
 pnpm install
 pnpm dev             # the documentation, with live examples (VitePress + TypeDoc)
 pnpm example         # the full example, as a page of its own (Vite)
+pnpm example:docbook # the DocBook example, as a page of its own (Vite)
+pnpm example:dita    # the DITA example, as a page of its own (Vite)
 pnpm docs:build      # the static documentation site, in docs/.vitepress/dist
 pnpm test            # tests, in headless Chrome
 pnpm test:coverage   # tests with a coverage report in coverage/

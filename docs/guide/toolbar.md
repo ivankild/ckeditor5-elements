@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 floating toolbar for elements'
+description: 'Show a floating CKEditor 5 toolbar next to the element with the cursor, for the elements you choose by name or by a filter, with buttons that act on the element.'
+---
+
 # Element toolbar
 
 `ElementToolbar` shows a floating toolbar next to the element with the cursor, for the elements you choose: by their

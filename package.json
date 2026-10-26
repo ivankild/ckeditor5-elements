@@ -20,6 +20,8 @@
 		"typecheck": "pnpm build && node scripts/typecheck.js",
 		"docs:dev": "pnpm --filter docs dev",
 		"example": "pnpm --filter ckeditor5-elements-example dev",
+		"example:docbook": "pnpm --filter ckeditor5-elements-docbook-example dev",
+		"example:dita": "pnpm --filter ckeditor5-elements-dita-example dev",
 		"docs:build": "pnpm --filter docs build",
 		"lint:css": "node scripts/checkCssVariables.js",
 		"lint:packages": "node scripts/checkPackages.js",

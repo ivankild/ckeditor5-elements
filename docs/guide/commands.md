@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 element commands and buttons'
+description: 'Write CKEditor 5 commands that act on an element: ElementOrPositionCommand and ElementCommand know their title, icon and state for any element, for toolbars and menus.'
+---
+
 # Commands
 
 In CKEditor 5 Elements, every feature acts on an element, so the features are built around one kind of command: a

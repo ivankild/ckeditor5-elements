@@ -24,7 +24,11 @@ export const SCHEMA: ElementSchemaInput = {
 	callout: { type: 'container' },
 	divider: { type: 'empty' },
 	mention: { type: 'empty', isInline: true },
-	chip: { type: 'container', isInline: true }
+	chip: { type: 'container', isInline: true },
+	code: { type: 'block', verbatim: true },
+	bullets: { type: 'container', listItem: 'item' },
+	numbers: { type: 'container', listItem: 'item' },
+	item: { type: 'container' }
 };
 
 /**
@@ -37,7 +41,10 @@ export const CONFIG: ElementSchemaCommandsConfig = {
 	callout: { title: 'Callout' },
 	divider: { title: 'Divider' },
 	mention: { title: 'Mention' },
-	chip: { title: 'Chip' }
+	chip: { title: 'Chip' },
+	code: { title: 'Code' },
+	bullets: { title: 'Bulleted list' },
+	numbers: { title: 'Numbered list' }
 };
 
 /**

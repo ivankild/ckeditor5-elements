@@ -346,6 +346,92 @@ describe('validateElementSchema()', () => {
 		});
 	});
 
+	describe('verbatim blocks', () => {
+		it('accepts a verbatim block-level block', () => {
+			expect(
+				problems({ code: { type: 'block', verbatim: true }, text: { type: 'block', verbatim: false } })
+			).toEqual([]);
+		});
+
+		it('rejects verbatim that is not true or false, or on what is not a block-level block', () => {
+			expect(
+				problems({
+					a: { type: 'block', verbatim: 'yes' },
+					b: { type: 'container', verbatim: true },
+					c: { type: 'block', isInline: true, verbatim: true }
+				})
+			).toEqual([
+				'a.verbatim: must be true or false.',
+				'b.verbatim: only a block-level block can be verbatim: its text keeps its new lines. Change the type, or remove verbatim.',
+				'c.verbatim: only a block-level block can be verbatim: its text keeps its new lines. Change the type, or remove verbatim.'
+			]);
+		});
+	});
+
+	describe('lists of items', () => {
+		it('accepts lists of items, also two lists of the same items, and lists in items', () => {
+			expect(
+				problems({
+					bullets: { type: 'container', listItem: 'item' },
+					numbers: { type: 'container', listItem: 'item' },
+					item: { type: 'container' }
+				})
+			).toEqual([]);
+		});
+
+		it('rejects a list item that is not a name, and a list that is not a block-level container', () => {
+			expect(
+				problems({
+					a: { type: 'container', listItem: 5 },
+					b: { type: 'block', listItem: 'item' },
+					c: { type: 'container', isInline: true, listItem: 'item' },
+					item: { type: 'container' }
+				})
+			).toEqual([
+				'a.listItem: must be the name of the element of the items, e.g. "listItem": "item".',
+				'b.listItem: only a block-level container can be a list: it holds its items. Change the type, or remove listItem.',
+				'c.listItem: only a block-level container can be a list: it holds its items. Change the type, or remove listItem.'
+			]);
+		});
+
+		it('rejects an item that is unknown, of another plugin, the list itself, or not a block-level container', () => {
+			expect(
+				problems(
+					{
+						a: { type: 'container', listItem: 'iten' },
+						b: { type: 'container', listItem: 'paragraph' },
+						c: { type: 'container', listItem: 'c' },
+						d: { type: 'container', listItem: 'text' },
+						item: { type: 'container' },
+						text: { type: 'block' }
+					},
+					{ paragraph: PARAGRAPH }
+				)
+			).toEqual([
+				'a.listItem: unknown element "iten" (did you mean "item"?). Declare the element of the items in the schema.',
+				'b.listItem: "paragraph" is an element of another plugin: the item of a list must be declared in the schema.',
+				'c.listItem: a list cannot be its own item: name the element of its items.',
+				'd.listItem: "text" must be a block-level container: an item holds the blocks of the item.'
+			]);
+		});
+
+		it('rejects other places for an item, and other children for a list, which holds only its items', () => {
+			expect(
+				problems({
+					list: { type: 'container', listItem: 'item', allowChildren: ['note'] },
+					item: { type: 'container', allowIn: ['note'] },
+					note: { type: 'container', allowChildren: ['item'] },
+					title: { type: 'block', allowIn: ['list'] }
+				})
+			).toEqual([
+				'list.allowChildren: a list holds only its items: remove allowChildren, or listItem.',
+				'item.allowIn: the places of a list item are its lists ("list"): remove allowIn.',
+				'note.allowChildren[0]: "item" cannot be a child of "note": it is a list item, allowed only in its lists.',
+				'title.allowIn[0]: "title" cannot be allowed in "list": a list holds only its items ("item").'
+			]);
+		});
+	});
+
 	describe('references', () => {
 		it('rejects unknown elements, and suggests the closest known one', () => {
 			expect(

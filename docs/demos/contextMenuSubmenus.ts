@@ -1,4 +1,4 @@
-import { Essentials, Heading, Paragraph } from 'ckeditor5';
+import { Essentials, Heading, Paragraph, SourceEditing } from 'ckeditor5';
 import {
 	ElementActions,
 	ElementClipboard,
@@ -14,6 +14,7 @@ export default {
 	config: {
 		plugins: [
 			Essentials,
+			SourceEditing,
 			Paragraph,
 			Heading,
 			Note,
@@ -22,7 +23,7 @@ export default {
 			ElementActions,
 			QuickInsert
 		],
-		toolbar: ['undo', 'redo', '|', 'heading', '|', 'note'],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', '|', 'note'],
 		// Commands, submenus and separators. "Note" is a toggle: it is "on" inside a note.
 		elementContextMenu: (element, editor) => [
 			editor.commands.get('note'),

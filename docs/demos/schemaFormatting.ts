@@ -1,4 +1,4 @@
-import { Essentials, IconBold, IconItalic, IconUnderline, Paragraph, _getModelData } from 'ckeditor5';
+import { Essentials, IconBold, IconItalic, IconUnderline, Paragraph, SourceEditing, _getModelData } from 'ckeditor5';
 import { Breadcrumbs, ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
 import formatting from './shared/formatting.json';
 import type { Demo } from './shared/demo';
@@ -6,9 +6,9 @@ import type { Demo } from './shared/demo';
 export default {
 	config: {
 		// No `Bold`, `Italic` and `Underline` of CKEditor: the buttons are the ones of `ElementSchemaCommands`.
-		plugins: [Essentials, Paragraph, ElementSchema, ElementSchemaCommands, Breadcrumbs],
+		plugins: [Essentials, SourceEditing, Paragraph, ElementSchema, ElementSchemaCommands, Breadcrumbs],
 		toolbar: {
-			items: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '-', 'breadcrumbs'],
+			items: ['undo', 'redo', 'sourceEditing', '|', 'bold', 'italic', 'underline', '-', 'breadcrumbs'],
 			shouldNotGroupWhenFull: true
 		},
 		elementSchema: formatting,

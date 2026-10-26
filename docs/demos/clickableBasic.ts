@@ -1,4 +1,4 @@
-import { Essentials, ImageBlock, ImageCaption, Link, LinkImage, Paragraph } from 'ckeditor5';
+import { Essentials, ImageBlock, ImageCaption, Link, LinkImage, Paragraph, SourceEditing } from 'ckeditor5';
 import { ElementAttributes, ElementClickable, type ElementClickableDefinition } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
@@ -19,6 +19,7 @@ export default {
 	config: {
 		plugins: [
 			Essentials,
+			SourceEditing,
 			Paragraph,
 			Link,
 			ImageBlock,
@@ -28,7 +29,7 @@ export default {
 			Note,
 			ElementClickable
 		],
-		toolbar: ['undo', 'redo', '|', 'link', 'note'],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'link', 'note'],
 		elementClickables: [
 			// By a filter function: images, and anything with a link (a linked image). Called on click.
 			{
