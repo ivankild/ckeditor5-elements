@@ -191,14 +191,5 @@ describe('QuickInsertCommand', () => {
 
 			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
 		});
-
-		it('does nothing without a name, when it has no quick insert plugin to open', () => {
-			_setModelData(editor.model, '<paragraph>fo[]o</paragraph>');
-
-			expect(() => {
-				command.execute();
-			}).not.toThrow();
-			expect(getData()).toBe('<paragraph>fo[]o</paragraph>');
-		});
 	});
 });

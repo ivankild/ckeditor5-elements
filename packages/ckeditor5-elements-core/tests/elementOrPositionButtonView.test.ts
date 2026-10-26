@@ -152,6 +152,16 @@ describe('ElementOrPositionButtonView', () => {
 			expect(view!.isEnabled).toBe(false);
 		});
 
+		it('does not update when only the selection changes: the target is the same', () => {
+			const getState = vi.spyOn(command, 'getState');
+
+			editor.model.change(writer => {
+				writer.setSelection(child(1), 0);
+			});
+
+			expect(getState).not.toHaveBeenCalled();
+		});
+
 		it('is disabled while the command is force-disabled', () => {
 			command.forceDisabled('test');
 

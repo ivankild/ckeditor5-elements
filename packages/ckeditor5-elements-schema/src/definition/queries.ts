@@ -1,3 +1,4 @@
+import { isInlineText } from './kinds.js';
 import type { ElementSchemaInput } from './types.js';
 
 /**
@@ -6,7 +7,7 @@ import type { ElementSchemaInput } from './types.js';
  */
 export function getInlineTextElements(input: ElementSchemaInput): string[] {
 	return Object.entries(input)
-		.filter(([, element]) => element.type === 'block' && element.isInline === true)
+		.filter(([, element]) => isInlineText(element))
 		.map(([name]) => name);
 }
 

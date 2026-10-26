@@ -174,6 +174,8 @@ describe('the DocBook example', () => {
 				editor.model,
 				'<section><itemizedlist><listitem><paragraph>a[]</paragraph></listitem></itemizedlist></section>'
 			);
+			// When converting is slow, e.g. in a loaded test run, the breadcrumbs follow later: now, they do.
+			editor.plugins.get('ElementBreadcrumbs').refresh();
 
 			expect(editor.plugins.get('ElementBreadcrumbs').items.map(item => item.label)).toEqual([
 				'section',

@@ -1,5 +1,5 @@
 import { _setModelData } from 'ckeditor5';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { useSchemaCommandsEditor } from '../schemaCommandsEditor.js';
 
 describe('ElementContainerCommand', () => {
@@ -45,5 +45,17 @@ describe('ElementContainerCommand', () => {
 		);
 		// The block of an inline element.
 		expect(command('callout').getState(child(0, 1))).toEqual({ isEnabled: true, isOn: false });
+	});
+
+	it('looks for its element once, for both its state and whether it is on', async () => {
+		const editor = await setUp();
+		const find = vi.spyOn(command('callout') as unknown as Record<'_findElement', () => unknown>, '_findElement');
+
+		_setModelData(editor.model, '<callout><paragraph>a[]</paragraph></callout>');
+		find.mockClear();
+		command('callout').refresh();
+
+		expect(find).toHaveBeenCalledTimes(1);
+		expect(command('callout').isOn).toBe(true);
 	});
 });

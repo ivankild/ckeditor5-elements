@@ -50,15 +50,16 @@ They are enabled only when something can be inserted at that position.
 
 ## From code
 
-The `quickInsert` command takes the target first, like all [element commands](./commands): a position, an element
-(meaning the position before it), or nothing (the selection).
+The `quickInsert` command inserts an element by its name. It takes the target first, like all
+[element commands](./commands): a position, an element (meaning the position before it), or nothing (the selection).
+The plugin opens the menu, with `open()`.
 
 ```ts
 // Inserts a heading at the position.
 editor.execute('quickInsert', position, 'heading2');
 
-// Without an element name: opens the menu for the position before the element.
-editor.execute('quickInsert', element);
+// Opens the menu for the position before the element.
+editor.plugins.get('ElementQuickInsert').open(element);
 ```
 
 After inserting, an object is selected; an element that holds text gets the cursor inside it; an element that holds
@@ -70,7 +71,8 @@ blocks gets a paragraph with the cursor.
 <<< @/demos/quickInsertCommand.ts
 :::
 
-`editor.plugins.get('ElementQuickInsert')` also has `open(target?, domTarget?)` and `getItems(target?)`.
+`open(target?, domTarget?)` shows the menu next to the DOM target, by default next to the element or the selection.
+`editor.plugins.get('ElementQuickInsert')` also has `getItems(target?)`, and `hasItems(target?)`.
 
 ## Configuration
 

@@ -1,5 +1,5 @@
 import { _setModelData } from 'ckeditor5';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ElementListCommand } from 'ckeditor5-elements-core';
 import { useSchemaCommandsEditor } from '../schemaCommandsEditor.js';
 
@@ -46,5 +46,17 @@ describe('ElementListCommand', () => {
 			}
 		);
 		expect(command('bullets').isEnabled).toBe(true);
+	});
+
+	it('looks for its element once, for both its state and whether it is on', async () => {
+		const editor = await setUp();
+		const find = vi.spyOn(command('bullets') as unknown as Record<'_findList', () => unknown>, '_findList');
+
+		_setModelData(editor.model, '<bullets><item><paragraph>a[]</paragraph></item></bullets>');
+		find.mockClear();
+		command('bullets').refresh();
+
+		expect(find).toHaveBeenCalledTimes(1);
+		expect(command('bullets').isOn).toBe(true);
 	});
 });

@@ -356,6 +356,10 @@ importers:
       ckeditor5-elements-core:
         specifier: workspace:*
         version: link:../ckeditor5-elements-core
+    devDependencies:
+      ckeditor5-elements-actions:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-actions
 
   packages/ckeditor5-elements-schema:
     dependencies:
@@ -365,6 +369,10 @@ importers:
       ckeditor5-elements-core:
         specifier: workspace:*
         version: link:../ckeditor5-elements-core
+    devDependencies:
+      ckeditor5-elements-interaction:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-interaction
 
   packages/ckeditor5-elements-toolbar:
     dependencies:
@@ -374,6 +382,13 @@ importers:
       ckeditor5-elements-core:
         specifier: workspace:*
         version: link:../ckeditor5-elements-core
+    devDependencies:
+      ckeditor5-elements-actions:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-actions
+      ckeditor5-elements-menu:
+        specifier: workspace:*
+        version: link:../ckeditor5-elements-menu
 
   packages/ckeditor5-elements-xml-example:
     dependencies:

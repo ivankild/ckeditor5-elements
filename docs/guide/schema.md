@@ -298,8 +298,11 @@ if (issues.length) {
 }
 ```
 
+`parseElementSchema(schema, options)` does the same check, and returns the schema as a typed definition when it is
+valid, e.g. for `compileElementSchema()`: `{ definition, issues }`, with `definition` `null` when there are issues.
+
 The entry also exports `ElementSchemaError`, which formats the list as above, `compileElementSchema()`, and the
-queries of a schema, `getVerbatimElements()` and `getLists()`.
+queries of a schema, `getVerbatimElements()`, `getInlineTextElements()` and `getLists()`.
 
 ## When the elements are registered
 

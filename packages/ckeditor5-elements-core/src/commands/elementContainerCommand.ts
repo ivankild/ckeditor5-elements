@@ -1,5 +1,5 @@
 import type { ModelElement, ModelRange } from 'ckeditor5';
-import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
 import ElementCommand from './elementCommand.js';
 
 /**
@@ -35,22 +35,18 @@ export default class ElementContainerCommand extends ElementCommand {
 	}
 
 	/**
-	 * Enabled when the target can be edited, and the element it is in can be unwrapped, or its blocks can be wrapped.
+	 * Enabled when the target can be edited, and the element it is in can be unwrapped, or its blocks can be wrapped. "On"
+	 * when the target is in the element. Both from the element, found once.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
 		const element = this._findElement(elementOrPosition);
 
-		return (
-			super._isEnabledFor(elementOrPosition) &&
-			(element ? this._canUnwrap(element) : !!this._getWrapRange(elementOrPosition))
-		);
-	}
-
-	/**
-	 * "On" when the target is in the element.
-	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		return !!this._findElement(elementOrPosition);
+		return {
+			isEnabled:
+				super._isEnabledFor(elementOrPosition) &&
+				(element ? this._canUnwrap(element) : !!this._getWrapRange(elementOrPosition)),
+			isOn: !!element
+		};
 	}
 
 	/**

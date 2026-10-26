@@ -200,6 +200,17 @@ describe('ElementMenuView', () => {
 		expect(describeItems(view)).toEqual(['Plain', 'Container']);
 	});
 
+	it('is empty when all its items are missing, also in its submenus', () => {
+		view = new ElementMenuView(
+			editor.locale,
+			editor.ui.view.body,
+			[null, '|', { title: 'More', items: [null] }],
+			child(1)
+		);
+
+		expect(view.isEmpty).toBe(true);
+	});
+
 	describe('separators', () => {
 		it('are shown between items, in the menu and in submenus', () => {
 			createView([plain, '|', container, '|', { title: 'More', items: [plain, '|', container] }]);

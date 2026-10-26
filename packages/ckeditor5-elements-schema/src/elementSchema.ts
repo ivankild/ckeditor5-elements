@@ -1,12 +1,12 @@
 import { Plugin, type ModelSchema } from 'ckeditor5';
 import { findPlugin } from 'ckeditor5-elements-core';
 import { compileElementSchema } from './definition/compileElementSchema.js';
-import { getModelKind } from './definition/modelKind.js';
+import { getModelKind } from './definition/kinds.js';
 import { convertElementSchema } from './conversion/convertElementSchema.js';
 import ElementSchemaError from './definition/elementSchemaError.js';
 import { getInlineTextElements, getLists, getVerbatimElements } from './definition/queries.js';
-import type { ElementSchemaDefinition, ElementSchemaInput, ElementSchemaKind } from './definition/types.js';
-import { validateElementSchema } from './definition/validateElementSchema.js';
+import type { ElementSchemaDefinition, ElementSchemaKind } from './definition/types.js';
+import { parseElementSchema } from './definition/validateElementSchema.js';
 import { enableListTyping } from './typing/lists.js';
 import { enableTwoStepCaretMovement } from './typing/twoStepCaretMovement.js';
 import { enableVerbatimTyping } from './typing/verbatim.js';
@@ -81,13 +81,13 @@ export default class ElementSchema extends Plugin {
 		}
 
 		const schema = this.editor.model.schema;
-		const issues = validateElementSchema(input, { external: getExternalKinds(schema) });
+		const { definition, issues } = parseElementSchema(input, { external: getExternalKinds(schema) });
 
-		if (issues.length) {
+		if (!definition) {
 			throw new ElementSchemaError(issues);
 		}
 
-		const { items, children } = compileElementSchema(input);
+		const { items, children } = compileElementSchema(definition);
 
 		for (const [name, definition] of items) {
 			schema.register(name, definition);
@@ -97,28 +97,26 @@ export default class ElementSchema extends Plugin {
 			schema.extend(child, { allowIn: parent });
 		}
 
-		// Valid: of the shape of a definition.
-		this._definition = input as ElementSchemaDefinition;
-
-		this._makeSelectable(input);
+		this._definition = definition;
+		this._makeSelectable(definition);
 
 		const converters = this.editor.config.get('elementSchemaConverters');
 
 		if (converters) {
-			convertElementSchema(this.editor, input, converters);
+			convertElementSchema(this.editor, definition, converters);
 		}
 
-		this._enableTyping(input);
+		this._enableTyping(definition);
 	}
 
 	/**
 	 * Makes typing work as the kinds of elements need: two-step caret movement at the ends of the inline elements with
 	 * text, and Enter for a new line in a verbatim block, and for the next item in a list.
 	 */
-	private _enableTyping(input: ElementSchemaInput): void {
-		const inlineText = new Set(getInlineTextElements(input));
-		const verbatim = new Set(getVerbatimElements(input));
-		const lists = getLists(input);
+	private _enableTyping(definition: ElementSchemaDefinition): void {
+		const inlineText = new Set(getInlineTextElements(definition));
+		const verbatim = new Set(getVerbatimElements(definition));
+		const lists = getLists(definition);
 
 		if (inlineText.size) {
 			enableTwoStepCaretMovement(this, inlineText);
@@ -137,8 +135,8 @@ export default class ElementSchema extends Plugin {
 	 * Makes the `empty` elements and the containers selectable as a whole, by a click on them and by the arrow keys, with
 	 * `ElementSelectable`. Not the blocks: a click in a block puts the cursor in its text.
 	 */
-	private _makeSelectable(input: ElementSchemaInput): void {
-		const names = Object.entries(input)
+	private _makeSelectable(definition: ElementSchemaDefinition): void {
+		const names = Object.entries(definition)
 			.filter(([, element]) => element.type === 'empty' || element.type === 'container')
 			.map(([name]) => name);
 		const selectable = findPlugin(this.editor, 'ElementSelectable', isSelectablePlugin);

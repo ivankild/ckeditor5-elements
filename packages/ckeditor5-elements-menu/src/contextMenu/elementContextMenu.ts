@@ -1,5 +1,6 @@
 import { Plugin, type ModelElement, type RectSource, type ViewElement } from 'ckeditor5';
-import { getElementAtSelection, isInDocument } from 'ckeditor5-elements-core';
+import { getElementAtSelection, getElementsAround, isInDocument } from 'ckeditor5-elements-core';
+import { getDomTarget } from '../domTarget.js';
 import ElementMenu from '../elementMenu.js';
 import ContextMenuObserver, { type ViewDocumentContextMenuEvent } from './contextMenuObserver.js';
 
@@ -80,17 +81,10 @@ export default class ElementContextMenu extends Plugin {
 	 * Returns `false` when there is no such element or no items.
 	 */
 	public openAtSelection(): boolean {
-		const editing = this.editor.editing;
-		const selection = this.editor.model.document.selection;
-		const selectedElement = selection.getSelectedElement();
-		const element = getElementAtSelection(selection);
-		const viewElement = selectedElement && editing.mapper.toViewElement(selectedElement);
-		const viewRange = editing.view.document.selection.getFirstRange();
-		const target = viewElement
-			? editing.view.domConverter.mapViewToDom(viewElement)
-			: viewRange && editing.view.domConverter.viewRangeToDom(viewRange);
+		const element = getElementAtSelection(this.editor.model.document.selection);
+		const target = getDomTarget(this.editor);
 
-		if (!element || !isInDocument(element) || !(target instanceof HTMLElement || target instanceof Range)) {
+		if (!element || !isInDocument(element) || !target) {
 			return false;
 		}
 
@@ -101,14 +95,8 @@ export default class ElementContextMenu extends Plugin {
 	 * Returns the closest model element mapped to the given view element or its ancestors, skipping the root.
 	 */
 	public getModelElement(viewElement: ViewElement): ModelElement | null {
-		const mapper = this.editor.editing.mapper;
-
-		for (let node: ViewElement | null = viewElement; node; node = node.parent?.is('element') ? node.parent : null) {
-			const element = mapper.toModelElement(node);
-
-			if (element) {
-				return element.is('rootElement') ? null : element;
-			}
+		for (const { element } of getElementsAround(this.editor.editing.mapper, viewElement)) {
+			return element;
 		}
 
 		return null;

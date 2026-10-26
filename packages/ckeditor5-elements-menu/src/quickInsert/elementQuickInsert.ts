@@ -1,5 +1,6 @@
-import { Plugin, type Editor, type FilteredViewExecuteEvent, type ModelElement, type RectSource } from 'ckeditor5';
+import { Plugin, type Editor, type FilteredViewExecuteEvent, type RectSource } from 'ckeditor5';
 import type { ElementOrPosition } from 'ckeditor5-elements-core';
+import { getDomTarget } from '../domTarget.js';
 import ElementMenu from '../elementMenu.js';
 import QuickInsertCommand from './quickInsertCommand.js';
 import QuickInsertPositionCommand from './quickInsertPositionCommand.js';
@@ -56,7 +57,7 @@ export default class ElementQuickInsert extends Plugin {
 		const editor = this.editor;
 		const keystroke = editor.config.get('elementQuickInsert')?.keystroke;
 
-		editor.commands.add('quickInsert', new QuickInsertCommand(editor, this));
+		editor.commands.add('quickInsert', new QuickInsertCommand(editor));
 		editor.commands.add('quickInsertBefore', new QuickInsertPositionCommand(editor, 'before', this));
 		editor.commands.add('quickInsertAfter', new QuickInsertPositionCommand(editor, 'after', this));
 
@@ -109,7 +110,7 @@ export default class ElementQuickInsert extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get('quickInsert');
 		const position = command?.getInsertPosition(elementOrPosition);
-		const menuTarget = domTarget ?? this._getDomTarget(elementOrPosition);
+		const menuTarget = domTarget ?? getDomTarget(editor, elementOrPosition);
 
 		if (!command || !position || !menuTarget || !command.getState(position).isEnabled) {
 			return false;
@@ -130,30 +131,5 @@ export default class ElementQuickInsert extends Plugin {
 		});
 
 		return true;
-	}
-
-	/**
-	 * Returns the DOM element of the element, or the DOM range of the selection.
-	 */
-	private _getDomTarget(elementOrPosition?: ElementOrPosition): RectSource | null {
-		const editing = this.editor.editing;
-
-		if (elementOrPosition && !elementOrPosition.is('position')) {
-			return this._getDomElement(elementOrPosition);
-		}
-
-		const viewRange = elementOrPosition
-			? editing.view.createRange(editing.mapper.toViewPosition(elementOrPosition))
-			: editing.view.document.selection.getFirstRange();
-
-		return viewRange && editing.view.domConverter.viewRangeToDom(viewRange);
-	}
-
-	private _getDomElement(element: ModelElement): HTMLElement | null {
-		const editing = this.editor.editing;
-		const viewElement = editing.mapper.toViewElement(element);
-		const domElement = viewElement && editing.view.domConverter.mapViewToDom(viewElement);
-
-		return domElement instanceof HTMLElement ? domElement : null;
 	}
 }

@@ -1,6 +1,7 @@
 import type { ModelSchemaItemDefinition } from 'ckeditor5';
 import { getListsOfItems } from './queries.js';
-import type { ElementSchemaElement, ElementSchemaInput } from './types.js';
+import { isInlineText } from './kinds.js';
+import type { ElementSchemaDefinition, ElementSchemaElement } from './types.js';
 
 /**
  * The result of {@link compileElementSchema}.
@@ -19,8 +20,8 @@ export interface CompiledElementSchema {
 }
 
 /**
- * Translates a valid element schema to the definitions of CKEditor's schema. Each type is made like a generic item of
- * CKEditor:
+ * Translates a valid element schema (see {@link parseElementSchema}) to the definitions of CKEditor's schema. Each type
+ * is made like a generic item of CKEditor:
  *
  * * `container`: like `$container`: allowed in the root and in containers; holds what is allowed in a container: blocks,
  *   containers and block objects, not text.
@@ -41,16 +42,16 @@ export interface CompiledElementSchema {
  * A list (`listItem`) holds only its items, not what a container holds, and an item is allowed only in its lists. A
  * verbatim block is a block: its whitespace is kept by its converters and its typing, not by the schema.
  */
-export function compileElementSchema(input: ElementSchemaInput): CompiledElementSchema {
+export function compileElementSchema(definition: ElementSchemaDefinition): CompiledElementSchema {
 	const items: CompiledElementSchema['items'] = [];
 	const children: CompiledElementSchema['children'] = [];
-	const listsOfItems = getListsOfItems(input);
+	const listsOfItems = getListsOfItems(definition);
 
-	for (const [name, element] of Object.entries(input)) {
+	for (const [name, element] of Object.entries(definition)) {
 		const lists = listsOfItems.get(name);
 
 		// An item is allowed in its lists, which are its places.
-		items.push([name, compileElement({ ...(element as ElementSchemaElement), ...(lists && { allowIn: lists }) })]);
+		items.push([name, compileElement({ ...element, ...(lists && { allowIn: lists }) })]);
 
 		for (const child of element.allowChildren ?? []) {
 			children.push({ parent: name, child });
@@ -80,7 +81,7 @@ function compileElement({
 		return { inheritTypesFrom: '$blockObject', ...places('$block'), ...attributes };
 	}
 
-	if (type === 'block' && isInline) {
+	if (isInlineText({ type, isInline })) {
 		return {
 			isInline: true,
 			allowContentOf: '$block',

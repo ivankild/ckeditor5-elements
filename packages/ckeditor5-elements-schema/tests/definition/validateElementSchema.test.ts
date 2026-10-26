@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ElementSchemaKind } from '../../src/definition/types.js';
-import { validateElementSchema } from '../../src/definition/validateElementSchema.js';
+import { parseElementSchema, validateElementSchema } from '../../src/definition/validateElementSchema.js';
 
 /**
  * Validates `elements`, and returns the problems as `path: message` lines.
@@ -513,5 +513,20 @@ describe('validateElementSchema()', () => {
 		});
 
 		expect(issues.map(({ path }) => path)).toEqual(['a.allowChildren[0]', 'b.isInline', 'c.allowChildren']);
+	});
+});
+
+describe('parseElementSchema()', () => {
+	it('returns a valid schema as the definition, with no issues', () => {
+		const input = { note: { type: 'container' } };
+
+		expect(parseElementSchema(input)).toEqual({ definition: input, issues: [] });
+	});
+
+	it('returns no definition for an invalid schema, with its issues', () => {
+		const { definition, issues } = parseElementSchema({ note: { type: 'box' } });
+
+		expect(definition).toBeNull();
+		expect(issues.map(({ path }) => path)).toEqual(['note.type']);
 	});
 });

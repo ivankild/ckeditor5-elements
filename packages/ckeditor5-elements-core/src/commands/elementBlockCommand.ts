@@ -1,5 +1,6 @@
 import type { ModelElement } from 'ckeditor5';
-import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
+import { PARAGRAPH } from '../utils.js';
 import ElementCommand from './elementCommand.js';
 
 /**
@@ -22,18 +23,19 @@ export default class ElementBlockCommand extends ElementCommand {
 	/**
 	 * The element the blocks are turned back into.
 	 */
-	public defaultElement = 'paragraph';
+	public defaultElement = PARAGRAPH;
 
 	/**
 	 * Renames the blocks of the target: to the element, or back to the {@link defaultElement} when they are all the
 	 * element.
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
-		const name = this._getNewName(elementOrPosition);
+		const blocks = this._getBlocks(elementOrPosition);
+		const name = this._getNewName(blocks);
 		const schema = this.editor.model.schema;
 
 		this.editor.model.change(writer => {
-			for (const block of this._getBlocks(elementOrPosition)) {
+			for (const block of blocks) {
 				if (this._canRename(block, name)) {
 					if (block.name !== name) {
 						writer.rename(block, name);
@@ -50,31 +52,32 @@ export default class ElementBlockCommand extends ElementCommand {
 	}
 
 	/**
-	 * Enabled when the target can be edited, and one of its blocks can be renamed.
+	 * Enabled when the target can be edited, and one of its blocks can be renamed. "On" when all the blocks of the target
+	 * are the element. Both from the blocks, found once.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
-		const name = this._getNewName(elementOrPosition);
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
+		const blocks = this._getBlocks(elementOrPosition);
+		const isOn = this._areElements(blocks);
+		const name = isOn ? this.defaultElement : this.elementName;
 
-		return (
-			super._isEnabledFor(elementOrPosition) &&
-			this._getBlocks(elementOrPosition).some(block => this._canRename(block, name))
-		);
+		return {
+			isEnabled: super._isEnabledFor(elementOrPosition) && blocks.some(block => this._canRename(block, name)),
+			isOn
+		};
 	}
 
 	/**
-	 * "On" when all the blocks of the target are the element.
+	 * Whether there are blocks, and all of them are the element.
 	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		const blocks = this._getBlocks(elementOrPosition);
-
+	private _areElements(blocks: readonly ModelElement[]): boolean {
 		return blocks.length > 0 && blocks.every(block => this.isElement(block));
 	}
 
 	/**
 	 * Returns the name the blocks get: the element, or the {@link defaultElement} when they are the element already.
 	 */
-	private _getNewName(elementOrPosition?: ElementOrPosition): string {
-		return this._isOnFor(elementOrPosition) ? this.defaultElement : this.elementName;
+	private _getNewName(blocks: readonly ModelElement[]): string {
+		return this._areElements(blocks) ? this.defaultElement : this.elementName;
 	}
 
 	/**

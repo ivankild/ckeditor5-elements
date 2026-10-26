@@ -23,6 +23,7 @@ describe('the entry without an editor (validate)', () => {
 			'getInlineTextElements',
 			'getLists',
 			'getVerbatimElements',
+			'parseElementSchema',
 			'validateElementSchema'
 		]);
 	});

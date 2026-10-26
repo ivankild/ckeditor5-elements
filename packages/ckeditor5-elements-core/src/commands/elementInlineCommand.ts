@@ -6,7 +6,7 @@ import {
 	type ModelRange,
 	type ModelWriter
 } from 'ckeditor5';
-import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
 import ElementCommand from './elementCommand.js';
 
 /**
@@ -57,37 +57,38 @@ export default class ElementInlineCommand extends ElementCommand {
 	}
 
 	/**
-	 * Enabled when the target can be edited, and is in the element, or the element can be there.
+	 * Enabled when the target can be edited, and is in the element, or the element can be there. "On" when the target is
+	 * in the element: for selected text, when all of it is. Both from one look at the selected text.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
 		const ranges = this._getSelectedRanges(elementOrPosition);
 		const target = this._getElementOrPosition(elementOrPosition);
 
-		if (!target || !super._isEnabledFor(target)) {
-			return false;
+		if (!target) {
+			return { isEnabled: false, isOn: false };
 		}
+
+		const isEditable = super._isEnabledFor(target);
 
 		if (ranges) {
-			return this._isOnRanges(ranges) || this._getWrapRanges(ranges).length > 0;
+			const hasTextToWrap = this._getWrapRanges(ranges).length > 0;
+			const isOn = !hasTextToWrap && this._getElementsIn(ranges).length > 0;
+
+			return { isEnabled: isEditable && (isOn || hasTextToWrap), isOn };
 		}
 
-		if (this._findElement(target)) {
-			return true;
-		}
+		const isOn = !!this._findElement(target);
 
-		return target.is('position')
-			? this.editor.model.schema.checkChild(target, this.elementName)
-			: this._canHold(this.editor.model.createPositionBefore(target), [target]);
+		return { isEnabled: isEditable && (isOn || this._canBeAt(target)), isOn };
 	}
 
 	/**
-	 * "On" when the target is in the element: for selected text, when all of it is.
+	 * Whether the element can be at the target: at a position, or around an element.
 	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		const ranges = this._getSelectedRanges(elementOrPosition);
-		const target = this._getElementOrPosition(elementOrPosition);
-
-		return ranges ? this._isOnRanges(ranges) : !!target && !!this._findElement(target);
+	private _canBeAt(target: ElementOrPosition): boolean {
+		return target.is('position')
+			? this.editor.model.schema.checkChild(target, this.elementName)
+			: this._canHold(this.editor.model.createPositionBefore(target), [target]);
 	}
 
 	/**

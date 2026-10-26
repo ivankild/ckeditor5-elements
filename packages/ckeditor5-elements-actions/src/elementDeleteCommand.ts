@@ -1,5 +1,5 @@
 import { type Editor } from 'ckeditor5';
-import { ElementOrPositionCommand, isStandalone, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { ElementOrPositionCommand, PARAGRAPH, isStandalone, type ElementOrPosition } from 'ckeditor5-elements-core';
 import { deleteIcon } from './icons.js';
 
 /**
@@ -23,11 +23,7 @@ export default class ElementDeleteCommand extends ElementOrPositionCommand {
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const model = this.editor.model;
-		const element = this._getElement(elementOrPosition);
-
-		if (!element || !this._isEnabledFor(element)) {
-			return;
-		}
+		const element = this._requireElement(elementOrPosition);
 
 		model.change(writer => {
 			const parent = element.parent;
@@ -39,9 +35,9 @@ export default class ElementDeleteCommand extends ElementOrPositionCommand {
 				parent?.is('element') &&
 				!parent.is('rootElement') &&
 				parent.isEmpty &&
-				model.schema.checkChild(parent, 'paragraph')
+				model.schema.checkChild(parent, PARAGRAPH)
 			) {
-				const paragraph = writer.createElement('paragraph');
+				const paragraph = writer.createElement(PARAGRAPH);
 
 				writer.append(paragraph, parent);
 				writer.setSelection(paragraph, 0);

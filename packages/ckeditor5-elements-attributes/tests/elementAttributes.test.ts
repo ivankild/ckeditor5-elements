@@ -168,5 +168,7 @@ describe('ElementAttributes', () => {
 
 		expect(command().getAttributes(child(0))).toEqual([['type', 'warning']]);
 		expect(command().getAttributes()).toEqual([]);
+		// No element: a position directly in the root.
+		expect(command().getAttributes(editor.model.createPositionAt(editor.model.document.getRoot()!, 0))).toEqual([]);
 	});
 });

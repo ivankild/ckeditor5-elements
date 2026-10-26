@@ -1,5 +1,6 @@
 import { type Editor, type ModelPosition } from 'ckeditor5';
 import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
+import { getDomTarget } from '../domTarget.js';
 import type ElementQuickInsert from './elementQuickInsert.js';
 import { insertAfterIcon, insertBeforeIcon } from './icons.js';
 
@@ -40,18 +41,12 @@ export default class QuickInsertPositionCommand extends ElementOrPositionCommand
 	 * Opens the quick insert menu for the position before or after the element, next to the element.
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
-		const editor = this.editor;
 		const element = this._getElement(elementOrPosition);
 		const position = this._getInsertPosition(elementOrPosition);
 
-		if (!element || !position) {
-			return;
+		if (element && position) {
+			this._quickInsert.open(position, getDomTarget(this.editor, element) ?? undefined);
 		}
-
-		const viewElement = editor.editing.mapper.toViewElement(element);
-		const domElement = viewElement && editor.editing.view.domConverter.mapViewToDom(viewElement);
-
-		this._quickInsert.open(position, domElement ?? undefined);
 	}
 
 	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {

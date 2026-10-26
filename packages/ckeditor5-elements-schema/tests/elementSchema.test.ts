@@ -517,6 +517,28 @@ describe('ElementSchema', () => {
 			);
 		});
 
+		it("with 'names', reads the names in lowercase too, as the HTML of the clipboard has them", async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema],
+				elementSchema: { calloutTitle: { type: 'block', allowAttributes: ['dataId'] } },
+				elementSchemaConverters: 'names'
+			});
+
+			const { data, model } = editor;
+
+			_setModelData(model, '<calloutTitle dataId="x">ab</calloutTitle>');
+
+			const html = data.htmlProcessor.toData(
+				data.toView(model.getSelectedContent(model.createSelection(model.document.getRoot()!, 'in')))
+			);
+			const pasted = data.toModel(data.htmlProcessor.toView(html));
+
+			expect(html).toBe('<callouttitle dataid="x">ab</callouttitle>');
+			expect(JSON.stringify(pasted.getChild(0)?.toJSON())).toBe(
+				'{"attributes":{"dataId":"x"},"name":"calloutTitle","children":[{"data":"ab"}]}'
+			);
+		});
+
 		it('gives a verbatim block with a tag of its own its view in the editor', async () => {
 			editor = await createEditor({
 				plugins: [Essentials, Paragraph, ElementSchema],
@@ -574,6 +596,24 @@ describe('ElementSchema', () => {
 	});
 
 	describe('selecting elements', () => {
+		it('makes an element of the schema in the `elementSelectable` option selectable, whichever plugin comes first', async () => {
+			for (const plugins of [
+				[ElementSelectable, ElementSchema],
+				[ElementSchema, ElementSelectable]
+			]) {
+				editor = await createEditor({
+					plugins: [Paragraph, ...plugins],
+					elementSchema: { quote: { type: 'block' } },
+					elementSelectable: ['quote']
+				});
+
+				expect(editor.model.schema.isSelectable('quote')).toBe(true);
+
+				await editor.destroy();
+				editor = undefined;
+			}
+		});
+
 		it('makes `empty` and `container` elements selectable, for a click and for the arrow keys, and not `block` ones', async () => {
 			const schema = await setUp();
 			const selectable = editor!.plugins.get(ElementSelectable);

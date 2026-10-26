@@ -8,7 +8,7 @@ import {
 	ElementListCommand,
 	type ElementCommand
 } from 'ckeditor5-elements-core';
-import { getModelKind } from './definition/modelKind.js';
+import { getModelKind, isInserted } from './definition/kinds.js';
 import { getLists } from './definition/queries.js';
 import ElementSchema from './elementSchema.js';
 
@@ -160,14 +160,14 @@ function createCommand(editor: Editor, name: string, lists: ReadonlyMap<string, 
 		);
 	}
 
-	const { type, isInline } = getModelKind(editor.model.schema, name);
+	const kind = getModelKind(editor.model.schema, name);
 
-	if (type === 'empty' || (isInline && type === 'container')) {
+	if (isInserted(kind)) {
 		return new ElementInsertCommand(editor, name);
 	}
 
-	if (type === 'block') {
-		return isInline ? new ElementInlineCommand(editor, name) : new ElementBlockCommand(editor, name);
+	if (kind.type === 'block') {
+		return kind.isInline ? new ElementInlineCommand(editor, name) : new ElementBlockCommand(editor, name);
 	}
 
 	return new ElementContainerCommand(editor, name);

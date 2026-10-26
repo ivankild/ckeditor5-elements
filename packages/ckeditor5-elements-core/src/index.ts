@@ -11,7 +11,11 @@
 import './singleCopyGuard.js';
 
 // Commands.
-export { default as ElementOrPositionCommand, type ElementOrPosition } from './elementOrPositionCommand.js';
+export {
+	default as ElementOrPositionCommand,
+	type ElementOrPosition,
+	type ElementOrPositionState
+} from './elementOrPositionCommand.js';
 export { default as ElementCommand } from './commands/elementCommand.js';
 export { default as ElementInlineCommand } from './commands/elementInlineCommand.js';
 export { default as ElementBlockCommand } from './commands/elementBlockCommand.js';
@@ -32,5 +36,13 @@ export { default as ElementButtonView } from './elementButtonView.js';
 export { keyboardPriorities } from './keyboardPriorities.js';
 
 // Utils.
-export { findBlock, getElementAtSelection, isInDocument, isStandalone, selectNewElement } from './utils.js';
+export {
+	PARAGRAPH,
+	findBlock,
+	getAncestorElements,
+	getElementAtSelection,
+	isInDocument,
+	isStandalone,
+	selectNewElement
+} from './utils.js';
 export { findPlugin, getElementsAround, matchesElement, type ElementMatcher } from './matching.js';

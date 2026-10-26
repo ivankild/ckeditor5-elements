@@ -224,36 +224,6 @@ describe('ElementQuickInsert', () => {
 			expect(menu.view).toBe(other);
 		});
 	});
-
-	describe('the quickInsert command without an element name', () => {
-		it('opens the menu for the target', () => {
-			const openSpy = vi.spyOn(plugin, 'open');
-			const paragraph = root().getChild(0) as ModelElement;
-
-			editor.execute('quickInsert', paragraph);
-
-			expect(openSpy).toHaveBeenCalledWith(paragraph);
-			expect(getView()).toBeInstanceOf(QuickInsertView);
-		});
-
-		it('can be a menu item: executeFor() opens the menu for the element', () => {
-			const command = editor.commands.get('quickInsert')!;
-			const paragraph = root().getChild(0) as ModelElement;
-
-			expect(command.title).toBe('Insert element');
-
-			command.executeFor(paragraph);
-			getView()!.fire('execute', { value: 'heading1' });
-
-			expect(_getModelData(editor.model)).toBe(
-				'<heading1>[]</heading1><paragraph>foo</paragraph><element></element>'
-			);
-		});
-
-		function root(): ModelElement {
-			return editor.model.document.getRoot()!;
-		}
-	});
 });
 
 describe('ElementQuickInsert keystroke config', () => {

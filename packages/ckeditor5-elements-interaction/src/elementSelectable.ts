@@ -146,7 +146,16 @@ export default class ElementSelectable extends Plugin {
 	}
 
 	public afterInit(): void {
-		this._makeSelectable(this._matchers);
+		// Before the data is loaded, once all the elements are registered: also the ones that other plugins register in
+		// `afterInit()`, e.g. the element schema, whichever plugin comes first.
+		this.listenTo(
+			this.editor.data,
+			'init',
+			() => {
+				this._makeSelectable(this._matchers);
+			},
+			{ priority: 'high' }
+		);
 	}
 
 	/**

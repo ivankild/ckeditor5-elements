@@ -1,5 +1,6 @@
 import type { Editor, ViewDowncastWriter, ViewElement } from 'ckeditor5';
-import type { ElementSchemaElement, ElementSchemaInput } from '../definition/types.js';
+import { isInlineText } from '../definition/kinds.js';
+import type { ElementSchemaDefinition, ElementSchemaElement } from '../definition/types.js';
 import { withoutBlockFiller } from './inlineTextElement.js';
 import { createVerbatimElement } from './verbatimElement.js';
 
@@ -39,6 +40,7 @@ export type ElementSchemaConvertersMode = true | 'names';
  *   class, or the element of its `tag`, e.g. `<strong>`. Its attributes are `data-*` attributes.
  * * With the names (`'names'`): an element is the element of its name in the data, e.g. `<calloutTitle>`, and its
  *   attributes keep their names, e.g. `<link href="…">`: for a data processor of XML, which keeps the case of the names.
+ *   They are read in lowercase too, as the clipboard has them: it is HTML.
  *
  * The data is loaded as it is saved. The editing view is HTML either way, as the HTML data, except for the tag, when the
  * element has an `editingTag`.
@@ -48,18 +50,20 @@ export type ElementSchemaConvertersMode = true | 'names';
  */
 export function convertElementSchema(
 	editor: Editor,
-	input: ElementSchemaInput,
+	definition: ElementSchemaDefinition,
 	mode: ElementSchemaConvertersMode = true
 ): void {
 	const { conversion } = editor;
 	const keepsNames = mode === 'names';
 
-	for (const [name, element] of Object.entries(input)) {
-		const { type, isInline, tag, editingTag, allowAttributes, verbatim } = element as ElementSchemaElement;
-		const htmlTag = tag ?? getViewTag(element as ElementSchemaElement);
+	for (const [name, element] of Object.entries(definition)) {
+		const { type, tag, editingTag, allowAttributes, verbatim } = element;
+		const htmlTag = tag ?? getViewTag(element);
 		// An element with a tag of its own is that tag; the others are named by their class.
 		const htmlAttributes: Record<string, string> = tag ? {} : { class: name };
-		const isInlineText = type === 'block' && !!isInline;
+		const isInlineTextElement = isInlineText(element);
+		// The clipboard is HTML, which makes the names lowercase: the names are read in lowercase too.
+		const dataNames = keepsNames ? withLowercase(name) : [];
 
 		const createView = (
 			writer: ViewDowncastWriter,
@@ -67,7 +71,7 @@ export function convertElementSchema(
 			attributes: Record<string, string>,
 			isEditing: boolean
 		): ViewElement => {
-			if (isInlineText) {
+			if (isInlineTextElement) {
 				return withoutBlockFiller(writer.createContainerElement(viewTag, attributes));
 			}
 
@@ -84,19 +88,29 @@ export function convertElementSchema(
 		for (const key of allowAttributes ?? []) {
 			// The names of HTML attributes are lowercase, so the data has them in lowercase; the model keeps the key as it is.
 			const htmlKey = `data-${key.toLowerCase()}`;
-			const dataKey = keepsNames ? key : htmlKey;
+
+			if (keepsNames) {
+				for (const viewName of dataNames) {
+					for (const viewKey of withLowercase(key)) {
+						conversion
+							.for('upcast')
+							.attributeToAttribute({ view: { name: viewName, key: viewKey }, model: key });
+					}
+				}
+			} else {
+				conversion.for('upcast').attributeToAttribute({ view: { name: htmlTag, key: htmlKey }, model: key });
+			}
 
 			conversion
-				.for('upcast')
-				.attributeToAttribute({ view: { name: keepsNames ? name : htmlTag, key: dataKey }, model: key });
-			conversion.for('dataDowncast').attributeToAttribute({ model: { name, key }, view: dataKey });
+				.for('dataDowncast')
+				.attributeToAttribute({ model: { name, key }, view: keepsNames ? key : htmlKey });
 			conversion.for('editingDowncast').attributeToAttribute({ model: { name, key }, view: htmlKey });
 		}
 
-		conversion.for('upcast').elementToElement({
-			view: keepsNames ? name : (tag ?? { name: htmlTag, classes: name }),
-			model: name
-		});
+		for (const view of keepsNames ? dataNames : [tag ?? { name: htmlTag, classes: name }]) {
+			conversion.for('upcast').elementToElement({ view, model: name });
+		}
+
 		conversion.for('dataDowncast').elementToElement({
 			model: name,
 			view: (_element, { writer }) =>
@@ -107,4 +121,12 @@ export function convertElementSchema(
 			view: (_element, { writer }) => createView(writer, editingTag ?? htmlTag, htmlAttributes, true)
 		});
 	}
+}
+
+/**
+ * Returns the name, and its lowercase form when it differs: the names of the data, as XML keeps them, and as HTML makes
+ * them.
+ */
+function withLowercase(name: string): string[] {
+	return name === name.toLowerCase() ? [name] : [name, name.toLowerCase()];
 }

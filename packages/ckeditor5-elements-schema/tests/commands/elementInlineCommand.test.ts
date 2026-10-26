@@ -1,5 +1,5 @@
 import { _setModelData } from 'ckeditor5';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { useSchemaCommandsEditor } from '../schemaCommandsEditor.js';
 
@@ -165,5 +165,26 @@ describe('ElementInlineCommand', () => {
 
 			expect(model()).toBe('<paragraph>[]ab</paragraph>');
 		});
+	});
+
+	it('looks at the selected text once, for both its state and whether it is on', async () => {
+		const editor = await setUp();
+		const bold = command('bold') as unknown as Record<'_getWrapRanges' | '_getElementsIn', () => unknown>;
+		const getWrapRanges = vi.spyOn(bold, '_getWrapRanges');
+		const getElementsIn = vi.spyOn(bold, '_getElementsIn');
+
+		for (const data of [
+			'<paragraph>[ab</paragraph><paragraph>cd]</paragraph>',
+			'<paragraph><bold>[ab</bold></paragraph><paragraph><bold>cd]</bold></paragraph>'
+		]) {
+			_setModelData(editor.model, data);
+			getWrapRanges.mockClear();
+			getElementsIn.mockClear();
+			command('bold').refresh();
+
+			expect([getWrapRanges.mock.calls.length, getElementsIn.mock.calls.length]).toEqual(
+				data.includes('<bold>') ? [1, 1] : [1, 0]
+			);
+		}
 	});
 });

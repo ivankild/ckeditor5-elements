@@ -16,13 +16,16 @@ command that acts on an **element**, or on a **position**, where an element is o
 - whether it is enabled, and "on", for **any** target: `getState(target)` returns `{ isEnabled, isOn }` without changing
   the command,
 - `executeFor(target)`, which executes the command for that target, even when it is disabled at the selection.
+  `editor.execute(name, target)` checks both: the command runs when it is enabled at the selection and for the target.
 
 The target is optional everywhere. Without it, the command uses the selection: the selected element, or the first
 position of the selection. A target that is not in the document (e.g. a removed element) is ignored, so the command is
 disabled for it and does nothing.
 
 A subclass describes when it is enabled and "on" in `_isEnabledFor(target)` and `_isOnFor(target)`, and what it does in
-`execute()`:
+`execute()`. When both come from the same work, e.g. the selected blocks, it overrides `_getStateFor(target)` instead,
+which returns `{ isEnabled, isOn }` at once. `execute()` runs only when the command is enabled for its target, so it
+does not check it again:
 
 ```ts
 import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements';

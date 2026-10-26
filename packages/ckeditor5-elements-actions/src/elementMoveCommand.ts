@@ -33,10 +33,10 @@ export default class ElementMoveCommand extends ElementOrPositionCommand {
 	 * Moves the element up or down.
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
-		const element = this._getElement(elementOrPosition);
-		const sibling = element && this._getSibling(element);
+		const element = this._requireElement(elementOrPosition);
+		const sibling = this._getSibling(element);
 
-		if (!element || !sibling || !this._canMove(element, sibling)) {
+		if (!sibling) {
 			return;
 		}
 

@@ -9,6 +9,7 @@ import {
 	type ModelWriter
 } from 'ckeditor5';
 import ElementOrPositionCommand, { type ElementOrPosition } from '../elementOrPositionCommand.js';
+import { getAncestorElements } from '../utils.js';
 
 /**
  * The base of the commands of one element, one for each kind of element: what they share is the element, the state,
@@ -52,8 +53,10 @@ export default class ElementCommand extends ElementOrPositionCommand {
 	}
 
 	public override refresh(elementOrPosition?: ElementOrPosition): void {
-		this.isOn = this._isOnFor(elementOrPosition);
-		super.refresh(elementOrPosition);
+		const { isEnabled, isOn } = this._getStateFor(elementOrPosition);
+
+		this.isOn = isOn;
+		this.isEnabled = isEnabled;
 	}
 
 	/**
@@ -89,11 +92,7 @@ export default class ElementCommand extends ElementOrPositionCommand {
 		const target = this._getElementOrPosition(elementOrPosition);
 		const element = target && (target.is('position') ? target.parent : target);
 
-		return element?.is('element')
-			? element
-					.getAncestors({ includeSelf: true, parentFirst: true })
-					.filter((node): node is ModelElement => node.is('element') && !node.is('rootElement'))
-			: [];
+		return Array.from(getAncestorElements(element));
 	}
 
 	/**

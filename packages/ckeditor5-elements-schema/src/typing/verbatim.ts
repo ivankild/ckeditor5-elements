@@ -1,5 +1,5 @@
 import type { ModelDocumentSelection, ModelElement, ModelWriter, Plugin, ViewDocumentEnterEvent } from 'ckeditor5';
-import { findBlock, keyboardPriorities } from 'ckeditor5-elements-core';
+import { PARAGRAPH, findBlock, keyboardPriorities } from 'ckeditor5-elements-core';
 
 /**
  * Makes Enter insert a new line in the verbatim blocks, whose whitespace is their content, instead of splitting them;
@@ -59,11 +59,11 @@ function isOnEmptyLastLine(selection: ModelDocumentSelection, block: ModelElemen
 function leave(writer: ModelWriter, block: ModelElement): boolean {
 	const after = writer.createPositionAfter(block);
 
-	if (!writer.model.schema.checkChild(after, 'paragraph')) {
+	if (!writer.model.schema.checkChild(after, PARAGRAPH)) {
 		return false;
 	}
 
-	const paragraph = writer.createElement('paragraph');
+	const paragraph = writer.createElement(PARAGRAPH);
 
 	writer.remove(
 		writer.createRange(writer.createPositionAt(block, block.maxOffset - 1), writer.createPositionAt(block, 'end'))

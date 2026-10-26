@@ -106,8 +106,8 @@ elementSchemaConverters: 'names'
 ```
 
 It is for a data processor that keeps the case of the names, e.g. of XML, as in the
-[DocBook](../examples/docbook) and [DITA](../examples/dita) examples. CKEditor's HTML data processor makes the names
-lowercase.
+[DocBook](../examples/docbook) and [DITA](../examples/dita) examples. HTML makes the names lowercase, and the clipboard
+is HTML: the converters read the names in lowercase too, so `<callouttitle>` is pasted as a `calloutTitle`.
 
 ## Converters of your own
 

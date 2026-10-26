@@ -6,7 +6,9 @@
 // * The features are uncoupled: they depend only on the core.
 // * All packages have the same version, and the same peer dependency on `ckeditor5`.
 // * The published packages have a license, a readme, and their build in `files`.
-import { existsSync, readFileSync } from 'node:fs';
+// * A package imports only what it declares: its dependencies in its sources, and also its dev dependencies in its
+//   tests, e.g. another feature it is tested with.
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { packageNames, packagesDir, readPackage } from './packages.js';
@@ -107,6 +109,44 @@ for (const name of published) {
 	check(existsSync(join(dir, 'LICENSE')), `${name} has no LICENSE.`);
 	check(existsSync(join(dir, 'README.md')), `${name} has no README.md.`);
 	check(packages[name].files?.includes('dist'), `${name} must publish its "dist".`);
+}
+
+// The packages a package imports, in its sources and in its tests: its sources may import only its dependencies, its
+// tests also its dev dependencies. The tests resolve every package to its sources, so nothing else would tell.
+const listFiles = dir =>
+	existsSync(dir)
+		? readdirSync(dir, { withFileTypes: true, recursive: true })
+				.filter(entry => entry.isFile() && entry.name.endsWith('.ts'))
+				.map(entry => join(entry.parentPath, entry.name))
+		: [];
+const importedPackages = dir =>
+	new Set(
+		listFiles(dir).flatMap(file =>
+			Array.from(
+				readFileSync(file, 'utf8').matchAll(/(?:from|import) '([^'./][^']*)'/g),
+				([, specifier]) => specifier.split('/')[0]
+			).filter(name => packageNames.includes(name))
+		)
+	);
+
+for (const name of packageNames) {
+	const dir = join(packagesDir, name);
+	const dependencies = Object.keys(packages[name].dependencies ?? {});
+	const devDependencies = Object.keys(packages[name].devDependencies ?? {});
+
+	for (const imported of importedPackages(join(dir, 'src'))) {
+		check(
+			imported === name || dependencies.includes(imported),
+			`${name} imports ${imported} in its sources, which is not one of its dependencies.`
+		);
+	}
+
+	for (const imported of importedPackages(join(dir, 'tests'))) {
+		check(
+			imported === name || dependencies.includes(imported) || devDependencies.includes(imported),
+			`${name} imports ${imported} in its tests, which is not one of its dependencies or dev dependencies.`
+		);
+	}
 }
 
 if (errors.length) {

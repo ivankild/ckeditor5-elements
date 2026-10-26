@@ -10,7 +10,7 @@ import {
 	type ModelElement,
 	type RectSource
 } from 'ckeditor5';
-import { ElementOrPositionCommand, isInDocument } from 'ckeditor5-elements-core';
+import { isInDocument, type ElementOrPositionCommand } from 'ckeditor5-elements-core';
 import ElementMenuView from './elementMenuView.js';
 
 /**
@@ -119,13 +119,18 @@ export default class ElementMenu extends Plugin {
 		config: ElementMenuConfig,
 		{ label = this.editor.t('Element menu'), isObsolete, ...options }: ElementMenuShowOptions = {}
 	): boolean {
-		const items = cleanItems(config(element, this.editor));
+		const view = new ElementMenuView(
+			this.editor.locale,
+			this.editor.ui.view.body,
+			config(element, this.editor),
+			element
+		);
 
-		if (!items.length) {
+		if (view.isEmpty) {
+			view.destroy();
+
 			return false;
 		}
-
-		const view = new ElementMenuView(this.editor.locale, this.editor.ui.view.body, items, element);
 
 		view.ariaLabel = label;
 
@@ -232,36 +237,6 @@ export default class ElementMenu extends Plugin {
 	private get _balloon(): ContextualBalloon {
 		return this.editor.plugins.get(ContextualBalloon);
 	}
-}
-
-/**
- * Returns the items without missing ones, submenus without items, and separators at the start or the end, or
- * repeated ones.
- */
-function cleanItems(items: readonly (ElementMenuItem | null | undefined)[]): ElementMenuItem[] {
-	const result: ElementMenuItem[] = [];
-
-	for (const item of items) {
-		const cleaned = item === '|' || item instanceof ElementOrPositionCommand || !item ? item : cleanSubmenu(item);
-
-		if (!cleaned || (cleaned === '|' && (!result.length || result.at(-1) === '|'))) {
-			continue;
-		}
-
-		result.push(cleaned);
-	}
-
-	if (result.at(-1) === '|') {
-		result.pop();
-	}
-
-	return result;
-}
-
-function cleanSubmenu(submenu: ElementSubmenu): ElementSubmenu | null {
-	const items = cleanItems(submenu.items);
-
-	return items.length ? { ...submenu, items } : null;
 }
 
 /**

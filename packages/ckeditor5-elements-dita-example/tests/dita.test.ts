@@ -100,6 +100,8 @@ describe('the DITA example', () => {
 	describe('the features', () => {
 		it('show the path of the DITA elements in the breadcrumbs', () => {
 			_setModelData(editor.model, '<body><section><ul><li><paragraph>a[]</paragraph></li></ul></section></body>');
+			// When converting is slow, e.g. in a loaded test run, the breadcrumbs follow later: now, they do.
+			editor.plugins.get('ElementBreadcrumbs').refresh();
 
 			expect(editor.plugins.get('ElementBreadcrumbs').items.map(item => item.label)).toEqual([
 				'body',

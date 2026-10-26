@@ -39,6 +39,10 @@
 	"dependencies": {
 		"ckeditor5-elements-core": "workspace:*"
 	},
+	"devDependencies": {
+		"ckeditor5-elements-actions": "workspace:*",
+		"ckeditor5-elements-menu": "workspace:*"
+	},
 	"peerDependencies": {
 		"ckeditor5": "^49.0.0"
 	},

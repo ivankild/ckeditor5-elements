@@ -1,17 +1,17 @@
 import { type Editor, type ModelPosition } from 'ckeditor5';
 import { ElementOrPositionCommand, selectNewElement, type ElementOrPosition } from 'ckeditor5-elements-core';
-import type ElementQuickInsert from './elementQuickInsert.js';
 import { insertIcon } from './icons.js';
 
 /**
- * Inserts an element by its model name at a position, or opens the quick insert menu for that position.
+ * Inserts an element by its model name at a position: what the quick insert menu does, when an element is chosen. The
+ * menu itself is opened by the `ElementQuickInsert` plugin, with its `open()`.
  *
  * The target comes first, as in every {@link ElementOrPositionCommand}: a position, an element (meaning the position
  * before it), or none (the selection).
  *
  * ```ts
  * editor.execute('quickInsert', position, 'heading1'); // Inserts a heading at the position.
- * editor.execute('quickInsert'); // Opens the quick insert menu at the selection.
+ * editor.execute('quickInsert', undefined, 'softBreak'); // Inserts a line break at the selection.
  * ```
  *
  * Only elements that the schema allows at exactly that position are inserted (see {@link getAllowedElements}):
@@ -21,18 +21,9 @@ import { insertIcon } from './icons.js';
  * can hold blocks.
  */
 export default class QuickInsertCommand extends ElementOrPositionCommand {
-	/**
-	 * The plugin whose menu the command opens, when it is executed without a name.
-	 */
-	private readonly _quickInsert: ElementQuickInsert | null;
-
-	/**
-	 * @param quickInsert The plugin whose menu the command opens. Without it, the command only inserts.
-	 */
-	constructor(editor: Editor, quickInsert: ElementQuickInsert | null = null) {
+	constructor(editor: Editor) {
 		super(editor);
 
-		this._quickInsert = quickInsert;
 		this.title = editor.t('Insert element');
 		this.icon = insertIcon;
 	}
@@ -62,16 +53,9 @@ export default class QuickInsertCommand extends ElementOrPositionCommand {
 	}
 
 	/**
-	 * Inserts the element named `name` at the target, when the schema allows it there. Without a name, opens the quick
-	 * insert menu for the target, of the `ElementQuickInsert` plugin given to the constructor.
+	 * Inserts the element named `name` at the target, when the schema allows it there.
 	 */
-	public override execute(elementOrPosition?: ElementOrPosition, name?: string): void {
-		if (name === undefined) {
-			this._quickInsert?.open(elementOrPosition);
-
-			return;
-		}
-
+	public override execute(elementOrPosition: ElementOrPosition | undefined, name: string): void {
 		const model = this.editor.model;
 		const target = this._getPosition(elementOrPosition);
 

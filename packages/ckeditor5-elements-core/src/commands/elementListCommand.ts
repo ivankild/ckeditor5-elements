@@ -1,5 +1,5 @@
 import type { Editor, ModelElement, ModelRange } from 'ckeditor5';
-import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
 import ElementContainerCommand from './elementContainerCommand.js';
 
 /**
@@ -44,7 +44,7 @@ export default class ElementListCommand extends ElementContainerCommand {
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const list = this._findList(elementOrPosition);
-		const isOn = this._isOnFor(elementOrPosition);
+		const isOn = this._isOwnList(list);
 		const range = list ? null : this._getWrapRange(elementOrPosition);
 
 		this.editor.model.change(writer => {
@@ -79,23 +79,24 @@ export default class ElementListCommand extends ElementContainerCommand {
 	}
 
 	/**
-	 * Enabled when the target can be edited, and is in a list with the same items, or its blocks can go in a list.
+	 * Enabled when the target can be edited, and is in a list with the same items, or its blocks can go in a list. "On" in
+	 * a list of its own. Both from the list, found once.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
-		const target = this._getElementOrPosition(elementOrPosition);
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
+		const list = this._findList(elementOrPosition);
 
-		return (
-			!!target &&
-			this.editor.model.canEditAt(target) &&
-			(!!this._findList(target) || !!this._getWrapRange(elementOrPosition))
-		);
+		return {
+			isEnabled: super._isEnabledFor(elementOrPosition) && (!!list || !!this._getWrapRange(elementOrPosition)),
+			isOn: this._isOwnList(list)
+		};
 	}
 
 	/**
-	 * "On" in a list of its own.
+	 * Whether the list is one of this command, not another one with the same items. (Not a type guard: a list that is not
+	 * the element of the command is still a list.)
 	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		return this.isElement(this._findList(elementOrPosition));
+	private _isOwnList(list: ModelElement | null): boolean {
+		return this.isElement(list);
 	}
 
 	/**

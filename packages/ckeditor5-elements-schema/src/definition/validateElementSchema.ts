@@ -11,7 +11,32 @@ import {
 	type Report
 } from './readDefinition.js';
 import { suggest } from './suggest.js';
-import type { ElementSchemaIssue, ElementSchemaKind, ValidateElementSchemaOptions } from './types.js';
+import type {
+	ElementSchemaDefinition,
+	ElementSchemaIssue,
+	ElementSchemaKind,
+	ValidateElementSchemaOptions
+} from './types.js';
+
+/**
+ * Validates an element schema (see {@link validateElementSchema}), and returns it as a definition when it is valid: what
+ * the editor and {@link compileElementSchema} work with, e.g. from a JSON file, whose types TypeScript does not know.
+ *
+ * ```ts
+ * const { definition, issues } = parseElementSchema(json);
+ * ```
+ *
+ * The definition is `null` when there are issues.
+ */
+export function parseElementSchema(
+	input: unknown,
+	options?: ValidateElementSchemaOptions
+): { definition: ElementSchemaDefinition | null; issues: ElementSchemaIssue[] } {
+	const issues = validateElementSchema(input, options);
+
+	// Valid: of the shape of a definition, which the validation checks.
+	return { definition: issues.length ? null : (input as ElementSchemaDefinition), issues };
+}
 
 /**
  * Checks an element schema, so that it is not contradictory, and returns the problems. An empty array means that the

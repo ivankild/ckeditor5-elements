@@ -1,13 +1,8 @@
-import {
-	Plugin,
-	WidgetToolbarRepository,
-	type ModelDocumentFragment,
-	type ModelElement,
-	type ToolbarConfigItem
-} from 'ckeditor5';
+import { Plugin, WidgetToolbarRepository, type ModelElement, type ToolbarConfigItem } from 'ckeditor5';
 import {
 	ElementOrPositionButtonView,
 	ElementOrPositionCommand,
+	getAncestorElements,
 	getElementAtSelection,
 	matchesElement,
 	type ElementMatcher
@@ -86,13 +81,7 @@ export default class ElementToolbar extends Plugin {
 	 * selection, or one of their ancestors. Never a root.
 	 */
 	public getElement(element: ElementToolbarDefinition['element']): ModelElement | null {
-		for (
-			let node: ModelElement | ModelDocumentFragment | null = getElementAtSelection(
-				this.editor.model.document.selection
-			);
-			node?.is('element') && !node.is('rootElement');
-			node = node.parent
-		) {
+		for (const node of getAncestorElements(getElementAtSelection(this.editor.model.document.selection))) {
 			if (matchesElement(element, node)) {
 				return node;
 			}

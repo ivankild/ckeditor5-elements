@@ -502,7 +502,7 @@ describe('ElementClipboard', () => {
 			const data = _getModelData(tableEditor.model, { withoutSelection: true });
 
 			for (const name of names) {
-				await tableEditor.execute(name, tableChild(1, 0, 0));
+				await tableEditor.commands.get(name)!.executeFor(tableChild(1, 0, 0));
 			}
 
 			expect(write).not.toHaveBeenCalled();

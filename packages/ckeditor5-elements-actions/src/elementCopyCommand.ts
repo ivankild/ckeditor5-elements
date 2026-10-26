@@ -44,11 +44,7 @@ export default class ElementCopyCommand extends ElementOrPositionCommand {
 	public override async execute(elementOrPosition?: ElementOrPosition): Promise<void> {
 		const editor = this.editor;
 		const model = editor.model;
-		const element = this._getElement(elementOrPosition);
-
-		if (!element || !isStandalone(model.schema, element)) {
-			return;
-		}
+		const element = this._requireElement(elementOrPosition);
 
 		const dataTransfer = new ViewDataTransfer(new DataTransfer());
 
