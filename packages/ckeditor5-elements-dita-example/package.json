@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-dita-example",
 	"private": true,
-	"version": "49.0.0-alpha.4",
+	"version": "49.0.0",
 	"description": "The DITA example of CKEditor 5 Elements: an editor of a Lightweight DITA topic, whose data is XDITA. Not published.",
 	"license": "MIT",
 	"type": "module",

@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-schema",
-	"version": "49.0.0-alpha.4",
+	"version": "49.0.0",
 	"description": "Element schema for CKEditor 5: declare elements in the model schema from a simple definition, e.g. a JSON file, with three types of elements and a validation.",
 	"keywords": [
 		"ckeditor",

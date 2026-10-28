@@ -57,7 +57,7 @@ pnpm test            # tests, in headless Chrome
 pnpm test:coverage   # tests with a coverage report in coverage/, and its thresholds, for each package
 pnpm check           # type check, lint, package consistency, format check, tests with coverage, docs build
 pnpm smoke           # installs the packed packages into a new app, builds it and runs it in Chrome
-pnpm version:set 49.0.0-alpha.4   # the version of all packages, which have the same one
+pnpm version:set 49.0.1           # the version of all packages, which have the same one
 ```
 
 The tests run in Vitest browser mode, with Playwright driving the installed Google Chrome. To use a Playwright-managed
@@ -90,20 +90,21 @@ docs/             # VitePress site: guide/ pages, demos/ (live examples), api/ (
 
 ## Publishing
 
-All packages have the same version, the CKEditor version they are built for with a pre-release suffix (e.g.
-`49.0.0-alpha.4`). A version can be published only once: set a new one first. Release them together, from `main` with
-everything committed, logged in to npm (`npm login`):
+All packages have the same version: the CKEditor version they are built for, e.g. `49.0.0`. A version can be published
+only once: set a new one first, and add its changes to the [changelog](CHANGELOG.md). Release them together, from `main`
+with everything committed, logged in to npm (`npm login`):
 
 ```sh
-pnpm version:set 49.0.0-alpha.5                                    # a version that is not published yet
-pnpm check && pnpm smoke                                           # everything, and the packed packages in an app
-pnpm -r publish --dry-run --access public --tag alpha --no-git-checks  # what would be published
-pnpm publish:all                                                   # cleans, builds and publishes
+pnpm version:set 49.0.1                                # a version that is not published yet
+pnpm check && pnpm smoke                               # everything, and the packed packages in an app
+pnpm -r publish --dry-run --access public --no-git-checks  # what would be published
+pnpm publish:all                                       # cleans, builds and publishes
 ```
 
 `publish:all` removes the builds first (`pnpm clean`), so no file of a moved or removed source is published. pnpm
-replaces the `workspace:*` dependencies with the exact version. The packages are published with the `alpha`
-dist-tag; change `--tag` in the `publish:all` script for other releases.
+replaces the `workspace:*` dependencies with the exact version. The packages are published with npm's `latest`
+dist-tag; for a pre-release, e.g. `49.1.0-alpha.0`, add `--tag alpha` to the `publish:all` script, so `npm install`
+keeps installing the stable version.
 
 The documentation is published on [GitHub Pages](https://ivankild.github.io/ckeditor5-elements/) by the
 [Docs workflow](.github/workflows/docs.yml) on every push to `main` (or when run by hand).

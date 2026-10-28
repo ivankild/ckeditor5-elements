@@ -8,7 +8,7 @@
 		"build": "tsc --build tsconfig.packages.json && node scripts/buildUmbrellaStyles.js",
 		"clean": "node scripts/clean.js",
 		"watch": "tsc --build --watch tsconfig.packages.json",
-		"publish:all": "pnpm run clean && pnpm run build && pnpm -r publish --access public --tag alpha",
+		"publish:all": "pnpm run clean && pnpm run build && pnpm -r publish --access public",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",

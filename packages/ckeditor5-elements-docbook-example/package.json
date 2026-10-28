@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-docbook-example",
 	"private": true,
-	"version": "49.0.0-alpha.4",
+	"version": "49.0.0",
 	"description": "The DocBook example of CKEditor 5 Elements: an editor of a Simplified DocBook article, whose data is DocBook XML. Not published.",
 	"license": "MIT",
 	"type": "module",
