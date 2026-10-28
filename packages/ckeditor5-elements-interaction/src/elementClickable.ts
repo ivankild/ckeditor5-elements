@@ -37,11 +37,11 @@ export interface ElementClickableDefinition {
 
 /**
  * Calls a function when an element is clicked or double-clicked, with the model element. Elements are matched by name or
- * by a filter function, and the definitions are the `elementClickables` editor config option (see
+ * by a filter function, and the definitions are the `elementClickable` editor config option (see
  * {@link ElementClickableDefinition}):
  *
  * ```ts
- * elementClickables: [
+ * elementClickable: [
  * 	{ element: 'imageBlock', callback: (element, editor) => console.log(element.getAttribute('src')) },
  * 	{ element: element => element.name.startsWith('heading'), event: 'dblclick', callback: edit }
  * ];
@@ -94,7 +94,7 @@ export default class ElementClickable extends Plugin {
 		event: ElementClickableEvent = 'click'
 	): { element: ModelElement; definition: ElementClickableDefinition } | null {
 		const mapper = this.editor.editing.mapper;
-		const definitions = (this.editor.config.get('elementClickables') ?? []).filter(
+		const definitions = (this.editor.config.get('elementClickable') ?? []).filter(
 			definition => (definition.event ?? 'click') === event
 		);
 

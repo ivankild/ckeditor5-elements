@@ -1,10 +1,18 @@
-import { Command, type Editor, type ModelElement, type ModelPosition } from 'ckeditor5';
+import { Command, ModelElement, ModelPosition, type CommandExecuteEvent, type Editor } from 'ckeditor5';
 import { isInDocument } from './utils.js';
 
 /**
  * A model position or a model element a command operates on.
  */
 export type ElementOrPosition = ModelPosition | ModelElement;
+
+/**
+ * The state of a command for a target: whether it is enabled, and "on".
+ */
+export interface ElementOrPositionState {
+	isEnabled: boolean;
+	isOn: boolean;
+}
 
 /**
  * The base command for commands that operate on a model position or a model element: clipboard, insert or toggle
@@ -16,7 +24,12 @@ export type ElementOrPosition = ModelPosition | ModelElement;
  *
  * It does not define what `execute()` does; subclasses do. Subclasses define when they are enabled (and "on") for a
  * target in {@link _isEnabledFor} (and {@link _isOnFor}), so the state can be computed for any target with
- * {@link getState}, e.g. for a context menu item of an element, without changing the command's own state.
+ * {@link getState}, e.g. for a context menu item of an element, without changing the command's own state. A command
+ * that computes both from the same work, e.g. from the selected blocks, overrides {@link _getStateFor} instead.
+ *
+ * `execute()` runs only when the command is enabled for its target: for the selection, as for every command, and for
+ * the target given to it too, e.g. `editor.execute('deleteElement', element)`; {@link executeFor} does it for a target
+ * the command is not enabled for at the selection. So `execute()` does not check it again.
  *
  * A command disabled with `forceDisabled()` is disabled for every target, not only for the selection.
  */
@@ -54,7 +67,7 @@ export default class ElementOrPositionCommand extends Command {
 	/**
 	 * Whether the command can be "on" (see {@link _isOnFor}), e.g. because it toggles something. Its buttons then tell
 	 * assistive technology whether it is on: toolbar buttons with `aria-pressed`, menu items with `aria-checked`.
-	 * Defaults to `false`; `ElementCommand` sets it.
+	 * Defaults to `false`; the commands of one element that toggle it set it, e.g. `ElementInlineCommand`.
 	 */
 	public isToggleable = false;
 
@@ -62,6 +75,11 @@ export default class ElementOrPositionCommand extends Command {
 	 * The ids the command is disabled with by `forceDisabled()`.
 	 */
 	private readonly _forceDisabledIds = new Set<string>();
+
+	/**
+	 * The target that {@link executeFor} has checked already, while it executes the command for it.
+	 */
+	private _checkedTarget: ElementOrPosition | null = null;
 
 	constructor(editor: Editor) {
 		super(editor);
@@ -74,13 +92,25 @@ export default class ElementOrPositionCommand extends Command {
 		// The command checks whether its target can be edited itself (see `_isEnabledFor()`), so it is not disabled just
 		// because the selection cannot be edited. Otherwise, `executeFor()` would fail for an editable target then.
 		this._isEnabledBasedOnSelection = false;
+
+		// `Command` checks `isEnabled`, which is for the selection. A target given to `execute()` is checked too, after
+		// it: e.g. a table cell, for a command that is enabled in the paragraph with the cursor.
+		this.on<CommandExecuteEvent>(
+			'execute',
+			(evt, [target]) => {
+				if (isElementOrPosition(target) && target !== this._checkedTarget && !this.getState(target).isEnabled) {
+					evt.stop();
+				}
+			},
+			{ priority: 'high' }
+		);
 	}
 
 	/**
-	 * Sets {@link isEnabled} for the target (by default, the selection). See {@link _isEnabledFor}.
+	 * Sets `isEnabled` for the target (by default, the selection). See {@link _getStateFor}.
 	 */
 	public override refresh(elementOrPosition?: ElementOrPosition): void {
-		this.isEnabled = this._isEnabledFor(elementOrPosition);
+		this.isEnabled = this._getStateFor(elementOrPosition).isEnabled;
 	}
 
 	/**
@@ -95,7 +125,7 @@ export default class ElementOrPositionCommand extends Command {
 
 	/**
 	 * Clears the disabling done by {@link forceDisabled} with this id. When no id is left, the command is refreshed, so
-	 * {@link isEnabled} follows the selection again.
+	 * `isEnabled` follows the selection again.
 	 */
 	public override clearForceDisabled(id: string): void {
 		this._forceDisabledIds.delete(id);
@@ -109,33 +139,53 @@ export default class ElementOrPositionCommand extends Command {
 	}
 
 	/**
-	 * Returns whether the command would be enabled and "on" for the target, without changing {@link isEnabled}.
+	 * Returns whether the command would be enabled and "on" for the target, without changing `isEnabled`.
 	 * Commands that change the data are disabled in read-only mode, and all commands are disabled when
 	 * {@link isForceDisabled}.
 	 */
-	public getState(elementOrPosition?: ElementOrPosition): { isEnabled: boolean; isOn: boolean } {
+	public getState(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
 		const isReadOnly = this.affectsData && this.editor.isReadOnly;
+		const { isEnabled, isOn } = this._getStateFor(elementOrPosition);
 
-		return {
-			isEnabled: !this.isForceDisabled && !isReadOnly && this._isEnabledFor(elementOrPosition),
-			isOn: this._isOnFor(elementOrPosition)
-		};
+		return { isEnabled: !this.isForceDisabled && !isReadOnly && isEnabled, isOn };
 	}
 
 	/**
 	 * Executes the command for the target, even when the command is disabled for the selection (`execute()` checks
-	 * {@link isEnabled}, which follows the selection). Does nothing when the command is disabled for the target.
+	 * `isEnabled`, which follows the selection). Does nothing when the command is disabled for the target.
 	 *
 	 * The target is the first argument of `execute()`; the other arguments are passed after it.
 	 */
 	public executeFor(elementOrPosition: ElementOrPosition, ...args: unknown[]): unknown {
-		this.refresh(elementOrPosition);
+		if (!this.getState(elementOrPosition).isEnabled) {
+			return undefined;
+		}
+
+		const isEnabled = this.isEnabled;
+
+		// `execute()` runs only when the command is enabled, for the selection: it is, for the target. The state of the
+		// command changes only then, for as long as it executes.
+		this.isEnabled = true;
+		this._checkedTarget = elementOrPosition;
 
 		try {
 			return this.execute(elementOrPosition, ...args);
 		} finally {
-			this.refresh();
+			this._checkedTarget = null;
+
+			if (!isEnabled) {
+				this.refresh();
+			}
 		}
+	}
+
+	/**
+	 * Returns whether the command is enabled and "on" for the target, before read-only mode and `forceDisabled()`: the
+	 * one source of the state, for {@link refresh} and {@link getState}. By default, from {@link _isEnabledFor} and
+	 * {@link _isOnFor}.
+	 */
+	protected _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
+		return { isEnabled: this._isEnabledFor(elementOrPosition), isOn: this._isOnFor(elementOrPosition) };
 	}
 
 	/**
@@ -182,6 +232,22 @@ export default class ElementOrPositionCommand extends Command {
 	}
 
 	/**
+	 * Returns the element of the target (see {@link _getElement}), in `execute()` of a command that is enabled only for
+	 * a target with an element: `execute()` runs only then, so there is one. Throws when there is none.
+	 */
+	protected _requireElement(elementOrPosition?: ElementOrPosition): ModelElement {
+		const element = this._getElement(elementOrPosition);
+
+		if (!element) {
+			throw new Error(
+				`The "${this.title}" command is executed for a target without an element, as it is disabled.`
+			);
+		}
+
+		return element;
+	}
+
+	/**
 	 * Resolves the target (see {@link _getElementOrPosition}) to an element: a position becomes its parent element.
 	 * Never returns a root.
 	 */
@@ -191,4 +257,8 @@ export default class ElementOrPositionCommand extends Command {
 
 		return element?.is('element') && !element.is('rootElement') ? element : null;
 	}
+}
+
+function isElementOrPosition(value: unknown): value is ElementOrPosition {
+	return value instanceof ModelPosition || value instanceof ModelElement;
 }

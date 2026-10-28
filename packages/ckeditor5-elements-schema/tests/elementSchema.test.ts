@@ -74,6 +74,13 @@ describe('ElementSchema', () => {
 
 		expect(ElementSchema.pluginName).toBe('ElementSchema');
 		expect(editor.model.schema.isRegistered('note')).toBe(false);
+		expect(editor.plugins.get(ElementSchema).definition).toBeNull();
+	});
+
+	it('exposes the definition, once it is valid and registered', async () => {
+		await setUp();
+
+		expect(editor!.plugins.get(ElementSchema).definition).toEqual(SCHEMA);
 	});
 
 	it('registers the elements', async () => {
@@ -457,6 +464,94 @@ describe('ElementSchema', () => {
 			expect(_getModelData(editor.model)).toBe('<paragraph>a<term>xy[]</term>b</paragraph>');
 		});
 
+		it('converts an element with a tag of its own as that tag, with no class: empty, inline with text, and a container', async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema, ElementSelectable],
+				elementSchema: {
+					divider: { type: 'empty', tag: 'hr' },
+					strong: { type: 'block', isInline: true, tag: 'strong' },
+					callout: { type: 'container', tag: 'aside', editingTag: 'section', allowAttributes: ['tone'] }
+				},
+				elementSchemaConverters: true
+			});
+
+			editor.setData('<hr><aside data-tone="info"><p>a<strong>b</strong></p></aside>');
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<divider></divider><callout tone="info"><paragraph>a<strong>b</strong></paragraph></callout>'
+			);
+			expect(editor.getData()).toBe('<hr><aside data-tone="info"><p>a<strong>b</strong></p></aside>');
+
+			const html = editor.ui.view.editable.element!.innerHTML;
+
+			expect(html).toContain('<hr');
+			expect(html).not.toContain('</hr>');
+			expect(html).toContain('<section data-tone="info">');
+
+			// No block filler in an empty one, so the text goes in it.
+			_setModelData(editor.model, '<paragraph>a<strong>[]</strong></paragraph>');
+			expect(editor.ui.view.editable.element!.innerHTML).not.toContain('<br');
+		});
+
+		it("with 'names', has the names of the elements and of their attributes in the data, and HTML in the editor", async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema, ElementSelectable],
+				elementSchema: {
+					note: { type: 'container', allowAttributes: ['tone'] },
+					term: { type: 'block', isInline: true, tag: 'dfn' },
+					divider: { type: 'empty' }
+				},
+				elementSchemaConverters: 'names'
+			});
+
+			const data = '<note tone="info"><p>a<term>b</term></p><divider></divider></note>';
+
+			editor.setData(data);
+
+			expect(_getModelData(editor.model, { withoutSelection: true })).toBe(
+				'<note tone="info"><paragraph>a<term>b</term></paragraph><divider></divider></note>'
+			);
+			expect(editor.getData()).toBe(data);
+			expect(view()).toBe(
+				'<div class="note" data-tone="info"><p>a<dfn>b</dfn></p><div class="divider"></div></div>'
+			);
+		});
+
+		it("with 'names', reads the names in lowercase too, as the HTML of the clipboard has them", async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema],
+				elementSchema: { calloutTitle: { type: 'block', allowAttributes: ['dataId'] } },
+				elementSchemaConverters: 'names'
+			});
+
+			const { data, model } = editor;
+
+			_setModelData(model, '<calloutTitle dataId="x">ab</calloutTitle>');
+
+			const html = data.htmlProcessor.toData(
+				data.toView(model.getSelectedContent(model.createSelection(model.document.getRoot()!, 'in')))
+			);
+			const pasted = data.toModel(data.htmlProcessor.toView(html));
+
+			expect(html).toBe('<callouttitle dataid="x">ab</callouttitle>');
+			expect(JSON.stringify(pasted.getChild(0)?.toJSON())).toBe(
+				'{"attributes":{"dataId":"x"},"name":"calloutTitle","children":[{"data":"ab"}]}'
+			);
+		});
+
+		it('gives a verbatim block with a tag of its own its view in the editor', async () => {
+			editor = await createEditor({
+				plugins: [Essentials, Paragraph, ElementSchema],
+				elementSchema: { listing: { type: 'block', verbatim: true, tag: 'code' } },
+				elementSchemaConverters: true
+			});
+
+			editor.setData('<code>a</code>');
+
+			expect(editor.getData()).toBe('<code>a</code>');
+			expect(view()).toBe('<code class="ck-elements-verbatim">a<br></br></code>');
+		});
+
 		it('warns when nothing selects the elements: the converters make them, and without ElementSelectable they cannot be selected', async () => {
 			const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
@@ -501,6 +596,24 @@ describe('ElementSchema', () => {
 	});
 
 	describe('selecting elements', () => {
+		it('makes an element of the schema in the `elementSelectable` option selectable, whichever plugin comes first', async () => {
+			for (const plugins of [
+				[ElementSelectable, ElementSchema],
+				[ElementSchema, ElementSelectable]
+			]) {
+				editor = await createEditor({
+					plugins: [Paragraph, ...plugins],
+					elementSchema: { quote: { type: 'block' } },
+					elementSelectable: ['quote']
+				});
+
+				expect(editor.model.schema.isSelectable('quote')).toBe(true);
+
+				await editor.destroy();
+				editor = undefined;
+			}
+		});
+
 		it('makes `empty` and `container` elements selectable, for a click and for the arrow keys, and not `block` ones', async () => {
 			const schema = await setUp();
 			const selectable = editor!.plugins.get(ElementSelectable);

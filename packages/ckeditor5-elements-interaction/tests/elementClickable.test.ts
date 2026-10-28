@@ -19,7 +19,7 @@ describe('ElementClickable', () => {
 	async function setUp(definitions: ElementClickableDefinition[], data?: string): Promise<void> {
 		editor = await createEditor({
 			plugins: [Paragraph, Container, ImageBlock, ImageInline, Link, LinkImage, ElementClickable],
-			elementClickables: definitions
+			elementClickable: definitions
 		});
 
 		// A click on a link would navigate the page of the test.
@@ -255,7 +255,7 @@ describe('ElementClickable', () => {
 
 		editor = await createEditor({
 			plugins: [Paragraph, Container, StopsClicks, ElementClickable],
-			elementClickables: [{ element: 'container', callback }]
+			elementClickable: [{ element: 'container', callback }]
 		});
 		_setModelData(editor.model, '<container><paragraph>fo[]o</paragraph></container>');
 		editor.editing.view.document.on('click', other, { priority: 'low' });

@@ -1,4 +1,4 @@
-// Type-checks the projects that are not built: the tests of each package, the example, the docs, and the tools. (The
+// Type-checks the projects that are not built: the tests of each package, the examples, the docs, and the tools. (The
 // packages themselves are checked by building them: `tsc --build`.) The projects are checked in parallel.
 import { execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -9,7 +9,7 @@ import { packageNames, packagesDir } from './packages.js';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const projects = [
 	...packageNames.map(name => join(packagesDir, name, 'tests')),
-	join(packagesDir, 'ckeditor5-elements-example'),
+	...packageNames.filter(name => name.endsWith('-example')).map(name => join(packagesDir, name)),
 	join(root, 'docs'),
 	root
 ].filter(dir => existsSync(join(dir, 'tsconfig.json')));

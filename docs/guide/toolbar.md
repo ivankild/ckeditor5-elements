@@ -1,14 +1,19 @@
+---
+title: 'CKEditor 5 floating toolbar for elements'
+description: 'Show a floating CKEditor 5 toolbar next to the element with the cursor, for the elements you choose by name or by a filter, with buttons that act on the element.'
+---
+
 # Element toolbar
 
 `ElementToolbar` shows a floating toolbar next to the element with the cursor, for the elements you choose: by their
-model name, or by a filter function. It is configured by the `elementToolbars` editor option:
+model name, or by a filter function. It is configured by the `elementToolbar` editor option:
 
 ```ts
 import { ElementActions, ElementToolbar } from 'ckeditor5-elements';
 
 // In the editor config:
 plugins: [..., ElementActions, ElementToolbar],
-elementToolbars: [
+elementToolbar: [
 	// By name.
 	{ element: 'note', items: ['moveElementUp', 'moveElementDown', '|', 'duplicateElement', 'deleteElement'] },
 	// By a filter: `(element: ModelElement) => boolean`.

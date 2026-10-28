@@ -93,7 +93,8 @@ export function bindButtonToCommand(
 		};
 
 		updateState();
-		button.listenTo(editor.model.document, 'change', updateState);
+		// A function returns a target that follows the selection; a given target changes with the data only.
+		button.listenTo(editor.model.document, typeof target === 'function' ? 'change' : 'change:data', updateState);
 		button.listenTo(editor, 'change:isReadOnly', updateState);
 		button.listenTo(command, 'change:isForceDisabled', updateState);
 	} else {

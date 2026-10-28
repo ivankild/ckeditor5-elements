@@ -41,11 +41,7 @@ export default class ElementAttributesCommand extends ElementOrPositionCommand {
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const editor = this.editor;
-		const element = this._getElement(elementOrPosition);
-
-		if (!element) {
-			return;
-		}
+		const element = this._requireElement(elementOrPosition);
 
 		const dialog = editor.plugins.get(Dialog);
 

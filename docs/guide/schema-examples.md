@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 element schema examples'
+description: 'Live CKEditor 5 schemas declared from JSON: a table whose rows and cells stay in place, a gallery of inline containers, and inline elements.'
+---
+
 # Schema examples
 
 More schemas, from small to large. Each live example is a JSON file as it is, and the editor shows what the

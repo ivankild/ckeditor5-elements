@@ -35,13 +35,18 @@ elementSchemaConverters: true // Optional: converts the elements one to one, as 
 The `empty` and `container` elements can be selected as a whole, by a click and by the arrow keys, when `ElementSelectable`
 (from `ckeditor5-elements-interaction`) is loaded too.
 
+Two keys make a kind of their own of a type: `verbatim` makes a block keep its whitespace, e.g. code, where Enter
+inserts a new line; `listItem` makes a container a list of its items, e.g. `"listItem": "item"`, where Enter makes the
+next item.
+
 `ElementSchemaCommands` gives elements of the schema a command, a toolbar button and a keystroke, by their kind: an
 inline `block` wraps text, as CKEditor's bold; a `block` renames blocks, as a heading; a `container` wraps blocks, as a
-block quote; an `empty` element and an inline `container` are inserted, as a horizontal line. At the ends of inline
-elements with text, the arrow keys move in two steps, as CKEditor's two-step caret movement does.
+block quote; a list wraps blocks in items; an `empty` element and an inline `container` are inserted, as a horizontal
+line. At the ends of inline elements with text, the arrow keys move in two steps, as CKEditor's two-step caret
+movement does.
 
 ```json
-{ "bold": { "type": "block", "isInline": true }, "divider": { "type": "empty" } }
+{ "bold": { "type": "block", "isInline": true, "tag": "strong" }, "divider": { "type": "empty", "tag": "hr" } }
 ```
 
 ```ts
@@ -52,9 +57,10 @@ import { ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
 plugins: [..., ElementSchema, ElementSchemaCommands],
 toolbar: ['bold', 'divider'],
 elementSchema: schema,
+elementSchemaConverters: true,
 elementSchemaCommands: {
-	bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
-	divider: { title: 'Divider', icon: IconHorizontalLine, view: 'hr' }
+	bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B' },
+	divider: { title: 'Divider', icon: IconHorizontalLine }
 }
 ```
 

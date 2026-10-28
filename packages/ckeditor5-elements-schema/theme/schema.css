@@ -1,0 +1,7 @@
+/*
+ * A verbatim block of the element schema, in the editor: it keeps its whitespace, whatever its tag, e.g. the
+ * `editingTag` of the element. (In a `pre`, the browser keeps it anyway.)
+ */
+.ck-content .ck-elements-verbatim {
+	white-space: pre-wrap;
+}

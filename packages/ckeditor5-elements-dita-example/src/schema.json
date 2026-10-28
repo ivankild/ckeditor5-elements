@@ -1,0 +1,21 @@
+{
+	"title": { "type": "block", "allowIn": ["$root", "section"] },
+	"shortdesc": { "type": "block", "allowIn": ["$root"] },
+	"body": { "type": "container", "allowIn": ["$root"] },
+	"section": { "type": "container", "allowIn": ["body"], "editingTag": "section" },
+	"ul": { "type": "container", "listItem": "li", "allowIn": ["body", "section", "li", "note"], "editingTag": "ul" },
+	"ol": { "type": "container", "listItem": "li", "allowIn": ["body", "section", "li", "note"], "editingTag": "ol" },
+	"li": { "type": "container", "editingTag": "li" },
+	"note": {
+		"type": "container",
+		"allowIn": ["body", "section", "li"],
+		"allowAttributes": ["type"],
+		"editingTag": "aside"
+	},
+	"pre": { "type": "block", "verbatim": true, "allowIn": ["body", "section", "li", "note"] },
+	"b": { "type": "block", "isInline": true, "editingTag": "b" },
+	"i": { "type": "block", "isInline": true, "editingTag": "i" },
+	"u": { "type": "block", "isInline": true, "editingTag": "u" },
+	"ph": { "type": "block", "isInline": true },
+	"xref": { "type": "block", "isInline": true, "allowAttributes": ["href"], "editingTag": "a" }
+}

@@ -1,4 +1,4 @@
-import { Essentials, Heading, ImageBlock, ImageCaption, List, Paragraph } from 'ckeditor5';
+import { Essentials, Heading, ImageBlock, ImageCaption, List, Paragraph, SourceEditing } from 'ckeditor5';
 import { ElementActions, ElementAttributes, ElementContextMenu, ElementToolbar } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
@@ -14,6 +14,7 @@ export default {
 	config: {
 		plugins: [
 			Essentials,
+			SourceEditing,
 			Paragraph,
 			Heading,
 			List,
@@ -25,7 +26,7 @@ export default {
 			ElementContextMenu,
 			ElementToolbar
 		],
-		toolbar: ['undo', 'redo', '|', 'heading', 'bulletedList', 'note'],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', 'bulletedList', 'note'],
 		// A command: it is a menu item, ...
 		elementContextMenu: (element, editor) => [
 			editor.commands.get('showElementAttributes'),
@@ -34,7 +35,7 @@ export default {
 			editor.commands.get('deleteElement')
 		],
 		// ... and a button of a floating toolbar, which acts on the note, not on the paragraph with the cursor.
-		elementToolbars: [
+		elementToolbar: [
 			{
 				element: 'note',
 				items: ['showElementAttributes', '|', 'moveElementUp', 'moveElementDown', 'deleteElement']

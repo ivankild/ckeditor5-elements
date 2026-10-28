@@ -7,7 +7,17 @@ import { suggest } from './suggest.js';
 export type Report = (path: string, message: string) => void;
 
 const TYPES = ['empty', 'block', 'container'];
-export const ELEMENT_KEYS = ['type', 'isInline', 'allowChildren', 'allowIn', 'allowAttributes', 'editingTag'];
+export const ELEMENT_KEYS = [
+	'type',
+	'isInline',
+	'allowChildren',
+	'allowIn',
+	'allowAttributes',
+	'tag',
+	'editingTag',
+	'verbatim',
+	'listItem'
+];
 
 export const ELEMENT_NAME = /^[a-z][A-Za-z0-9]*$/;
 export const ATTRIBUTE_NAME = /^[A-Za-z][\w.:-]*$/;

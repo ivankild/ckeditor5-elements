@@ -1,5 +1,5 @@
 {
-	"bold": { "type": "block", "isInline": true },
-	"italic": { "type": "block", "isInline": true },
-	"underline": { "type": "block", "isInline": true }
+	"bold": { "type": "block", "isInline": true, "tag": "strong" },
+	"italic": { "type": "block", "isInline": true, "tag": "em" },
+	"underline": { "type": "block", "isInline": true, "tag": "u" }
 }

@@ -1,13 +1,8 @@
-import {
-	Plugin,
-	WidgetToolbarRepository,
-	type ModelDocumentFragment,
-	type ModelElement,
-	type ToolbarConfigItem
-} from 'ckeditor5';
+import { Plugin, WidgetToolbarRepository, type ModelElement, type ToolbarConfigItem } from 'ckeditor5';
 import {
 	ElementOrPositionButtonView,
 	ElementOrPositionCommand,
+	getAncestorElements,
 	getElementAtSelection,
 	matchesElement,
 	type ElementMatcher
@@ -40,7 +35,7 @@ export interface ElementToolbarDefinition {
 }
 
 /**
- * Shows floating toolbars for elements, configured by the `elementToolbars` editor config option (see
+ * Shows floating toolbars for elements, configured by the `elementToolbar` editor config option (see
  * {@link ElementToolbarDefinition}): the toolbar of the closest element at the selection that matches, next to it,
  * while the editor is focused. When toolbars match nested elements, the toolbar of the innermost one shows.
  *
@@ -65,7 +60,7 @@ export default class ElementToolbar extends Plugin {
 		const editor = this.editor;
 		const repository = editor.plugins.get(WidgetToolbarRepository);
 
-		(editor.config.get('elementToolbars') ?? []).forEach((definition, index) => {
+		(editor.config.get('elementToolbar') ?? []).forEach((definition, index) => {
 			const toolbarId = `elementToolbar${String(index)}`;
 			const getElement = (): ModelElement | null => this.getElement(definition.element);
 
@@ -86,13 +81,7 @@ export default class ElementToolbar extends Plugin {
 	 * selection, or one of their ancestors. Never a root.
 	 */
 	public getElement(element: ElementToolbarDefinition['element']): ModelElement | null {
-		for (
-			let node: ModelElement | ModelDocumentFragment | null = getElementAtSelection(
-				this.editor.model.document.selection
-			);
-			node?.is('element') && !node.is('rootElement');
-			node = node.parent
-		) {
+		for (const node of getAncestorElements(getElementAtSelection(this.editor.model.document.selection))) {
 			if (matchesElement(element, node)) {
 				return node;
 			}

@@ -11,7 +11,7 @@ import {
 	type ViewDowncastWriter,
 	type ViewElement
 } from 'ckeditor5';
-import { getElementsAround, matchesElement, type ElementMatcher } from 'ckeditor5-elements-core';
+import { getElementsAround, keyboardPriorities, matchesElement, type ElementMatcher } from 'ckeditor5-elements-core';
 import { findLeaveTarget, findSelectableAfterStep, findSelectableAround } from './navigation.js';
 
 /**
@@ -28,10 +28,10 @@ const SELECTED_CLASS = 'ck-elements-selected';
 /**
  * Makes elements selectable as a whole, which is what CKEditor's widgets do, without them: it does not change the view
  * of the element, and does not need the `Widget` plugin. The elements are matched by name or by a filter function, and
- * they are the `selectableElements` editor config option:
+ * they are the `elementSelectable` editor config option:
  *
  * ```ts
- * selectableElements: ['callout', 'divider', element => element.hasAttribute('card')];
+ * elementSelectable: ['callout', 'divider', element => element.hasAttribute('card')];
  * ```
  *
  * An element is selected (the model selection is *on* it, and the view has a fake selection and the
@@ -66,7 +66,7 @@ export default class ElementSelectable extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		this._matchers.push(...(editor.config.get('selectableElements') ?? []));
+		this._matchers.push(...(editor.config.get('elementSelectable') ?? []));
 
 		// The selection of an element is a fake one, as for widgets: the browser does not draw the selection on its own.
 		editor.editing.downcastDispatcher.on<DowncastSelectionEvent>('selection', (evt, data, conversionApi) => {
@@ -101,9 +101,9 @@ export default class ElementSelectable extends Plugin {
 			}
 		});
 
-		// The arrow keys are handled on `keydown`, with a high priority, and not as the `arrowKey` event: that one bubbles
-		// from the selection, and CKEditor's widgets (loaded by other features, e.g. the clipboard) handle it for every
-		// object, in a context that is reached before this plugin could.
+		// The arrow keys are handled on `keydown`, before CKEditor's widgets, and not as the `arrowKey` event: that one
+		// bubbles from the selection, and CKEditor's widgets (loaded by other features, e.g. the clipboard) handle it for
+		// every object, in a context that is reached before this plugin could.
 		this.listenTo<ViewDocumentKeyDownEvent>(
 			viewDocument,
 			'keydown',
@@ -123,10 +123,10 @@ export default class ElementSelectable extends Plugin {
 					evt.stop();
 				}
 			},
-			{ priority: 'high' }
+			{ priority: keyboardPriorities.selectable }
 		);
 
-		// Esc has a low priority: what else uses it, e.g. closing a balloon, goes first. Editor keystrokes (`cancel()`)
+		// Esc goes after what else uses it, e.g. closing a balloon. Editor keystrokes (`cancel()`)
 		// do not stop this event, they prevent the default action of the DOM event: then Esc is handled already.
 		this.listenTo<ViewDocumentKeyDownEvent>(
 			viewDocument,
@@ -141,16 +141,25 @@ export default class ElementSelectable extends Plugin {
 					evt.stop();
 				}
 			},
-			{ priority: 'low' }
+			{ priority: keyboardPriorities.selectableEsc }
 		);
 	}
 
 	public afterInit(): void {
-		this._makeSelectable(this._matchers);
+		// Before the data is loaded, once all the elements are registered: also the ones that other plugins register in
+		// `afterInit()`, e.g. the element schema, whichever plugin comes first.
+		this.listenTo(
+			this.editor.data,
+			'init',
+			() => {
+				this._makeSelectable(this._matchers);
+			},
+			{ priority: 'high' }
+		);
 	}
 
 	/**
-	 * Makes more elements selectable, as the `selectableElements` option does: a name of a model element, or a filter.
+	 * Makes more elements selectable, as the `elementSelectable` option does: a name of a model element, or a filter.
 	 * Used by features that add elements, e.g. the element schema.
 	 */
 	public add(...matchers: ElementSelectableMatcher[]): void {

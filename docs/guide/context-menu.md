@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 context menu for elements'
+description: 'Add a right-click context menu to CKEditor 5: the menu of the element, with commands, submenus and separators, configured per element, and opened by the keyboard too.'
+---
+
 # Context menu
 
 `ElementContextMenu` shows a menu when an element is right-clicked, or when the context menu is opened with the

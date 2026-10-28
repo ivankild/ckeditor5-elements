@@ -3,20 +3,20 @@
 Element-first editing for CKEditor 5 v49, in one package. The content is a tree of named elements, each with its
 attributes, and every feature acts on an element:
 
-| Feature              | Exports                                                                                                                           |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand`, `ElementOrPositionButtonView`, `ElementButtonView`                                  |
-| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                                          |
-| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                                             |
-| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter`                        |
-| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                                         |
-| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                                        |
-| Element schema       | `ElementSchema`: declare the elements of the content from a JSON file, with a validation; `ElementSchemaCommands`: their commands |
-| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                                                |
-| Selectable elements  | `ElementSelectable`: select an element as a whole, by a click or by the arrow keys, without widgets                               |
-| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked                                |
-| Quick insert         | `QuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                                            |
-| Breadcrumbs          | `Breadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu                                    |
+| Feature              | Exports                                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Commands and buttons | `ElementOrPositionCommand`, `ElementCommand` and a command for each kind of element, `ElementOrPositionButtonView`, `ElementButtonView` |
+| Element menu         | `ElementMenu` (the plugin that shows the menus below), `ElementMenuView`                                                                |
+| Context menu         | `ElementContextMenu`: a menu of commands for the right-clicked element (or Shift+F10)                                                   |
+| Clipboard            | `ElementClipboard`: `copyElement`, `cutElement`, `pasteElement`, `pasteElementBefore`, `pasteElementAfter`                              |
+| Actions              | `ElementActions`: `moveElementUp`, `moveElementDown`, `duplicateElement`, `deleteElement`                                               |
+| Attributes           | `ElementAttributes`: `showElementAttributes` shows the attributes of an element in a modal                                              |
+| Element schema       | `ElementSchema`: declare the elements of the content from a JSON file, with a validation; `ElementSchemaCommands`: their commands       |
+| Element toolbar      | `ElementToolbar`: floating toolbars for the elements that match a name or a filter                                                      |
+| Selectable elements  | `ElementSelectable`: select an element as a whole, by a click or by the arrow keys, without widgets                                     |
+| Clickable elements   | `ElementClickable`: a callback with the model element when an element is clicked or double-clicked                                      |
+| Quick insert         | `ElementQuickInsert`: Alt+Enter opens a searchable list of the elements allowed at the cursor                                           |
+| Breadcrumbs          | `ElementBreadcrumbs`: the element path at the cursor, as labels or buttons that open the element menu                                   |
 
 ## Installation
 
@@ -30,7 +30,7 @@ Import the features from `ckeditor5-elements`, and its stylesheet, which styles 
 
 ```ts
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import { Breadcrumbs, ElementClipboard, ElementContextMenu, QuickInsert } from 'ckeditor5-elements';
+import { ElementBreadcrumbs, ElementClipboard, ElementContextMenu, ElementQuickInsert } from 'ckeditor5-elements';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-elements/index.css';
@@ -49,10 +49,10 @@ const menu = (element, editor) => [
 await ClassicEditor.create({
 	attachTo: document.querySelector('#editor'),
 	licenseKey: 'GPL',
-	plugins: [Essentials, Paragraph, ElementContextMenu, ElementClipboard, QuickInsert, Breadcrumbs],
+	plugins: [Essentials, Paragraph, ElementContextMenu, ElementClipboard, ElementQuickInsert, ElementBreadcrumbs],
 	toolbar: ['undo', 'redo', '|', 'breadcrumbs'],
 	elementContextMenu: menu,
-	breadcrumbs: { menu }
+	elementBreadcrumbs: { menu }
 });
 ```
 
@@ -65,7 +65,7 @@ versions of them would be loaded, which fails.
 
 [CKEditor 5 Elements documentation](https://ivankild.github.io/ckeditor5-elements/): guides with live examples, and the API reference.
 
-The [full example](https://ivankild.github.io/ckeditor5-elements/example) shows all the features together in one editor.
+The [full example](https://ivankild.github.io/ckeditor5-elements/examples/) shows all the features together in one editor.
 
 ## License
 

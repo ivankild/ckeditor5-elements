@@ -31,15 +31,12 @@ export default class ElementDuplicateCommand extends ElementOrPositionCommand {
 	 */
 	public override execute(elementOrPosition?: ElementOrPosition): void {
 		const model = this.editor.model;
-		const element = this._getElement(elementOrPosition);
-
-		if (!element || !this._isEnabledFor(element)) {
-			return;
-		}
+		const element = this._requireElement(elementOrPosition);
 
 		model.change(writer => {
 			const copy = writer.cloneElement(element, model.schema.isObject(element));
 
+			// CKEditor's lists tell their items apart by `listItemId`: the copy of an item is an item of its own.
 			if (copy.hasAttribute('listItemId')) {
 				writer.setAttribute('listItemId', uid(), copy);
 			}

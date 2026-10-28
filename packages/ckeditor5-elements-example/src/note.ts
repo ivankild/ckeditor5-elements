@@ -1,5 +1,5 @@
 import { Plugin, type Editor } from 'ckeditor5';
-import { ElementButtonView, ElementCommand } from 'ckeditor5-elements';
+import { ElementButtonView, ElementContainerCommand } from 'ckeditor5-elements';
 
 const noteIcon =
 	'<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">' +
@@ -10,14 +10,12 @@ const warningIcon =
 	'M10 2.2 18.6 17H1.4zm0 3L4 15.5h12zM9.25 8h1.5v4h-1.5zm0 5h1.5v1.5h-1.5z"/></svg>';
 
 /**
- * Wraps blocks with a note, or unwraps the note they are in. With a `type`, only notes of that type: `ElementCommand`
- * matches an element by its name and attributes.
+ * Wraps blocks with a note, or unwraps the note they are in. With a `type`, only notes of that type: an
+ * `ElementCommand` matches an element by its name and attributes.
  */
-export class NoteCommand extends ElementCommand {
+export class NoteCommand extends ElementContainerCommand {
 	constructor(editor: Editor, type?: string) {
-		super(editor);
-
-		this.elementName = 'note';
+		super(editor, 'note');
 
 		if (type) {
 			this.elementAttributes = { type };

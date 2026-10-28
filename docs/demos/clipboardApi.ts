@@ -1,4 +1,4 @@
-import { Essentials, Paragraph, type ClassicEditor, type ModelElement } from 'ckeditor5';
+import { Essentials, Paragraph, SourceEditing, type ClassicEditor, type ModelElement } from 'ckeditor5';
 import { ElementClipboard } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
@@ -53,8 +53,8 @@ function run(
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, ElementClipboard],
-		toolbar: ['undo', 'redo']
+		plugins: [Essentials, SourceEditing, Paragraph, ElementClipboard],
+		toolbar: ['undo', 'redo', 'sourceEditing']
 	},
 	data: '<p>The first block.</p><p>The second block.</p><p>The last block.</p>',
 	ready: addControls

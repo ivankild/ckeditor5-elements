@@ -3,7 +3,7 @@
 The full example of CKEditor 5 Elements: an editor with all its features, as an app would set it up. It is private
 (not published).
 
-**[Try it in the documentation](https://ivankild.github.io/ckeditor5-elements/example)**, or run it from the repository:
+**[Try it in the documentation](https://ivankild.github.io/ckeditor5-elements/examples/)**, or run it from the repository:
 
 ```sh
 pnpm install

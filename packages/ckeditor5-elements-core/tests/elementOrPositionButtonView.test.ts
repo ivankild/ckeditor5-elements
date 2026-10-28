@@ -9,13 +9,13 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Container, createEditor } from '../../../testUtils/editor.js';
 import ElementButtonView from '../src/elementButtonView.js';
-import ElementCommand from '../src/elementCommand.js';
+import ElementContainerCommand from '../src/commands/elementContainerCommand.js';
 import ElementOrPositionButtonView from '../src/elementOrPositionButtonView.js';
 import ElementOrPositionCommand from '../src/elementOrPositionCommand.js';
 
 describe('ElementOrPositionButtonView', () => {
 	let editor: ClassicEditor;
-	let command: ElementCommand;
+	let command: ElementContainerCommand;
 	let view: ElementOrPositionButtonView | undefined;
 
 	const child = (index: number): ModelElement => editor.model.document.getRoot()!.getChild(index) as ModelElement;
@@ -23,8 +23,7 @@ describe('ElementOrPositionButtonView', () => {
 	beforeEach(async () => {
 		editor = await createEditor({ plugins: [Paragraph, Container] });
 
-		command = new ElementCommand(editor);
-		command.elementName = 'container';
+		command = new ElementContainerCommand(editor, 'container');
 		command.set({ title: 'Container', icon: '<svg></svg>', tooltip: 'Wrap with a container' });
 		editor.commands.add('container', command);
 
@@ -151,6 +150,16 @@ describe('ElementOrPositionButtonView', () => {
 			editor.enableReadOnlyMode('test');
 
 			expect(view!.isEnabled).toBe(false);
+		});
+
+		it('does not update when only the selection changes: the target is the same', () => {
+			const getState = vi.spyOn(command, 'getState');
+
+			editor.model.change(writer => {
+				writer.setSelection(child(1), 0);
+			});
+
+			expect(getState).not.toHaveBeenCalled();
 		});
 
 		it('is disabled while the command is force-disabled', () => {

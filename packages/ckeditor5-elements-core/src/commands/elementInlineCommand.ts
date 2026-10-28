@@ -1,5 +1,4 @@
 import {
-	ModelLivePosition,
 	ModelLiveRange,
 	type ModelDocumentFragment,
 	type ModelElement,
@@ -7,13 +6,13 @@ import {
 	type ModelRange,
 	type ModelWriter
 } from 'ckeditor5';
-import type { ElementOrPosition } from 'ckeditor5-elements-core';
-import ElementSchemaCommand from './elementSchemaCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
+import ElementCommand from './elementCommand.js';
 
 /**
- * Toggles an inline element with text on the selection, e.g. a `bold` that is an inline `block` of the element schema:
- * formatting is an element, as the rest of the content, with its name and attributes, in the tree of elements. It works
- * as CKEditor's `bold` command does for its mark on the text.
+ * Toggles an inline element with text on the selection, e.g. a `bold`: formatting is an element, as the rest of the
+ * content, with its name and attributes, in the tree of elements. It works as CKEditor's `bold` command does for its
+ * mark on the text.
  *
  * ```ts
  * editor.execute('bold'); // The selection.
@@ -28,7 +27,7 @@ import ElementSchemaCommand from './elementSchemaCommand.js';
  *
  * It is "on" ({@link isOn}) when the target is in the element: for selected text, when all of it is.
  */
-export default class ElementInlineCommand extends ElementSchemaCommand {
+export default class ElementInlineCommand extends ElementCommand {
 	public override isToggleable = true;
 
 	/**
@@ -58,37 +57,38 @@ export default class ElementInlineCommand extends ElementSchemaCommand {
 	}
 
 	/**
-	 * Enabled when the target can be edited, and is in the element, or the element can be there.
+	 * Enabled when the target can be edited, and is in the element, or the element can be there. "On" when the target is
+	 * in the element: for selected text, when all of it is. Both from one look at the selected text.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
 		const ranges = this._getSelectedRanges(elementOrPosition);
 		const target = this._getElementOrPosition(elementOrPosition);
 
-		if (!target || !super._isEnabledFor(target)) {
-			return false;
+		if (!target) {
+			return { isEnabled: false, isOn: false };
 		}
+
+		const isEditable = super._isEnabledFor(target);
 
 		if (ranges) {
-			return this._isOnRanges(ranges) || this._getWrapRanges(ranges).length > 0;
+			const hasTextToWrap = this._getWrapRanges(ranges).length > 0;
+			const isOn = !hasTextToWrap && this._getElementsIn(ranges).length > 0;
+
+			return { isEnabled: isEditable && (isOn || hasTextToWrap), isOn };
 		}
 
-		if (this._findElement(target)) {
-			return true;
-		}
+		const isOn = !!this._findElement(target);
 
-		return target.is('position')
-			? this.editor.model.schema.checkChild(target, this.elementName)
-			: this._canHold(this.editor.model.createPositionBefore(target), [target]);
+		return { isEnabled: isEditable && (isOn || this._canBeAt(target)), isOn };
 	}
 
 	/**
-	 * "On" when the target is in the element: for selected text, when all of it is.
+	 * Whether the element can be at the target: at a position, or around an element.
 	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		const ranges = this._getSelectedRanges(elementOrPosition);
-		const target = this._getElementOrPosition(elementOrPosition);
-
-		return ranges ? this._isOnRanges(ranges) : !!target && !!this._findElement(target);
+	private _canBeAt(target: ElementOrPosition): boolean {
+		return target.is('position')
+			? this.editor.model.schema.checkChild(target, this.elementName)
+			: this._canHold(this.editor.model.createPositionBefore(target), [target]);
 	}
 
 	/**
@@ -206,14 +206,18 @@ export default class ElementInlineCommand extends ElementSchemaCommand {
 		// The last first: wrapping one does not move the ones before it.
 		const wrapRanges = this._getWrapRanges(ranges).reverse();
 
-		this._keepSelection(writer, ranges, () => {
-			for (const range of wrapRanges) {
-				const element = writer.createElement(this.elementName);
+		this._keepSelection(
+			writer,
+			() => {
+				for (const range of wrapRanges) {
+					const element = this._createElement(writer);
 
-				writer.wrap(range, element);
-				this._mergeWithSiblings(writer, element);
-			}
-		});
+					writer.wrap(range, element);
+					this._mergeWithSiblings(writer, element);
+				}
+			},
+			ranges
+		);
 	}
 
 	/**
@@ -222,48 +226,32 @@ export default class ElementInlineCommand extends ElementSchemaCommand {
 	private _unwrapRanges(writer: ModelWriter, ranges: ModelRange[]): void {
 		const elements = this._getElementsIn(ranges);
 
-		this._keepSelection(writer, ranges, () => {
-			for (const element of elements) {
-				writer.unwrap(element);
-			}
-		});
-	}
-
-	/**
-	 * Changes the content of the selected ranges, and selects the same text then: the ends of the ranges stick to the
-	 * text, so they follow it into the elements and out of them.
-	 */
-	private _keepSelection(writer: ModelWriter, ranges: ModelRange[], change: () => void): void {
-		const backward = this.editor.model.document.selection.isBackward;
-		const ends = ranges.map(range => ({
-			start: ModelLivePosition.fromPosition(range.start, 'toNext'),
-			end: ModelLivePosition.fromPosition(range.end, 'toPrevious')
-		}));
-
-		change();
-		writer.setSelection(
-			ends.map(({ start, end }) => writer.createRange(start, end)),
-			{ backward }
+		this._keepSelection(
+			writer,
+			() => {
+				for (const element of elements) {
+					writer.unwrap(element);
+				}
+			},
+			ranges
 		);
-
-		for (const { start, end } of ends) {
-			start.detach();
-			end.detach();
-		}
 	}
 
 	/**
-	 * Merges a new element with the elements of the command next to it that have no attributes, as it has none.
+	 * Merges a new element with the elements of the command next to it that have the same attributes as it.
 	 */
 	private _mergeWithSiblings(writer: ModelWriter, element: ModelElement): void {
-		const isPlain = (node: ModelNode | null): boolean =>
-			this.isElement(node) && node.getAttributeKeys().next().done === true;
+		const attributes = Array.from(element.getAttributes());
+		const isSame = (node: ModelNode | null): boolean =>
+			this.isElement(node) &&
+			Array.from(node.getAttributeKeys()).length === attributes.length &&
+			attributes.every(([key, value]) => node.getAttribute(key) === value);
 
-		if (isPlain(element.nextSibling)) {
+		if (isSame(element.nextSibling)) {
 			writer.merge(writer.createPositionAfter(element));
 		}
 
-		if (isPlain(element.previousSibling)) {
+		if (isSame(element.previousSibling)) {
 			writer.merge(writer.createPositionBefore(element));
 		}
 	}
@@ -300,12 +288,12 @@ export default class ElementInlineCommand extends ElementSchemaCommand {
 	 */
 	private _insert(writer: ModelWriter, target: ElementOrPosition): void {
 		if (target.is('position')) {
-			const element = writer.createElement(this.elementName);
+			const element = this._createElement(writer);
 
 			writer.insert(element, target);
 			writer.setSelection(element, 0);
 		} else {
-			writer.wrap(writer.createRangeOn(target), this.elementName);
+			writer.wrap(writer.createRangeOn(target), this._createElement(writer));
 			writer.setSelection(target, 'on');
 		}
 	}

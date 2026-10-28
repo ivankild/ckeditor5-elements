@@ -1,16 +1,21 @@
+---
+title: 'Select elements as a whole in CKEditor 5, without widgets'
+description: 'Select a CKEditor 5 element as a whole, by a click on its frame or by the arrow keys, as widgets are selected, without the Widget plugin and without changing its view.'
+---
+
 # Selectable elements
 
 `ElementSelectable` selects an element **as a whole**, by a click or by the arrow keys. It is what CKEditor's widgets do
 for selecting, without the widgets: the view of the element is not changed, and the `Widget` plugin is not needed. The
 elements are matched by the name of the model element, or by a filter function, as for the other features. They are the
-`selectableElements` editor option:
+`elementSelectable` editor option:
 
 ```ts
 import { ElementSelectable } from 'ckeditor5-elements';
 
 // In the editor config:
 plugins: [..., ElementSelectable],
-selectableElements: ['callout', 'divider', element => element.hasAttribute('card')]
+elementSelectable: ['callout', 'divider', element => element.hasAttribute('card')]
 ```
 
 <EditorDemo name="selectableBasic" />

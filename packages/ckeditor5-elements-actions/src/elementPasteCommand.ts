@@ -55,11 +55,7 @@ export default class ElementPasteCommand extends ElementOrPositionCommand {
 	 */
 	public override async execute(elementOrPosition?: ElementOrPosition): Promise<void> {
 		// Resolve the element before reading the clipboard, as the selection may change in the meantime.
-		const element = this._getElement(elementOrPosition);
-
-		if (!element || !isStandalone(this.editor.model.schema, element)) {
-			return;
-		}
+		const element = this._requireElement(elementOrPosition);
 
 		const dataTransfer = await readClipboard();
 

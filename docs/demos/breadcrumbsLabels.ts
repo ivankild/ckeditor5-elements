@@ -1,14 +1,25 @@
-import { Bold, Essentials, List, Paragraph, Table } from 'ckeditor5';
-import { Breadcrumbs } from 'ckeditor5-elements';
+import { Bold, Essentials, List, Paragraph, SourceEditing, Table } from 'ckeditor5';
+import { ElementBreadcrumbs } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Bold, List, Table, Note, Breadcrumbs],
+		plugins: [Essentials, SourceEditing, Paragraph, Bold, List, Table, Note, ElementBreadcrumbs],
 		// `-` (CKEditor's line break) starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
 		toolbar: {
-			items: ['undo', 'redo', '|', 'bold', 'note', 'bulletedList', 'insertTable', '-', 'breadcrumbs'],
+			items: [
+				'undo',
+				'redo',
+				'sourceEditing',
+				'|',
+				'bold',
+				'note',
+				'bulletedList',
+				'insertTable',
+				'-',
+				'breadcrumbs'
+			],
 			shouldNotGroupWhenFull: true
 		}
 		// No `breadcrumbs.menu`: the breadcrumbs are labels.

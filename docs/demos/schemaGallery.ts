@@ -1,10 +1,10 @@
-import { Essentials, Paragraph } from 'ckeditor5';
+import { Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementContextMenu,
 	ElementSchema,
 	ElementSelectable,
-	QuickInsert,
+	ElementQuickInsert,
 	insertIcon
 } from 'ckeditor5-elements';
 import gallery from './shared/gallery.json';
@@ -17,18 +17,19 @@ export default {
 	config: {
 		plugins: [
 			Essentials,
+			SourceEditing,
 			Paragraph,
 			ElementSchema,
 			// Selects the `empty` and `container` elements of the schema as a whole.
 			ElementSelectable,
 			// Lists what the schema allows at a position, in the context menu.
-			QuickInsert,
+			ElementQuickInsert,
 			ElementContextMenu,
 			// Shows the path to the cursor: what holds what.
-			Breadcrumbs
+			ElementBreadcrumbs
 		],
 		// `-` starts a new toolbar line; it requires `shouldNotGroupWhenFull`.
-		toolbar: { items: ['undo', 'redo', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
+		toolbar: { items: ['undo', 'redo', 'sourceEditing', '-', 'breadcrumbs'], shouldNotGroupWhenFull: true },
 		elementSchema: gallery,
 		// The elements are `div` and `span` in the data, and in the editor.
 		elementSchemaConverters: true,
@@ -40,7 +41,7 @@ export default {
 				items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
 			}
 		],
-		quickInsert: {
+		elementQuickInsert: {
 			labels: { paragraph: 'Paragraph', gallery: 'Gallery', figure: 'Figure', photo: 'Photo', caption: 'Caption' }
 		}
 	},

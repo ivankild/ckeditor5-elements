@@ -70,6 +70,15 @@ describe('QuickInsertCommand', () => {
 			expect(names).not.toContain('heading1');
 			expect(names).not.toContain('element');
 		});
+
+		it('hasAllowedElements() tells whether there is one', () => {
+			_setModelData(editor.model, '<paragraph>foo</paragraph>');
+
+			const all = command.getAllowedElements(inRoot(0));
+
+			expect(command.hasAllowedElements(inRoot(0))).toBe(true);
+			expect(command.hasAllowedElements(inRoot(0), all)).toBe(false);
+		});
 	});
 
 	describe('isEnabled', () => {

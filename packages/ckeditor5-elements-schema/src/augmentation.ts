@@ -1,4 +1,10 @@
-import type { ElementSchema, ElementSchemaCommands, ElementSchemaCommandsConfig, ElementSchemaInput } from './index.js';
+import type {
+	ElementSchema,
+	ElementSchemaCommands,
+	ElementSchemaCommandsConfig,
+	ElementSchemaConvertersMode,
+	ElementSchemaInput
+} from './index.js';
 
 declare module 'ckeditor5' {
 	interface PluginsMap {
@@ -13,11 +19,16 @@ declare module 'ckeditor5' {
 		elementSchema?: ElementSchemaInput;
 
 		/**
-		 * Whether to declare the converters of the elements of `elementSchema`, one to one: `div` or `span` with the name as
-		 * the class, and the attributes as `data-*` attributes, in the data and in the editing view; `editingTag` of an
-		 * element sets another tag for the editing view. See {@link ElementSchema}. Default: `false`.
+		 * Whether to declare the converters of the elements of `elementSchema`, one to one, and how they write the data:
+		 *
+		 * * `true`: as HTML, `div` or `span` with the name as the class (or the `tag` of the element), and the attributes as
+		 *   `data-*` attributes;
+		 * * `'names'`: each element as the element of its name, with its attributes by their names, e.g. for XML.
+		 *
+		 * The editing view is HTML either way; `editingTag` of an element sets another tag for it. See
+		 * {@link ElementSchema}. Default: `false`.
 		 */
-		elementSchemaConverters?: boolean;
+		elementSchemaConverters?: ElementSchemaConvertersMode | false;
 
 		/**
 		 * The commands and the buttons of the elements of the schema, by the name of the command: the command of each

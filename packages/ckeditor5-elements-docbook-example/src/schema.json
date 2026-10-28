@@ -1,0 +1,12 @@
+{
+	"section": { "type": "container", "editingTag": "section" },
+	"title": { "type": "block", "allowIn": ["$root", "section"] },
+	"itemizedlist": { "type": "container", "listItem": "listitem", "editingTag": "ul" },
+	"orderedlist": { "type": "container", "listItem": "listitem", "editingTag": "ol" },
+	"listitem": { "type": "container", "editingTag": "li" },
+	"blockquote": { "type": "container", "editingTag": "blockquote" },
+	"programlisting": { "type": "block", "verbatim": true },
+	"emphasis": { "type": "block", "isInline": true, "editingTag": "em" },
+	"literal": { "type": "block", "isInline": true, "editingTag": "code" },
+	"ulink": { "type": "block", "isInline": true, "allowAttributes": ["url"], "editingTag": "a" }
+}

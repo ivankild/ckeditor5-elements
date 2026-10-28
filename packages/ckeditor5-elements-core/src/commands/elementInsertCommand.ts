@@ -1,10 +1,11 @@
 import type { ModelDocumentSelection, ModelSelection } from 'ckeditor5';
-import { selectNewElement, type ElementOrPosition } from 'ckeditor5-elements-core';
-import ElementSchemaCommand from './elementSchemaCommand.js';
+import type { ElementOrPosition } from '../elementOrPositionCommand.js';
+import { selectNewElement } from '../utils.js';
+import ElementCommand from './elementCommand.js';
 
 /**
  * Inserts the element, as CKEditor's horizontal line and image commands do: an element that is not typed around text,
- * e.g. an `empty` element of the element schema (a `divider`, or an inline `badge`), or an inline `container` (a `card`).
+ * e.g. an empty one (a `divider`, or an inline `badge`), or an inline one that holds blocks (a `card`).
  *
  * ```ts
  * editor.execute('divider'); // In place of the selection.
@@ -18,7 +19,7 @@ import ElementSchemaCommand from './elementSchemaCommand.js';
  *
  * It does not toggle: it is never "on".
  */
-export default class ElementInsertCommand extends ElementSchemaCommand {
+export default class ElementInsertCommand extends ElementCommand {
 	/**
 	 * Inserts a new element at the target, and selects it.
 	 */
@@ -31,7 +32,7 @@ export default class ElementInsertCommand extends ElementSchemaCommand {
 		}
 
 		model.change(writer => {
-			const element = writer.createElement(this.elementName);
+			const element = this._createElement(writer);
 
 			model.insertContent(element, selectable);
 

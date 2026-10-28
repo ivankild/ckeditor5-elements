@@ -1,11 +1,11 @@
-import { Bold, Essentials, Paragraph } from 'ckeditor5';
+import { Bold, Essentials, Paragraph, SourceEditing } from 'ckeditor5';
 import { ElementClipboard, ElementContextMenu } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Bold, ElementContextMenu, ElementClipboard],
-		toolbar: ['undo', 'redo', '|', 'bold'],
+		plugins: [Essentials, SourceEditing, Paragraph, Bold, ElementContextMenu, ElementClipboard],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'bold'],
 		// Right-click a paragraph: the menu shows the clipboard commands for it.
 		elementContextMenu: (element, editor) => [
 			editor.commands.get('copyElement'),

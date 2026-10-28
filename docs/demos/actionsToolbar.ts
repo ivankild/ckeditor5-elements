@@ -1,4 +1,4 @@
-import { Essentials, List, Paragraph, Plugin } from 'ckeditor5';
+import { Essentials, List, Paragraph, Plugin, SourceEditing } from 'ckeditor5';
 import { ElementActions, ElementContextMenu, ElementOrPositionButtonView } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
@@ -28,8 +28,8 @@ class ActionButtons extends Plugin {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, List, Note, ActionButtons, ElementContextMenu],
-		toolbar: ['undo', 'redo', '|', 'note', 'bulletedList', '|', ...ACTIONS],
+		plugins: [Essentials, SourceEditing, Paragraph, List, Note, ActionButtons, ElementContextMenu],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'note', 'bulletedList', '|', ...ACTIONS],
 		// The same commands in the context menu of the right-clicked element.
 		elementContextMenu: (element, editor) => [
 			editor.commands.get('moveElementUp'),

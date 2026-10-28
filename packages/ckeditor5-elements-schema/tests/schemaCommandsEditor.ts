@@ -10,7 +10,7 @@ import {
 import { ElementSelectable } from 'ckeditor5-elements-interaction';
 import { afterEach } from 'vitest';
 import { createEditor } from '../../../testUtils/editor.js';
-import type ElementSchemaCommand from '../src/commands/elementSchemaCommand.js';
+import type { ElementCommand } from 'ckeditor5-elements-core';
 import type { ElementSchemaInput } from '../src/definition/types.js';
 import ElementSchemaCommands, { type ElementSchemaCommandsConfig } from '../src/elementSchemaCommands.js';
 
@@ -24,7 +24,11 @@ export const SCHEMA: ElementSchemaInput = {
 	callout: { type: 'container' },
 	divider: { type: 'empty' },
 	mention: { type: 'empty', isInline: true },
-	chip: { type: 'container', isInline: true }
+	chip: { type: 'container', isInline: true },
+	code: { type: 'block', verbatim: true },
+	bullets: { type: 'container', listItem: 'item' },
+	numbers: { type: 'container', listItem: 'item' },
+	item: { type: 'container' }
 };
 
 /**
@@ -37,7 +41,10 @@ export const CONFIG: ElementSchemaCommandsConfig = {
 	callout: { title: 'Callout' },
 	divider: { title: 'Divider' },
 	mention: { title: 'Mention' },
-	chip: { title: 'Chip' }
+	chip: { title: 'Chip' },
+	code: { title: 'Code' },
+	bullets: { title: 'Bulleted list' },
+	numbers: { title: 'Numbered list' }
 };
 
 /**
@@ -57,7 +64,7 @@ export interface SchemaCommandsEditor {
 	/**
 	 * A command, by its name. CKEditor's typings have `bold` as its own command, of text attributes.
 	 */
-	command: (name?: string) => ElementSchemaCommand;
+	command: (name?: string) => ElementCommand;
 
 	/**
 	 * The model, with the selection.
@@ -107,7 +114,7 @@ export function useSchemaCommandsEditor(): SchemaCommandsEditor {
 			return current;
 		},
 		editor,
-		command: (name = 'bold') => editor().commands.get(name) as unknown as ElementSchemaCommand,
+		command: (name = 'bold') => editor().commands.get(name) as unknown as ElementCommand,
 		model: () => _getModelData(editor().model),
 		child: (...path) =>
 			path.reduce<ModelElement>(

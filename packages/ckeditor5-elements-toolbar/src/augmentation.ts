@@ -9,6 +9,6 @@ declare module 'ckeditor5' {
 		/**
 		 * The floating toolbars of elements. See {@link ElementToolbar}.
 		 */
-		elementToolbars?: ElementToolbarDefinition[];
+		elementToolbar?: ElementToolbarDefinition[];
 	}
 }

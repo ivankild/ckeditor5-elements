@@ -1,10 +1,15 @@
 import { Plugin, type ModelSchema } from 'ckeditor5';
 import { findPlugin } from 'ckeditor5-elements-core';
 import { compileElementSchema } from './definition/compileElementSchema.js';
+import { getModelKind } from './definition/kinds.js';
 import { convertElementSchema } from './conversion/convertElementSchema.js';
 import ElementSchemaError from './definition/elementSchemaError.js';
-import type { ElementSchemaInput, ElementSchemaKind } from './definition/types.js';
-import { validateElementSchema } from './definition/validateElementSchema.js';
+import { getInlineTextElements, getLists, getVerbatimElements } from './definition/queries.js';
+import type { ElementSchemaDefinition, ElementSchemaKind } from './definition/types.js';
+import { parseElementSchema } from './definition/validateElementSchema.js';
+import { enableListTyping } from './typing/lists.js';
+import { enableTwoStepCaretMovement } from './typing/twoStepCaretMovement.js';
+import { enableVerbatimTyping } from './typing/verbatim.js';
 
 /**
  * Declares the elements of the content in the model schema of the editor, from a simple definition, the `elementSchema`
@@ -29,6 +34,15 @@ import { validateElementSchema } from './definition/validateElementSchema.js';
  * `allowAttributes` and `allowChildren` work as in CKEditor's schema. `allowIn` too, but it replaces the default places.
  * See {@link ElementSchemaElement}.
  *
+ * Two keys make a kind of their own of a type, with its typing:
+ *
+ * * `verbatim` makes a block keep its whitespace, e.g. code: Enter inserts a new line in it.
+ * * `listItem` makes a container a list of its items, e.g. `"listItem": "listitem"`: it holds only its items, and Enter
+ *   in an item makes the next one.
+ *
+ * At the ends of the inline elements with text, the left and right arrow keys move in two steps, as CKEditor's two-step
+ * caret movement does at the ends of a bold: in the element, then in the text.
+ *
  * The schema is validated first, and a schema that is contradictory or refers to unknown elements is not accepted: the
  * editor is not created, and the {@link ElementSchemaError} lists all the problems (see {@link validateElementSchema}).
  *
@@ -41,12 +55,23 @@ import { validateElementSchema } from './definition/validateElementSchema.js';
  * (with `elementSchemaConverters`, it warns when it is not).
  *
  * The plugin declares the schema only: how the elements look in the editor and in the data is declared with
- * converters, or by the plugin when the `elementSchemaConverters` option is `true`: one to one, as `div` and `span`.
+ * converters, or by the plugin with the `elementSchemaConverters` option: one to one, as `div` and `span` (`true`), or
+ * with the names of the elements in the data (`'names'`), e.g. for XML.
  */
 export default class ElementSchema extends Plugin {
 	public static get pluginName(): 'ElementSchema' {
 		return 'ElementSchema' as const;
 	}
+
+	/**
+	 * The element schema of the editor, once it is validated and registered (in `afterInit()`): the `elementSchema`
+	 * option. `null` before, and without the option.
+	 */
+	public get definition(): ElementSchemaDefinition | null {
+		return this._definition;
+	}
+
+	private _definition: ElementSchemaDefinition | null = null;
 
 	public afterInit(): void {
 		const input = this.editor.config.get('elementSchema');
@@ -56,13 +81,13 @@ export default class ElementSchema extends Plugin {
 		}
 
 		const schema = this.editor.model.schema;
-		const issues = validateElementSchema(input, { external: getExternalKinds(schema) });
+		const { definition, issues } = parseElementSchema(input, { external: getExternalKinds(schema) });
 
-		if (issues.length) {
+		if (!definition) {
 			throw new ElementSchemaError(issues);
 		}
 
-		const { items, children } = compileElementSchema(input);
+		const { items, children } = compileElementSchema(definition);
 
 		for (const [name, definition] of items) {
 			schema.register(name, definition);
@@ -72,10 +97,37 @@ export default class ElementSchema extends Plugin {
 			schema.extend(child, { allowIn: parent });
 		}
 
-		this._makeSelectable(input);
+		this._definition = definition;
+		this._makeSelectable(definition);
 
-		if (this.editor.config.get('elementSchemaConverters')) {
-			convertElementSchema(this.editor, input);
+		const converters = this.editor.config.get('elementSchemaConverters');
+
+		if (converters) {
+			convertElementSchema(this.editor, definition, converters);
+		}
+
+		this._enableTyping(definition);
+	}
+
+	/**
+	 * Makes typing work as the kinds of elements need: two-step caret movement at the ends of the inline elements with
+	 * text, and Enter for a new line in a verbatim block, and for the next item in a list.
+	 */
+	private _enableTyping(definition: ElementSchemaDefinition): void {
+		const inlineText = new Set(getInlineTextElements(definition));
+		const verbatim = new Set(getVerbatimElements(definition));
+		const lists = getLists(definition);
+
+		if (inlineText.size) {
+			enableTwoStepCaretMovement(this, inlineText);
+		}
+
+		if (verbatim.size) {
+			enableVerbatimTyping(this, verbatim);
+		}
+
+		if (lists.size) {
+			enableListTyping(this, lists);
 		}
 	}
 
@@ -83,8 +135,8 @@ export default class ElementSchema extends Plugin {
 	 * Makes the `empty` elements and the containers selectable as a whole, by a click on them and by the arrow keys, with
 	 * `ElementSelectable`. Not the blocks: a click in a block puts the cursor in its text.
 	 */
-	private _makeSelectable(input: ElementSchemaInput): void {
-		const names = Object.entries(input)
+	private _makeSelectable(definition: ElementSchemaDefinition): void {
+		const names = Object.entries(definition)
 			.filter(([, element]) => element.type === 'empty' || element.type === 'container')
 			.map(([name]) => name);
 		const selectable = findPlugin(this.editor, 'ElementSelectable', isSelectablePlugin);
@@ -115,18 +167,15 @@ function isSelectablePlugin(plugin: object): plugin is SelectablePlugin {
 }
 
 /**
- * Returns the kinds of the elements of other plugins: inline or not, and `empty` for objects, `block` for what can
- * contain text, `container` for the rest. The generic items (`$block`, …) are not elements.
+ * Returns the kinds of the elements of other plugins (see {@link getModelKind}). The generic items (`$block`, …) are not
+ * elements.
  */
 function getExternalKinds(schema: ModelSchema): Record<string, ElementSchemaKind> {
 	const kinds: Record<string, ElementSchemaKind> = {};
 
 	for (const name of Object.keys(schema.getDefinitions())) {
 		if (!name.startsWith('$')) {
-			kinds[name] = {
-				isInline: schema.isInline(name),
-				type: schema.isObject(name) ? 'empty' : schema.checkChild(name, '$text') ? 'block' : 'container'
-			};
+			kinds[name] = getModelKind(schema, name);
 		}
 	}
 

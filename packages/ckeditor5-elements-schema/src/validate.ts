@@ -6,8 +6,9 @@
  * @module ckeditor5-elements-schema/validate
  */
 
-export { validateElementSchema } from './definition/validateElementSchema.js';
+export { parseElementSchema, validateElementSchema } from './definition/validateElementSchema.js';
 export { compileElementSchema, type CompiledElementSchema } from './definition/compileElementSchema.js';
+export { getInlineTextElements, getLists, getVerbatimElements } from './definition/queries.js';
 export { default as ElementSchemaError } from './definition/elementSchemaError.js';
 export type {
 	ElementSchemaDefinition,

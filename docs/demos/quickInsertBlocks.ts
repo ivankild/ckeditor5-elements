@@ -1,5 +1,5 @@
-import { Essentials, Heading, Paragraph, Plugin } from 'ckeditor5';
-import { ElementContextMenu, ElementOrPositionButtonView, insertIcon, QuickInsert } from 'ckeditor5-elements';
+import { Essentials, Heading, Paragraph, Plugin, SourceEditing } from 'ckeditor5';
+import { ElementContextMenu, ElementOrPositionButtonView, insertIcon, ElementQuickInsert } from 'ckeditor5-elements';
 import { Note } from 'ckeditor5-elements-example';
 import type { Demo } from './shared/demo';
 
@@ -8,8 +8,8 @@ import type { Demo } from './shared/demo';
  * or after the block with the cursor.
  */
 class InsertButtons extends Plugin {
-	public static get requires(): readonly [typeof QuickInsert] {
-		return [QuickInsert] as const;
+	public static get requires(): readonly [typeof ElementQuickInsert] {
+		return [ElementQuickInsert] as const;
 	}
 
 	public init(): void {
@@ -30,8 +30,8 @@ class InsertButtons extends Plugin {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, Note, ElementContextMenu, InsertButtons],
-		toolbar: ['undo', 'redo', '|', 'heading', '|', 'quickInsertBefore', 'quickInsertAfter'],
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, Note, ElementContextMenu, InsertButtons],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading', '|', 'quickInsertBefore', 'quickInsertAfter'],
 		// The same commands in the context menu.
 		elementContextMenu: (element, editor) => [
 			{
@@ -40,7 +40,7 @@ export default {
 				items: [editor.commands.get('quickInsertBefore'), editor.commands.get('quickInsertAfter')]
 			}
 		],
-		quickInsert: {
+		elementQuickInsert: {
 			labels: { paragraph: 'Paragraph', heading1: 'Heading 1', heading2: 'Heading 2', note: 'Note' },
 			exclude: ['heading3']
 		}

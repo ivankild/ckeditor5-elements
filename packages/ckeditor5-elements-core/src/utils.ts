@@ -1,4 +1,6 @@
 import type {
+	Model,
+	ModelDocumentFragment,
 	ModelDocumentSelection,
 	ModelElement,
 	ModelPosition,
@@ -6,6 +8,12 @@ import type {
 	ModelSelection,
 	ModelWriter
 } from 'ckeditor5';
+
+/**
+ * The name of CKEditor's paragraph: the block that the features make where a block is needed to type in, e.g. in an
+ * element that is left empty, or after a verbatim block.
+ */
+export const PARAGRAPH = 'paragraph';
 
 /**
  * Whether the element (or position) is in the document. Unlike `element.isAttached()`, removed elements (moved to
@@ -47,8 +55,8 @@ export function selectNewElement(writer: ModelWriter, element: ModelElement): vo
 		writer.setSelection(element, 'on');
 	} else if (schema.checkChild(element, '$text')) {
 		writer.setSelection(element, 0);
-	} else if (schema.checkChild(element, 'paragraph')) {
-		const paragraph = writer.createElement('paragraph');
+	} else if (schema.checkChild(element, PARAGRAPH)) {
+		const paragraph = writer.createElement(PARAGRAPH);
 
 		writer.append(paragraph, element);
 		writer.setSelection(paragraph, 0);
@@ -56,4 +64,30 @@ export function selectNewElement(writer: ModelWriter, element: ModelElement): vo
 		// Only objects can be selected as a whole. The selection post-fixer moves it to the closest valid place.
 		writer.setSelection(element, 'after');
 	}
+}
+
+/**
+ * Returns the element and its ancestors, the inner first, up to the root, which is not one of them: the elements that
+ * a node is, or is in. Nothing for a root, a document fragment, or `null`.
+ */
+export function* getAncestorElements(
+	node: ModelElement | ModelDocumentFragment | null | undefined
+): Generator<ModelElement> {
+	for (let element = node; element?.is('element') && !element.is('rootElement'); element = element.parent) {
+		yield element;
+	}
+}
+
+/**
+ * Returns the block of a position: its parent, or the closest ancestor of it that is not inline, e.g. the paragraph of
+ * the text in an inline element. `null` in the root.
+ */
+export function findBlock(model: Model, position: ModelPosition | null): ModelElement | null {
+	for (const element of getAncestorElements(position?.parent)) {
+		if (!model.schema.isInline(element)) {
+			return element;
+		}
+	}
+
+	return null;
 }

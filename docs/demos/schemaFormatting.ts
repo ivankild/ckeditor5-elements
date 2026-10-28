@@ -1,21 +1,23 @@
-import { Essentials, IconBold, IconItalic, IconUnderline, Paragraph, _getModelData } from 'ckeditor5';
-import { Breadcrumbs, ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
+import { Essentials, IconBold, IconItalic, IconUnderline, Paragraph, SourceEditing, _getModelData } from 'ckeditor5';
+import { ElementBreadcrumbs, ElementSchema, ElementSchemaCommands } from 'ckeditor5-elements';
 import formatting from './shared/formatting.json';
 import type { Demo } from './shared/demo';
 
 export default {
 	config: {
 		// No `Bold`, `Italic` and `Underline` of CKEditor: the buttons are the ones of `ElementSchemaCommands`.
-		plugins: [Essentials, Paragraph, ElementSchema, ElementSchemaCommands, Breadcrumbs],
+		plugins: [Essentials, SourceEditing, Paragraph, ElementSchema, ElementSchemaCommands, ElementBreadcrumbs],
 		toolbar: {
-			items: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '-', 'breadcrumbs'],
+			items: ['undo', 'redo', 'sourceEditing', '|', 'bold', 'italic', 'underline', '-', 'breadcrumbs'],
 			shouldNotGroupWhenFull: true
 		},
+		// The elements are `<strong>`, `<em>` and `<u>`: the `tag` of each one, with the converters of the schema.
 		elementSchema: formatting,
+		elementSchemaConverters: true,
 		elementSchemaCommands: {
-			bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B', view: 'strong' },
-			italic: { title: 'Italic', icon: IconItalic, keystroke: 'Ctrl+I', view: 'em' },
-			underline: { title: 'Underline', icon: IconUnderline, keystroke: 'Ctrl+U', view: 'u' }
+			bold: { title: 'Bold', icon: IconBold, keystroke: 'Ctrl+B' },
+			italic: { title: 'Italic', icon: IconItalic, keystroke: 'Ctrl+I' },
+			underline: { title: 'Underline', icon: IconUnderline, keystroke: 'Ctrl+U' }
 		}
 	},
 	data:

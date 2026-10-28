@@ -1,20 +1,33 @@
-import type { Editor, ModelElement, ModelDocumentFragment, ModelItem, ModelPosition, ModelRange } from 'ckeditor5';
-import { ElementOrPositionCommand, type ElementOrPosition } from 'ckeditor5-elements-core';
+import {
+	ModelLivePosition,
+	type Editor,
+	type ModelDocumentFragment,
+	type ModelElement,
+	type ModelItem,
+	type ModelPosition,
+	type ModelRange,
+	type ModelWriter
+} from 'ckeditor5';
+import ElementOrPositionCommand, { type ElementOrPosition } from '../elementOrPositionCommand.js';
+import { getAncestorElements } from '../utils.js';
 
 /**
- * The base of the commands of the elements of a schema, one for each kind of element: what they share is the element,
- * the state, and how they find their targets and check the schema.
+ * The base of the commands of one element, one for each kind of element: what they share is the element, the state,
+ * and how they find their targets and check the schema.
  *
- * * {@link ElementInlineCommand}: an inline element with text, as bold (an inline `block`);
- * * {@link ElementBlockCommand}: a block, as a heading (a `block`);
- * * {@link ElementContainerCommand}: a container of blocks, as a block quote (a `container`);
- * * {@link ElementInsertCommand}: an element that is inserted, as a horizontal line, an inline image, or a card (an
- *   `empty` element, and an inline `container`).
+ * * {@link ElementInlineCommand}: an inline element with text, as bold;
+ * * {@link ElementBlockCommand}: a block, as a heading;
+ * * {@link ElementContainerCommand}: a container of blocks, as a block quote;
+ * * {@link ElementListCommand}: a list of blocks, as a bulleted list;
+ * * {@link ElementInsertCommand}: an element that is inserted, as a horizontal line, an inline image, or a card.
+ *
+ * The element is the one of {@link elementName}, with the {@link elementAttributes}: a command can be for one kind of an
+ * element, e.g. a `callout` with `type="note"`.
  *
  * As every {@link ElementOrPositionCommand}, it is for the selection, or for a given position or element, e.g. of a
  * context menu.
  */
-export default class ElementSchemaCommand extends ElementOrPositionCommand {
+export default class ElementCommand extends ElementOrPositionCommand {
 	/**
 	 * Whether the target is in the element, or is one, for the commands that toggle it.
 	 *
@@ -27,6 +40,11 @@ export default class ElementSchemaCommand extends ElementOrPositionCommand {
 	 */
 	public readonly elementName: string;
 
+	/**
+	 * The attributes the element must have to be the element of the command. The new elements get them.
+	 */
+	public elementAttributes: Record<string, unknown> = {};
+
 	constructor(editor: Editor, elementName: string) {
 		super(editor);
 
@@ -35,15 +53,28 @@ export default class ElementSchemaCommand extends ElementOrPositionCommand {
 	}
 
 	public override refresh(elementOrPosition?: ElementOrPosition): void {
-		this.isOn = this._isOnFor(elementOrPosition);
-		super.refresh(elementOrPosition);
+		const { isEnabled, isOn } = this._getStateFor(elementOrPosition);
+
+		this.isOn = isOn;
+		this.isEnabled = isEnabled;
 	}
 
 	/**
-	 * Whether a node is an element of the command.
+	 * Whether a node is an element of the command: it is named {@link elementName}, and has the
+	 * {@link elementAttributes}.
 	 */
 	public isElement(node: ModelItem | ModelDocumentFragment | null): node is ModelElement {
-		return !!node?.is('element', this.elementName);
+		return (
+			!!node?.is('element', this.elementName) &&
+			Object.entries(this.elementAttributes).every(([key, value]) => node.getAttribute(key) === value)
+		);
+	}
+
+	/**
+	 * Creates a new element of the command, with the {@link elementAttributes}.
+	 */
+	protected _createElement(writer: ModelWriter): ModelElement {
+		return writer.createElement(this.elementName, this.elementAttributes);
 	}
 
 	/**
@@ -61,11 +92,7 @@ export default class ElementSchemaCommand extends ElementOrPositionCommand {
 		const target = this._getElementOrPosition(elementOrPosition);
 		const element = target && (target.is('position') ? target.parent : target);
 
-		return element?.is('element')
-			? element
-					.getAncestors({ includeSelf: true, parentFirst: true })
-					.filter((node): node is ModelElement => node.is('element') && !node.is('rootElement'))
-			: [];
+		return Array.from(getAncestorElements(element));
 	}
 
 	/**
@@ -136,5 +163,33 @@ export default class ElementSchemaCommand extends ElementOrPositionCommand {
 		const position = model.createPositionBefore(element);
 
 		return Array.from(element.getChildren()).every(child => model.schema.checkChild(position, child));
+	}
+
+	/**
+	 * Changes the content of ranges, by default the ones of the selection, and selects the same content then: the ends
+	 * of the ranges stick to the content, so they follow it into new elements and out of them, which the selection does
+	 * not.
+	 */
+	protected _keepSelection(
+		writer: ModelWriter,
+		change: () => void,
+		ranges: Iterable<ModelRange> = this.editor.model.document.selection.getRanges()
+	): void {
+		const backward = this.editor.model.document.selection.isBackward;
+		const ends = Array.from(ranges, range => ({
+			start: ModelLivePosition.fromPosition(range.start, 'toNext'),
+			end: ModelLivePosition.fromPosition(range.end, 'toPrevious')
+		}));
+
+		change();
+		writer.setSelection(
+			ends.map(({ start, end }) => writer.createRange(start, end)),
+			{ backward }
+		);
+
+		for (const { start, end } of ends) {
+			start.detach();
+			end.detach();
+		}
 	}
 }

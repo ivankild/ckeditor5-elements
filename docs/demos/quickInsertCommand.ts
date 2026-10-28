@@ -1,9 +1,9 @@
-import { Essentials, Heading, Paragraph, type ClassicEditor } from 'ckeditor5';
-import { QuickInsert } from 'ckeditor5-elements';
+import { Essentials, Heading, Paragraph, SourceEditing, type ClassicEditor } from 'ckeditor5';
+import { ElementQuickInsert } from 'ckeditor5-elements';
 import type { Demo } from './shared/demo';
 
 /**
- * Buttons outside the editor that execute the `quickInsert` command.
+ * Buttons outside the editor: one executes the `quickInsert` command, one opens the menu of the plugin.
  */
 function addControls(editor: ClassicEditor, container: HTMLElement): void {
 	const root = editor.model.document.getRoot();
@@ -19,14 +19,14 @@ function addControls(editor: ClassicEditor, container: HTMLElement): void {
 				}
 			}
 		],
-		// Without a name: opens the menu. An element as the target means the position before it.
+		// The menu, of the plugin. An element as the target means the position before it.
 		[
 			'Open the menu before the first block',
 			() => {
 				const first = root?.getChild(0);
 
 				if (first?.is('element')) {
-					editor.execute('quickInsert', first);
+					editor.plugins.get(ElementQuickInsert).open(first);
 				}
 			}
 		]
@@ -47,9 +47,9 @@ function addControls(editor: ClassicEditor, container: HTMLElement): void {
 
 export default {
 	config: {
-		plugins: [Essentials, Paragraph, Heading, QuickInsert],
-		toolbar: ['undo', 'redo', '|', 'heading'],
-		quickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1', heading2: 'Heading 2' } }
+		plugins: [Essentials, SourceEditing, Paragraph, Heading, ElementQuickInsert],
+		toolbar: ['undo', 'redo', 'sourceEditing', '|', 'heading'],
+		elementQuickInsert: { labels: { paragraph: 'Paragraph', heading1: 'Heading 1', heading2: 'Heading 2' } }
 	},
 	data: '<p>The first block.</p><p>The last block.</p>',
 	ready: addControls

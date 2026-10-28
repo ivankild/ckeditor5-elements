@@ -18,6 +18,7 @@ import { type ElementMenuItem, type ElementSubmenu } from './elementMenu.js';
  * reflect the command title, icon and {@link ElementOrPositionCommand#getState state} for the target, and execute the
  * command for it. It also adds the separators, which CKEditor's menu definitions do not have.
  *
+ * Missing items are skipped, and submenus without items, and separators at the start or the end, or repeated ones.
  * Submenus are enabled when one of their items is. Right-clicking the menu does not open the native context menu.
  */
 export default class ElementMenuView extends DropdownMenuRootListView {
@@ -26,8 +27,13 @@ export default class ElementMenuView extends DropdownMenuRootListView {
 	 */
 	public readonly target: ElementOrPosition;
 
+	/**
+	 * Whether the menu has no items: all were missing.
+	 */
+	public readonly isEmpty: boolean;
+
 	private readonly _commands: Map<string, ElementOrPositionCommand>;
-	private readonly _submenus: Map<string, ElementSubmenu>;
+	private readonly _submenus: Map<string, MenuSubmenu>;
 
 	/**
 	 * The positions of the separators in each list, by the id of the submenu (`''` for the menu itself).
@@ -41,10 +47,12 @@ export default class ElementMenuView extends DropdownMenuRootListView {
 		target: ElementOrPosition
 	) {
 		const maps: DefinitionMaps = { commands: new Map(), submenus: new Map(), separators: new Map() };
+		const menuItems = cleanItems(items);
 
-		super(locale, bodyCollection, createDefinitions(items, '', maps));
+		super(locale, bodyCollection, createDefinitions(menuItems, '', maps));
 
 		this.target = target;
+		this.isEmpty = !menuItems.length;
 		this._commands = maps.commands;
 		this._submenus = maps.submenus;
 		this._separators = maps.separators;
@@ -106,41 +114,72 @@ export default class ElementMenuView extends DropdownMenuRootListView {
 		}
 	}
 
-	private _isEnabled(item: ElementMenuItem): boolean {
+	private _isEnabled(item: MenuItem): boolean {
 		if (item === '|') {
 			return false;
 		}
 
 		return item instanceof ElementOrPositionCommand
 			? item.getState(this.target).isEnabled
-			: item.items.some(child => !!child && this._isEnabled(child));
+			: item.items.some(child => this._isEnabled(child));
 	}
+}
+
+/**
+ * An item of the menu, as it is shown: none is missing.
+ */
+type MenuItem = ElementOrPositionCommand | MenuSubmenu | '|';
+
+interface MenuSubmenu extends Omit<ElementSubmenu, 'items'> {
+	items: MenuItem[];
 }
 
 interface DefinitionMaps {
 	commands: Map<string, ElementOrPositionCommand>;
-	submenus: Map<string, ElementSubmenu>;
+	submenus: Map<string, MenuSubmenu>;
 	separators: Map<string, number[]>;
+}
+
+/**
+ * Returns the items without missing ones, submenus without items, and separators at the start or the end, or
+ * repeated ones.
+ */
+function cleanItems(items: readonly (ElementMenuItem | null | undefined)[]): MenuItem[] {
+	const result: MenuItem[] = [];
+
+	for (const item of items) {
+		const cleaned = item === '|' || item instanceof ElementOrPositionCommand || !item ? item : cleanSubmenu(item);
+
+		if (!cleaned || (cleaned === '|' && (!result.length || result.at(-1) === '|'))) {
+			continue;
+		}
+
+		result.push(cleaned);
+	}
+
+	if (result.at(-1) === '|') {
+		result.pop();
+	}
+
+	return result;
+}
+
+function cleanSubmenu(submenu: ElementSubmenu): MenuSubmenu | null {
+	const items = cleanItems(submenu.items);
+
+	return items.length ? { ...submenu, items } : null;
 }
 
 /**
  * Creates CKEditor's menu definitions for the items. The ids are paths of positions (e.g. `'2.0'`). Collects the
  * commands and submenus by id, and the positions of the separators by the id of their submenu.
  */
-function createDefinitions(
-	items: readonly (ElementMenuItem | null | undefined)[],
-	parentId: string,
-	maps: DefinitionMaps
-): DropdownMenuDefinition {
+function createDefinitions(items: readonly MenuItem[], parentId: string, maps: DefinitionMaps): DropdownMenuDefinition {
 	const definitions: DropdownMenuDefinition = [];
 	let position = 0;
 
 	for (const item of items) {
 		const id = parentId ? `${parentId}.${String(position)}` : String(position);
-
-		if (!item) {
-			continue;
-		}
 
 		if (item === '|') {
 			maps.separators.set(parentId, [...(maps.separators.get(parentId) ?? []), position]);

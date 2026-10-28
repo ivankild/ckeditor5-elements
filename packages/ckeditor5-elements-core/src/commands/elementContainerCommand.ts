@@ -1,10 +1,10 @@
 import type { ModelElement, ModelRange } from 'ckeditor5';
-import type { ElementOrPosition } from 'ckeditor5-elements-core';
-import ElementSchemaCommand from './elementSchemaCommand.js';
+import type { ElementOrPosition, ElementOrPositionState } from '../elementOrPositionCommand.js';
+import ElementCommand from './elementCommand.js';
 
 /**
- * Wraps blocks with the element, as CKEditor's block quote command does, e.g. a `callout` that is a `container` of the
- * element schema: the selected blocks, or the block-level element of the target, go in a new element.
+ * Wraps blocks with the element, as CKEditor's block quote command does, e.g. a `callout` that holds blocks: the
+ * selected blocks, or the block-level element of the target, go in a new element.
  *
  * ```ts
  * editor.execute('callout'); // The blocks of the selection.
@@ -15,7 +15,7 @@ import ElementSchemaCommand from './elementSchemaCommand.js';
  *
  * It is "on" when the target is in the element.
  */
-export default class ElementContainerCommand extends ElementSchemaCommand {
+export default class ElementContainerCommand extends ElementCommand {
 	public override isToggleable = true;
 
 	/**
@@ -29,35 +29,31 @@ export default class ElementContainerCommand extends ElementSchemaCommand {
 			if (element) {
 				writer.unwrap(element);
 			} else if (range) {
-				writer.wrap(range, this.elementName);
+				writer.wrap(range, this._createElement(writer));
 			}
 		});
 	}
 
 	/**
-	 * Enabled when the target can be edited, and the element it is in can be unwrapped, or its blocks can be wrapped.
+	 * Enabled when the target can be edited, and the element it is in can be unwrapped, or its blocks can be wrapped. "On"
+	 * when the target is in the element. Both from the element, found once.
 	 */
-	protected override _isEnabledFor(elementOrPosition?: ElementOrPosition): boolean {
+	protected override _getStateFor(elementOrPosition?: ElementOrPosition): ElementOrPositionState {
 		const element = this._findElement(elementOrPosition);
 
-		return (
-			super._isEnabledFor(elementOrPosition) &&
-			(element ? this._canUnwrap(element) : !!this._getWrapRange(elementOrPosition))
-		);
-	}
-
-	/**
-	 * "On" when the target is in the element.
-	 */
-	protected override _isOnFor(elementOrPosition?: ElementOrPosition): boolean {
-		return !!this._findElement(elementOrPosition);
+		return {
+			isEnabled:
+				super._isEnabledFor(elementOrPosition) &&
+				(element ? this._canUnwrap(element) : !!this._getWrapRange(elementOrPosition)),
+			isOn: !!element
+		};
 	}
 
 	/**
 	 * Returns the range to wrap: from the first block of the target to the last, as siblings: the blocks themselves, or
-	 * their ancestors in the parent they share. `null` when the schema does not allow the element there.
+	 * their ancestors in the parent they share. `null` when the element cannot wrap them (see {@link _canWrap}).
 	 */
-	private _getWrapRange(elementOrPosition?: ElementOrPosition): ModelRange | null {
+	protected _getWrapRange(elementOrPosition?: ElementOrPosition): ModelRange | null {
 		const model = this.editor.model;
 		const blocks = this._getBlocks(elementOrPosition);
 		const first = blocks[0] as ModelElement | undefined;
@@ -78,6 +74,14 @@ export default class ElementContainerCommand extends ElementSchemaCommand {
 
 		const range = model.createRange(model.createPositionBefore(start), model.createPositionAfter(end));
 
-		return this._canHold(range.start, range.getItems({ shallow: true })) ? range : null;
+		return this._canWrap(range) ? range : null;
+	}
+
+	/**
+	 * Whether the element can wrap the nodes of a range: be in its place, and hold them. A list overrides it: it holds
+	 * the nodes in its items.
+	 */
+	protected _canWrap(range: ModelRange): boolean {
+		return this._canHold(range.start, range.getItems({ shallow: true }));
 	}
 }

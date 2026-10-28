@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 clipboard commands for whole elements'
+description: 'Copy, cut and paste whole elements in CKEditor 5, before or after another element, from a menu, a toolbar button or code, through the clipboard pipeline.'
+---
+
 # Clipboard
 
 `ElementClipboard` registers clipboard commands that act on a whole element:

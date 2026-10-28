@@ -1,3 +1,8 @@
+---
+title: 'CKEditor 5 element schema converters'
+description: 'Convert the elements of a CKEditor 5 element schema one to one: the data mirrors the model, element for element, as HTML, or with converters of your own, e.g. for XML.'
+---
+
 # Schema converters
 
 The [element schema](./schema) declares the elements of the content. How they look in the editor and in the data is
@@ -17,6 +22,7 @@ elementSchemaConverters: true
 | Element                               | In the data and in the editor              |
 | ------------------------------------- | ------------------------------------------ |
 | inline `empty`, inline `block`        | `<span class="name">`                      |
+| a verbatim `block`                    | `<pre class="name">`                       |
 | any other, also an inline `container` | `<div class="name">`                       |
 | attribute `colorKey`                  | `data-colorkey` (HTML names are lowercase) |
 
@@ -32,9 +38,28 @@ elementSchemaConverters: true
 - The `empty` elements are empty in the data too (`<div class="divider"></div>`, with no filler).
 - An inline `block` has no block filler, so the cursor can go in an empty one: see
   [Typing in an empty inline element](#typing-in-an-empty-inline-element).
+- A [verbatim](./schema#verbatim-blocks) block keeps its whitespace in the `pre`. In the editor, a `<br>` after its text
+  makes its last line a line when it is empty, after a new line at its end: a browser shows no line there, and does
+  not type there. For converters of your own, `createVerbatimElement()` makes such a view.
 - The data is loaded as it is saved, so the same attributes come back, in their case from the schema.
 
 All the [examples](./schema-examples) use these converters, with CSS for the layout.
+
+## A tag of its own: `tag`
+
+`tag` of an element makes it that tag, in the data and in the editor, with no class: e.g. a bold as `<strong>`, or a
+divider as `<hr>`. Its attributes are `data-*` attributes, as for the others. Two elements cannot have the same tag, as
+the data could not tell them apart.
+
+```json
+{
+	"bold": { "type": "block", "isInline": true, "tag": "strong" },
+	"divider": { "type": "empty", "tag": "hr" }
+}
+```
+
+An `empty` element with the tag of an HTML element that has no content, e.g. `hr` or `img`, is an empty element in the
+editor too.
 
 ## Another tag in the editor: `editingTag`
 
@@ -62,6 +87,28 @@ elementSchema: schema,
 elementSchemaConverters: true
 ```
 
+## The names of the elements in the data: `'names'`
+
+With `elementSchemaConverters: 'names'`, the data has each element as the element of its **name**, and its attributes
+by their names: a `calloutTitle` is `<calloutTitle>`, and a `link` with an `href` is `<link href="…">`. The editing view
+stays the HTML above, with `div`, `span`, `tag` and `editingTag`, which the browser edits well.
+
+```ts
+elementSchema: schema,
+elementSchemaConverters: 'names'
+```
+
+```xml
+<callout tone="info">
+	<calloutTitle>A callout</calloutTitle>
+	<p>Text with a <badge color="red"/>.</p>
+</callout>
+```
+
+It is for a data processor that keeps the case of the names, e.g. of XML, as in the
+[DocBook](../examples/docbook) and [DITA](../examples/dita) examples. HTML makes the names lowercase, and the clipboard
+is HTML: the converters read the names in lowercase too, so `<callouttitle>` is pasted as a `calloutTitle`.
+
 ## Converters of your own
 
 When the data must have other tags, or other attributes, leave the option off and declare the converters yourself, in a
@@ -84,8 +131,8 @@ plugins: [..., ElementSchema, CalloutConverters],
 elementSchema: schema
 ```
 
-For only another tag, the `view` of an element of [`ElementSchemaCommands`](./schema-commands) declares it, over the
-converters of the schema: `divider: { title: 'Divider', view: 'hr' }`.
+For only another tag, the [`tag`](#a-tag-of-its-own-tag) of the element is enough: `"divider": { "type": "empty",
+"tag": "hr" }`.
 
 ## Typing in an empty inline element
 
@@ -94,7 +141,7 @@ container element of the view, as an element of the model becomes, gets a block 
 an empty paragraph has a height. In a `<span>`, the cursor is then before the `<br>`, and the browser puts the text out of
 the `<span>`.
 
-The converters of the schema, and the `view` of `ElementSchemaCommands`, make the view of an inline element with text
+The converters of the schema make the view of an inline element with text
 without a block filler. Then CKEditor puts its _inline_ filler where the cursor is, as in the empty `<strong>` of its own
 bold, and the text goes in the element, e.g. after it is inserted with [quick insert](./quick-insert), or by the
 [bold command](./schema-commands#formatting-bold-italic-underline). For converters of your own, `withoutBlockFiller()`

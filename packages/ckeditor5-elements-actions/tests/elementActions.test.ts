@@ -225,6 +225,8 @@ describe('ElementActions', () => {
 
 			for (const name of names) {
 				editor.commands.get(name)!.executeFor(child(1, 0, 1));
+				// With the target, `editor.execute()` checks it too, not only the selection, where they are enabled.
+				editor.execute(name, child(1, 0, 1));
 			}
 
 			expect(getData()).toBe(data);

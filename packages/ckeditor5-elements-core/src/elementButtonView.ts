@@ -1,9 +1,10 @@
 import { type Locale } from 'ckeditor5';
-import type ElementCommand from './elementCommand.js';
+import type ElementCommand from './commands/elementCommand.js';
 import ElementOrPositionButtonView, { type ElementOrPositionButtonViewOptions } from './elementOrPositionButtonView.js';
 
 /**
- * A button that reflects an {@link ElementCommand}, including whether it is "on", and executes it when clicked.
+ * A button that reflects an {@link ElementCommand} of any kind, including whether it is "on", and executes it when
+ * clicked.
  */
 export default class ElementButtonView extends ElementOrPositionButtonView {
 	/**

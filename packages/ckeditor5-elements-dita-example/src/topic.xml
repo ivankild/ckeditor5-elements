@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD LIGHTWEIGHT DITA Topic//EN" "lw-topic.dtd">
+<topic id="editing-dita">
+	<title>A topic in Lightweight DITA</title>
+	<shortdesc>This topic is <b>XDITA</b>: the editor loads it, and saves it as it is, with its <ph>id</ph>.</shortdesc>
+	<body>
+		<p>Each part of it is an element of the editor, with its DITA name: a <i>short description</i>, a <u>body</u>, its sections and their titles.</p>
+		<section>
+			<title>Lists and notes</title>
+			<ul>
+				<li>
+					<p>Put the cursor here: the breadcrumbs show the path of the DITA elements.</p>
+				</li>
+				<li>
+					<p>Press Enter at the end of an item for the next one, and in an empty one to leave the list.</p>
+				</li>
+			</ul>
+			<note type="tip">
+				<p>Right-click an element for its menu, or press Alt+Enter to insert an element where the cursor is.</p>
+			</note>
+		</section>
+		<section>
+			<title>Code and links</title>
+			<pre>const topic = editor.getData();
+// The topic, as XDITA.</pre>
+			<p>A cross-reference keeps its target: <xref href="https://www.oasis-open.org/committees/dita/">DITA</xref>. Click it to see its attributes.</p>
+		</section>
+	</body>
+</topic>

@@ -1,15 +1,20 @@
+---
+title: 'Clickable elements in CKEditor 5'
+description: 'Call a function with the model element when an element of CKEditor 5 content is clicked or double-clicked, for the elements that match a name or a filter.'
+---
+
 # Clickable elements
 
 `ElementClickable` calls a function when an element is clicked or double-clicked, with the **model element**. The
 elements are matched by the name of the model element, or by a filter function. The definitions are the
-`elementClickables` editor option:
+`elementClickable` editor option:
 
 ```ts
 import { ElementClickable } from 'ckeditor5-elements';
 
 // In the editor config:
 plugins: [..., ElementClickable],
-elementClickables: [
+elementClickable: [
 	// By name. The default event is `click`.
 	{ element: 'imageBlock', callback: (element, editor) => console.log(element.getAttribute('src')) },
 	// By a filter: `(element: ModelElement) => boolean`. Here, on double click.

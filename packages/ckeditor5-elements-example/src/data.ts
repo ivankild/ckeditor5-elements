@@ -18,7 +18,7 @@ export const exampleData =
 	'it, duplicate it, delete it, or unwrap it with <strong>Note</strong>.</p></aside>' +
 	'<aside class="note warning"><p>This is a warning: a note of the <code>warning</code> type. <strong>Warning</strong> ' +
 	'in the toolbar or the menu wraps blocks with one. <strong>Note</strong> is on in it too, as for any note.</p></aside>' +
-	'<h3>Breadcrumbs</h3>' +
+	'<h3>ElementBreadcrumbs</h3>' +
 	'<p>The second toolbar line shows the element path at the cursor, made of the elements of the editor data. Click ' +
 	'one to open the menu of its element.</p>' +
 	'<ul><li>In a list item, the path is <code>ul › li</code>.</li><li>Duplicating a list item gives a new one.</li></ul>' +

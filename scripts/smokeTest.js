@@ -86,13 +86,13 @@ try {
 		join(app, 'src/main.ts'),
 		`import { ClassicEditor, Essentials, Paragraph, Bold } from 'ckeditor5';
 import {
-	Breadcrumbs,
+	ElementBreadcrumbs,
 	ElementActions,
 	ElementClickable,
 	ElementClipboard,
 	ElementContextMenu,
 	ElementToolbar,
-	QuickInsert,
+	ElementQuickInsert,
 	type ElementMenuConfig
 } from 'ckeditor5-elements';
 
@@ -119,15 +119,15 @@ const editor = await ClassicEditor.create({
 		ElementActions,
 		ElementToolbar,
 		ElementClickable,
-		QuickInsert,
-		Breadcrumbs
+		ElementQuickInsert,
+		ElementBreadcrumbs
 	],
 	toolbar: ['bold', '|', 'breadcrumbs'],
 	elementContextMenu: menu,
-	breadcrumbs: { menu },
-	elementToolbars: [{ element: 'paragraph', items: ['moveElementDown', 'deleteElement'] }],
-	elementClickables: [{ element: 'paragraph', callback: element => { (window as unknown as { clicked: string }).clicked = element.name; } }],
-	quickInsert: { keystroke: 'Alt+Enter' }
+	elementBreadcrumbs: { menu },
+	elementToolbar: [{ element: 'paragraph', items: ['moveElementDown', 'deleteElement'] }],
+	elementClickable: [{ element: 'paragraph', callback: element => { (window as unknown as { clicked: string }).clicked = element.name; } }],
+	elementQuickInsert: { keystroke: 'Alt+Enter' }
 });
 
 Object.assign(window, { editor });
@@ -194,8 +194,8 @@ async function runInBrowser(distDir) {
 				'ElementActions',
 				'ElementToolbar',
 				'ElementClickable',
-				'QuickInsert',
-				'Breadcrumbs',
+				'ElementQuickInsert',
+				'ElementBreadcrumbs',
 				'ElementMenu'
 			].filter(name => !window.editor.plugins.has(name))
 		);

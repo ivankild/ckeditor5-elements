@@ -1,4 +1,5 @@
 import type { Model, ModelDocumentSelection, ModelElement, ModelRange, ModelSelection } from 'ckeditor5';
+import { getAncestorElements } from 'ckeditor5-elements-core';
 
 /**
  * Whether an element can be selected as a whole.
@@ -68,13 +69,9 @@ export function findSelectableAround(
 ): ModelElement | null {
 	const selected = selection.getSelectedElement();
 
-	for (
-		let node = selected ? selected.parent : selection.getFirstPosition()?.parent;
-		node?.is('element') && !node.is('rootElement');
-		node = node.parent
-	) {
-		if (isSelectable(node)) {
-			return node;
+	for (const element of getAncestorElements(selected ? selected.parent : selection.getFirstPosition()?.parent)) {
+		if (isSelectable(element)) {
+			return element;
 		}
 	}
 

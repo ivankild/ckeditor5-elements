@@ -16,11 +16,11 @@ declare module 'ckeditor5' {
 		 * The elements that can be selected as a whole: names of model elements, or filter functions. See
 		 * {@link ElementSelectable}.
 		 */
-		selectableElements?: ElementSelectableMatcher[];
+		elementSelectable?: ElementSelectableMatcher[];
 
 		/**
 		 * The elements that react to clicks and double clicks. See {@link ElementClickable}.
 		 */
-		elementClickables?: ElementClickableDefinition[];
+		elementClickable?: ElementClickableDefinition[];
 	}
 }

@@ -9,6 +9,7 @@ import {
 	type ViewDocumentInsertTextEvent,
 	type ViewDocumentKeyDownEvent
 } from 'ckeditor5';
+import { keyboardPriorities } from 'ckeditor5-elements-core';
 
 /**
  * Makes the left and right arrow keys move in two steps at the ends of inline elements, as CKEditor's two-step caret
@@ -43,7 +44,7 @@ export function enableTwoStepCaretMovement(plugin: Plugin, names: ReadonlySet<st
 				evt.stop();
 			}
 		},
-		{ priority: 'highest' }
+		{ priority: keyboardPriorities.twoStepCaretMovement }
 	);
 
 	// The browser types at a place of its own at an end of an element, e.g. at the end of the text before it, whichever
@@ -62,7 +63,7 @@ export function enableTwoStepCaretMovement(plugin: Plugin, names: ReadonlySet<st
 				data.preventDefault();
 			}
 		},
-		{ priority: 'high' }
+		{ priority: keyboardPriorities.typing }
 	);
 }
 
