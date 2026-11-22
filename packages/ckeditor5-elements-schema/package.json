@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-schema",
-	"version": "49.0.0",
+	"version": "49.1.0",
 	"description": "Element schema for CKEditor 5: declare elements in the model schema from a simple definition, e.g. a JSON file, with three types of elements and a validation.",
 	"keywords": [
 		"ckeditor",
@@ -51,7 +51,7 @@
 		"ckeditor5-elements-interaction": "workspace:*"
 	},
 	"peerDependencies": {
-		"ckeditor5": "^49.0.0"
+		"ckeditor5": "^49.1.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

@@ -3,6 +3,10 @@
 All notable changes to CKEditor 5 Elements. The packages are released together, in the same version: the version of
 CKEditor 5 they are built for. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [49.1.0] - 2026-11-22
+
+Built for CKEditor 5 v49.1.0: `ckeditor5-elements` needs `ckeditor5` `^49.1.0`. There are no changes to the features.
+
 ## [49.0.0] - 2026-10-28
 
 The initial release: element-first editing for CKEditor 5 v49. The content is a tree of named elements, each with its
@@ -87,4 +91,5 @@ The parts of a structure, such as table cells and rows, are not moved, copied or
 - [Examples](https://ivankild.github.io/ckeditor5-elements/examples/): an editor with all the features, a Simplified
   DocBook editor and a Lightweight DITA editor.
 
+[49.1.0]: https://github.com/ivankild/ckeditor5-elements/releases/tag/v49.1.0
 [49.0.0]: https://github.com/ivankild/ckeditor5-elements/releases/tag/v49.0.0

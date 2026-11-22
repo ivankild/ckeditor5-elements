@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-docbook-example",
 	"private": true,
-	"version": "49.0.0",
+	"version": "49.1.0",
 	"description": "The DocBook example of CKEditor 5 Elements: an editor of a Simplified DocBook article, whose data is DocBook XML. Not published.",
 	"license": "MIT",
 	"type": "module",
@@ -16,11 +16,11 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"ckeditor5": "^49.0.0",
+		"ckeditor5": "^49.1.0",
 		"ckeditor5-elements": "workspace:*",
 		"ckeditor5-elements-xml-example": "workspace:*"
 	},
 	"devDependencies": {
-		"vite": "^8.3.5"
+		"vite": "^8.3.8"
 	}
 }
