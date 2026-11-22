@@ -1,6 +1,6 @@
 {
 	"name": "ckeditor5-elements-core",
-	"version": "49.0.0",
+	"version": "49.1.0",
 	"description": "The base of the element commands and buttons for CKEditor 5: ElementOrPositionCommand, the commands of one element by its kind (inline, block, container, list, inserted), and their button views.",
 	"keywords": [
 		"ckeditor",
@@ -36,7 +36,7 @@
 		"README.md"
 	],
 	"peerDependencies": {
-		"ckeditor5": "^49.0.0"
+		"ckeditor5": "^49.1.0"
 	},
 	"scripts": {
 		"build": "tsc --build",

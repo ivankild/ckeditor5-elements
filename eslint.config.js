@@ -5,7 +5,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
-	globalIgnores(['**/dist/', '**/node_modules/', 'docs/api/', 'docs/.vitepress/cache/']),
+	globalIgnores(['**/dist/', '**/node_modules/', 'coverage/', '.vitest/', 'docs/api/', 'docs/.vitepress/cache/']),
 	js.configs.recommended,
 	tseslint.configs.strictTypeChecked,
 	tseslint.configs.stylisticTypeChecked,
@@ -35,7 +35,10 @@ export default defineConfig(
 			'@typescript-eslint/consistent-type-exports': 'error',
 			'@typescript-eslint/explicit-member-accessibility': ['error', { overrides: { constructors: 'no-public' } }],
 			'@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
-			'@typescript-eslint/switch-exhaustiveness-check': 'error'
+			'@typescript-eslint/switch-exhaustiveness-check': 'error',
+			// CKEditor's classes extend mixins, e.g. `ModelLivePosition` extends `EmitterMixin(ModelPosition)`, which the
+			// rule cannot see through: it reports their instances as not created by the constructor of the base class.
+			'@typescript-eslint/no-unsafe-class-instance-assignment': 'off'
 		}
 	},
 	{

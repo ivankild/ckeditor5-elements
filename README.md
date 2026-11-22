@@ -64,7 +64,7 @@ The tests run in Vitest browser mode, with Playwright driving the installed Goog
 Chromium instead, run `pnpm exec playwright install chromium` and set `PLAYWRIGHT_CHANNEL=chromium`.
 
 CI (`.github/workflows/ci.yml`) runs `pnpm check` and `pnpm smoke` on every push to `main` and every pull request, with
-the CKEditor version of the lockfile and with the newest one the packages allow (`^49.0.0`).
+the CKEditor version of the lockfile and with the newest one the packages allow (`^49.1.0`).
 
 ### Adding a package
 

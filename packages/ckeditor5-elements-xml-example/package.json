@@ -1,7 +1,7 @@
 {
 	"name": "ckeditor5-elements-xml-example",
 	"private": true,
-	"version": "49.0.0",
+	"version": "49.1.0",
 	"description": "The XML documents of the examples of CKEditor 5 Elements: an XML data processor and its converters, for the DocBook and DITA examples. Not published.",
 	"license": "MIT",
 	"type": "module",
@@ -10,7 +10,7 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
-		"ckeditor5": "^49.0.0",
+		"ckeditor5": "^49.1.0",
 		"ckeditor5-elements": "workspace:*"
 	}
 }
